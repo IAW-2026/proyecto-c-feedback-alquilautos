@@ -1,0 +1,6 @@
+allowBuilds:
+  '@clerk/shared': false
+  '@prisma/engines': true
+  prisma: true
+  sharp: true
+  unrs-resolver: true
