@@ -1,4 +1,6 @@
 import Image from "next/image";
+import TestAuthClient from "./components/testAuthClient";
+import TestAuthServer from "./components/testAuthServer";
 
 export default function Home() {
   return (
@@ -59,6 +61,10 @@ export default function Home() {
             Documentation
           </a>
         </div>
+
+        <TestAuthClient />
+        <TestAuthServer />
+
       </main>
     </div>
   );
