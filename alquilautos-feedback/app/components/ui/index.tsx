@@ -16,11 +16,11 @@ export function Stars({ value, max = 5 }: { value: number; max?: number }) {
 // ── Estado badge ──────────────────────────────────────────
 export function EstadoBadge({ estado }: { estado: string }) {
   const map: Record<string, string> = {
-    Pendiente: "badge-pending",
-    Aprobada:  "badge-approved",
-    Rechazada: "badge-rejected",
+    pendiente: "badge-pending",
+    aprobada:  "badge-approved",
+    rechazada: "badge-rejected",
   };
-  return <span className={`badge ${map[estado] ?? "badge-pending"}`}>{estado}</span>;
+  return <span className={`badge ${map[estado.toLowerCase()] ?? "badge-pending"}`}>{estado}</span>;
 }
 
 // ── Tipo badge ────────────────────────────────────────────
