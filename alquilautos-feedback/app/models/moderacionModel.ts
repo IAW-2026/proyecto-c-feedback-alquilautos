@@ -45,7 +45,7 @@ export async function createModeracion(dto: CreateModeracionDto) {
       idResena: dto.idResena,
       idModerador: dto.idModerador,
       estado: dto.estado,
-      motivo: dto.motivo,
+      motivo: dto.motivo ?? "",
     },
     include: MODERACION_INCLUDE,
   });
