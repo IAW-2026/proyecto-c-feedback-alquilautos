@@ -1,55 +1,50 @@
 "use client";
 
-import {
-  SignInButton,
-  UserButton,
-  useUser,
-} from "@clerk/nextjs";
+import { useState } from "react";
+import { PageHeader, Alert } from "@/app/components/ui";
+import DebugResenas from "@/app/components/debug/DebugResenas";
+import DebugModeraciones from "@/app/components/debug/DebugModeraciones";
+import DebugRespuestas from "@/app/components/debug/DebugRespuestas";
 
-export default function TestAuthClient() {
-  const { user, isLoaded, isSignedIn } = useUser();
+const TABS = [
+  { id: "resenas",      label: "⭐ Reseñas" },
+  { id: "moderaciones", label: "🛡️ Moderaciones" },
+  { id: "respuestas",   label: "💬 Respuestas" },
+];
 
-  if (!isLoaded)
-    return <div>Cargando...</div>;
+export default function DebugPage() {
+  const [tab, setTab] = useState("resenas");
 
   return (
-    <div className="p-4 border rounded-lg">
-      <h2 className="text-xl font-bold mb-4">
-        Test Auth Cliente
-      </h2>
+    <div>
+      <PageHeader
+        title="🔧 Debug — Panel de Entidades"
+        subtitle="CRUD completo sobre todas las entidades de la Feedback App"
+      />
 
-      {!isSignedIn ? (
-        <>
-          <p>No autenticado</p>
+      <div style={{
+        background: "var(--warning-light)",
+        border: "1px solid var(--warning)",
+        borderRadius: "var(--radius-sm)",
+        padding: "10px 14px",
+        marginBottom: 20,
+        fontSize: 12,
+        color: "var(--warning)",
+      }}>
+        ⚠️ Sección de desarrollo. Las operaciones aquí son inmediatas y afectan la base de datos real.
+      </div>
 
-          <SignInButton>
-            <span className="bg-black text-white px-4 py-2 rounded cursor-pointer">
-              Iniciar sesión
-            </span>
-          </SignInButton>
-        </>
-      ) : (
-        <>
-          <p>Autenticado</p>
+      <div className="tabs">
+        {TABS.map(t => (
+          <button key={t.id} className={`tab-btn ${tab === t.id ? "active" : ""}`} onClick={() => setTab(t.id)}>
+            {t.label}
+          </button>
+        ))}
+      </div>
 
-          <p>
-            <strong>ID:</strong> {user.id}
-          </p>
-
-          <p>
-            <strong>Email:</strong>{" "}
-            {user.primaryEmailAddress?.emailAddress}
-          </p>
-
-          <p>
-            <strong>Nombre:</strong> {user.firstName}
-          </p>
-
-          <div className="mt-4">
-            <UserButton />
-          </div>
-        </>
-      )}
+      {tab === "resenas" && <DebugResenas />}
+      {tab === "moderaciones" && <DebugModeraciones />}
+      {tab === "respuestas" && <DebugRespuestas />}
     </div>
   );
 }
