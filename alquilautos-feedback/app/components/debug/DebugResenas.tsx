@@ -28,7 +28,16 @@ export default function DebugResenas() {
 
   const fetch_ = useCallback(async () => {
     setLoading(true);
-    const r = await fetch("/api/resena");
+    let r = await fetch("/api/resena", {cache:"no-store"});
+
+    if (!r.ok) {
+      console.warn("Primer fetch falló, reintentando...");
+      await new Promise(res => setTimeout(res, 300));
+      r = await fetch("/api/resena");
+    }
+    if (!r.ok)
+      throw new Error("No se pudo obtener la API");
+
     const d = await r.json();
     setResenas(d.resenas ?? []);
     setLoading(false);
@@ -41,14 +50,14 @@ export default function DebugResenas() {
 
   const buildPayload = () => {
     const base = {
-      id_reserva: Number(form.id_reserva),
-      id_emisor: Number(form.id_emisor),
-      calificacion_general: Number(form.calificacion_general),
+      idReserva: Number(form.id_reserva),
+      idEmisor: form.id_emisor,
+      calificacionGeneral: Number(form.calificacion_general),
       descripcion: form.descripcion,
     };
-    if (form.tipo === "vehiculo") return { ...base, id_vehiculo: Number(form.id_vehiculo), calificacion_limpieza: Number(form.calificacion_limpieza), calificacion_estado: Number(form.calificacion_estado), calificacion_comodidad: Number(form.calificacion_comodidad) };
-    if (form.tipo === "propietario") return { ...base, id_propietario: Number(form.id_propietario), calificacion_comunicacion: Number(form.calificacion_comunicacion), calificacion_puntualidad: Number(form.calificacion_puntualidad) };
-    return { ...base, id_alquilador: Number(form.id_alquilador), calificacion_comunicacion: Number(form.calificacion_comunicacion), calificacion_puntualidad: Number(form.calificacion_puntualidad), calificacion_devolucion: Number(form.calificacion_devolucion) };
+    if (form.tipo === "vehiculo") return { ...base, idVehiculo: Number(form.id_vehiculo), calificacionLimpieza: Number(form.calificacion_limpieza), calificacionEstado: Number(form.calificacion_estado), calificacionComodidad: Number(form.calificacion_comodidad) };
+    if (form.tipo === "propietario") return { ...base, idPropietario: Number(form.id_propietario), calificacionComunicacion: Number(form.calificacion_comunicacion), calificacionPuntualidad: Number(form.calificacion_puntualidad) };
+    return { ...base, idAlquilador: Number(form.id_alquilador), calificacionComunicacion: Number(form.calificacion_comunicacion), calificacionPuntualidad: Number(form.calificacion_puntualidad), calificacionDevolucion: Number(form.calificacion_devolucion) };
   };
 
   const handleCreate = async () => {
