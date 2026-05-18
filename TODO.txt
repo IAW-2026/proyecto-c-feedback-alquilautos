@@ -9,7 +9,11 @@ General
     Error.tsx
     Loading.tsx
 
-Seccion moderaciones (aprobar/rechazar)
+Seccion moderaciones
+    Mostrar moderaciones pendientes
+        Aprobar o rechazar
+    Ver detalle de reseña
+    Ver detalle de emisor y receptor
 
 Seccion datos (CRUDs)
     Reseñas
@@ -38,9 +42,24 @@ Seccion calculos (promedios, resumenes y reseñas de X que redirige a datos)
     Obtener reseñas -> datos
 
 
-Endpoints
+Endpoints (Controller -> Model)
     Mocks
+        Obtener propietario
+        Obtener propietarios
+        Obtener vehiculo
+        Obtener vehiculos
+        Obtener alquilador
+        Obtener alquiladores
+        Obtener reserva
+        Obtener reservas
     Proteger locales
+        Obtener moderacion
+        Crear moderacion
+        Modificar moderacion
+        Eliminar moderacion
+        Obtener reseñas
+        Obtener moderaciones
+        Obtener respuestas
     Exponer
         Obtener reseñas de X propietario
         Obtener reseñas de X vehiculo
@@ -55,10 +74,15 @@ Endpoints
         Crear reseña
         Modificar reseña
         Eliminar reseña
+        Obtener respuesta
+        Crear respuesta
+        Modificar respuesta
+        Eliminar respuesta
 
 
 
 EXTRA
+    Eliminar testAuth
     Emojis -> Icons
     Middleware -> Proxy
     Swagger
