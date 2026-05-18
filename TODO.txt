@@ -1,5 +1,5 @@
 FRONT     TODO Emojis -> Icons
-  Dashboard
+  DONE - Dashboard
   Moderar reseñas y ver detalles
   Listar reseñas y ver detalles (TODO Skeleton-Paginas-VerEmisorReceptor) FALTA MERGEAR
   Debug CRUDs (TODO VerEmisorReceptor-EditarFULL-Detalle-DeleteMODAL-ModalClickOut-IDModeradorAuto-DefaultModeracionPendiente) FETCH FIX
@@ -7,7 +7,7 @@ FRONT     TODO Emojis -> Icons
   Loading (estilo)
 
 
-  
+
 BACK
   Mocks (Debug)
   Obtener reseñas
@@ -24,3 +24,4 @@ EXTRA
   Crear cuentas admin?
   Tema oscuro?
   Lighthouse check
+  Middleware -> Proxy
