@@ -1,27 +1,77 @@
-FRONT     TODO Emojis -> Icons
-  DONE - Dashboard
-  Moderar reseñas y ver detalles
-  Listar reseñas y ver detalles (TODO Skeleton-Paginas-VerEmisorReceptor) FALTA MERGEAR
-  Debug CRUDs (TODO VerEmisorReceptor-EditarFULL-Detalle-DeleteMODAL-ModalClickOut-IDModeradorAuto-DefaultModeracionPendiente) FETCH FIX
-  Sign-In / Sign-Up (centrar y estilo)
-  Loading (estilo)
+General
+    Layout
+        Hide Sidebar
+    Sign-In
+        Centrar
+        Estilos
+    Sign-Up
+        Ocultar
+    Error.tsx
+    Loading.tsx
+
+Seccion moderaciones (aprobar/rechazar)
+
+Seccion datos (CRUDs)
+    Reseñas
+        Filtrar por receptor
+        Ver detalle
+        Crear moderacion pendiente por defecto
+        Fix Fetch
+    Moderaciones
+        ID moderador automatica
+    Respuestas
+    Exportar tablas a PDF
+    Ver detalle de emisor y receptor
+    Edicion completa
+    Alerta delete -> modal
+    Skeleton
+    Paginado de tabla
+
+Seccion calculos (promedios, resumenes y reseñas de X que redirige a datos)
+    Propietarios
+    Vehiculos
+    Alquiladores
+    Promedios
+    Resumenes (gemini google ai studio)
+        Gemini Google AI Studio
+        Error por limite
+    Obtener reseñas -> datos
 
 
-
-BACK
-  Mocks (Debug)
-  Obtener reseñas
-  Obtener promedios
-  Crear reseña
-  Modificar reseña
-  Eliminar reseña
+Endpoints
+    Mocks
+    Proteger locales
+    Exponer
+        Obtener reseñas de X propietario
+        Obtener reseñas de X vehiculo
+        Obtener reseñas de X alquilador
+        Obtener promedio de X propietario
+        Obtener promedio de X vehiculo
+        Obtener promedio de X alquilador
+        Obtener resumen de X propietario
+        Obtener resumen de X vehiculo
+        Obtener resumen de X alquilador
+        Obtener reseña
+        Crear reseña
+        Modificar reseña
+        Eliminar reseña
 
 
 
 EXTRA
-  Exportar PDF?
-  Seeder (Debug)
-  Crear cuentas admin?
-  Tema oscuro?
-  Lighthouse check
-  Middleware -> Proxy
+    Emojis -> Icons
+    Middleware -> Proxy
+    Swagger
+    Responsive
+    Mobile
+    Lighthouse
+    Accesibilidad y temas
+
+CHECK
+    Controllers
+    UseEffects
+    Redundancia de tipos
+
+
+
+OPCIONAL - Seccion aprobar creacion de cuentas admin?
