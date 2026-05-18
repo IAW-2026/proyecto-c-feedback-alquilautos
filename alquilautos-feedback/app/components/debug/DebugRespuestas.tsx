@@ -4,11 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import { Modal, Loading, Alert } from "@/app/components/ui";
 
 interface Respuesta {
-  id_respuesta: number;
-  id_resena: number;
-  id_autor: number;
+  id: number;
+  idResena: number;
+  idAutor: number;
   comentario: string;
-  fecha_creacion: string;
+  fechaCreacion: string;
   resena: { id_resena: number; descripcion: string };
 }
 
@@ -49,8 +49,8 @@ export default function DebugRespuestas() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id_resena: Number(form.id_resena),
-          id_autor: Number(form.id_autor),
+          idResena: Number(form.id_resena),
+          idAutor: form.id_autor,
           comentario: form.comentario,
         }),
       });
@@ -67,7 +67,7 @@ export default function DebugRespuestas() {
     if (!editTarget) return;
     setActing(true);
     try {
-      const res = await fetch(`/api/respuesta/${editTarget.id_respuesta}`, {
+      const res = await fetch(`/api/respuesta/${editTarget.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ comentario: editComentario }),
@@ -119,27 +119,27 @@ export default function DebugRespuestas() {
               </thead>
               <tbody>
                 {items.map(r => (
-                  <tr key={r.id_respuesta}>
-                    <td style={{ fontSize: 12, color: "var(--text-muted)" }}>#{r.id_respuesta}</td>
+                  <tr key={r.id}>
+                    <td style={{ fontSize: 12, color: "var(--text-muted)" }}>#{r.id}</td>
                     <td style={{ fontSize: 12 }}>
-                      <div>Reseña #{r.id_resena}</div>
+                      <div>Reseña #{r.idResena}</div>
                       <div style={{ color: "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 140 }}>
                         {r.resena.descripcion}
                       </div>
                     </td>
-                    <td style={{ fontSize: 12 }}>Usuario #{r.id_autor}</td>
+                    <td style={{ fontSize: 12 }}>Usuario #{r.idAutor}</td>
                     <td style={{ fontSize: 13, maxWidth: 240 }}>
                       <span style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {r.comentario}
                       </span>
                     </td>
                     <td style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                      {new Date(r.fecha_creacion).toLocaleDateString("es-AR")}
+                      {new Date(r.fechaCreacion).toLocaleDateString("es-AR")}
                     </td>
                     <td>
                       <div style={{ display: "flex", gap: 6 }}>
                         <button className="btn btn-ghost btn-sm" onClick={() => { setEditTarget(r); setEditComentario(r.comentario); }}>✏️</button>
-                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(r.id_respuesta)}>🗑️</button>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(r.id)}>🗑️</button>
                       </div>
                     </td>
                   </tr>
@@ -187,7 +187,7 @@ export default function DebugRespuestas() {
       {/* Edit Modal */}
       {editTarget && (
         <Modal
-          title={`Editar Respuesta #${editTarget.id_respuesta}`}
+          title={`Editar Respuesta #${editTarget.id}`}
           onClose={() => setEditTarget(null)}
           footer={
             <>
@@ -199,7 +199,7 @@ export default function DebugRespuestas() {
           }
         >
           <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 4 }}>
-            Reseña #{editTarget.id_resena} · Autor #{editTarget.id_autor}
+            Reseña #{editTarget.idResena} · Autor #{editTarget.idAutor}
           </div>
           <div className="form-group">
             <label className="form-label">Comentario</label>
