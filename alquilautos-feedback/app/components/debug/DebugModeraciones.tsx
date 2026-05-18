@@ -4,12 +4,12 @@ import { useState, useEffect, useCallback } from "react";
 import { EstadoBadge, Modal, Loading, Alert } from "@/app/components/ui";
 
 interface Moderacion {
-  id_moderacion: number;
-  id_resena: number;
-  id_moderador: number;
+  id: number;
+  idResena: number;
+  idModerador: number;
   estado: "Pendiente" | "Aprobada" | "Rechazada";
   motivo: string | null;
-  fecha_creacion: string;
+  fechaCreacion: string;
   resena: { id_resena: number; descripcion: string; calificacion_general: number };
 }
 
@@ -34,7 +34,6 @@ export default function DebugModeraciones() {
     const r = await fetch("/api/moderacion");
     const d = await r.json();
     setItems(d.moderaciones ?? []);
-    console.log(items);
     setLoading(false);
   }, []);
 
@@ -50,9 +49,9 @@ export default function DebugModeraciones() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id_resena: Number(form.id_resena),
-          id_moderador: Number(form.id_moderador),
-          estado: form.estado,
+          idResena: Number(form.id_resena),
+          idModerador: form.id_moderador,
+          estado: form.estado.toUpperCase(),
           motivo: form.motivo || undefined,
         }),
       });
@@ -69,7 +68,7 @@ export default function DebugModeraciones() {
     if (!editTarget) return;
     setActing(true);
     try {
-      const res = await fetch(`/api/moderacion/${editTarget.id_moderacion}`, {
+      const res = await fetch(`/api/moderacion/${editTarget.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ estado: form.estado, motivo: form.motivo || undefined }),
@@ -90,8 +89,9 @@ export default function DebugModeraciones() {
   };
 
   const openEdit = (m: Moderacion) => {
-    setForm({ id_resena: String(m.id_resena), id_moderador: String(m.id_moderador), estado: m.estado, motivo: m.motivo ?? "" });
+    setForm({ id_resena: String(m.idResena), id_moderador: String(m.idModerador), estado: m.estado, motivo: m.motivo ?? "" });
     setEditTarget(m);
+    console.log(items);
   };
 
   return (
@@ -121,16 +121,17 @@ export default function DebugModeraciones() {
                 </tr>
               </thead>
               <tbody>
-                {items.map(m => (
-                  <tr key={m.id_moderacion}>
-                    <td style={{ fontSize: 12, color: "var(--text-muted)" }}>#{m.id_moderacion}</td>
+                {
+                items.map(m => (
+                  <tr key={m.id}>
+                    <td style={{ fontSize: 12, color: "var(--text-muted)" }}>#{m.id}</td>
                     <td style={{ fontSize: 12 }}>
-                      <div>Reseña #{m.id_resena}</div>
+                      <div>Reseña #{m.idResena}</div>
                       <div style={{ color: "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 160 }}>
                         {m.resena.descripcion}
                       </div>
                     </td>
-                    <td style={{ fontSize: 12 }}>#{m.id_moderador}</td>
+                    <td style={{ fontSize: 12 }}>#{m.idModerador}</td>
                     <td><EstadoBadge estado={m.estado} /></td>
                     <td style={{ fontSize: 12, color: "var(--text-muted)", maxWidth: 140 }}>
                       <span style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -138,12 +139,12 @@ export default function DebugModeraciones() {
                       </span>
                     </td>
                     <td style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                      {new Date(m.fecha_creacion).toLocaleDateString("es-AR")}
+                      {new Date(m.fechaCreacion).toLocaleDateString("es-AR")}
                     </td>
                     <td>
                       <div style={{ display: "flex", gap: 6 }}>
                         <button className="btn btn-ghost btn-sm" onClick={() => openEdit(m)}>✏️</button>
-                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(m.id_moderacion)}>🗑️</button>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(m.id)}>🗑️</button>
                       </div>
                     </td>
                   </tr>
@@ -196,7 +197,7 @@ export default function DebugModeraciones() {
       {/* Edit Modal */}
       {editTarget && (
         <Modal
-          title={`Editar Moderación #${editTarget.id_moderacion}`}
+          title={`Editar Moderación #${editTarget.id}`}
           onClose={() => setEditTarget(null)}
           footer={
             <>

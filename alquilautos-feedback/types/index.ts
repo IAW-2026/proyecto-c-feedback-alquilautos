@@ -83,7 +83,7 @@ export interface CreateModeracionDto {
   idResena: number;
   idModerador: string;
   estado: EstadoModeracion;
-  motivo?: string;
+  motivo: string;
 }
 
 export interface CreateRespuestaDto {
