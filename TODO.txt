@@ -1,0 +1,26 @@
+FRONT     TODO Emojis -> Icons
+  Dashboard
+  Moderar reseñas y ver detalles
+  Listar reseñas y ver detalles (TODO Skeleton-Paginas-VerEmisorReceptor) FALTA MERGEAR
+  Debug CRUDs (TODO VerEmisorReceptor-EditarFULL-Detalle-DeleteMODAL-ModalClickOut-IDModeradorAuto-DefaultModeracionPendiente) FETCH FIX
+  Sign-In / Sign-Up (centrar y estilo)
+  Loading (estilo)
+
+
+  
+BACK
+  Mocks (Debug)
+  Obtener reseñas
+  Obtener promedios
+  Crear reseña
+  Modificar reseña
+  Eliminar reseña
+
+
+
+EXTRA
+  Exportar PDF?
+  Seeder (Debug)
+  Crear cuentas admin?
+  Tema oscuro?
+  Lighthouse check
