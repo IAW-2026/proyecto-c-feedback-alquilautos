@@ -1,4 +1,4 @@
-import { db } from "@/app/lib/prisma";
+import { db } from "@/lib/prisma";
 import { CreateRespuestaDto } from "@/types";
 
 // ── Todas las respuestas ─────────────────────────────────

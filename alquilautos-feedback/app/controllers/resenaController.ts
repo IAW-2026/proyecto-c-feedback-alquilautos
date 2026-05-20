@@ -94,3 +94,69 @@ export async function deleteResena(id: number) {
     return NextResponse.json({ error: "Error al eliminar reseña" }, { status: 500 });
   }
 }
+
+// ── GET /api/resena/alquilador/:id ───────────────────────
+export async function getResenasByAlquilador(id: number) {
+  try {
+    const resenas = await ResenaModel.findResenasByAlquilador(id);
+    return NextResponse.json({ resenas });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Error al obtener reseñas del alquilador" }, { status: 500 });
+  }
+}
+
+// ── GET /api/resena/propietario/:id ─────────────────────
+export async function getResenasByPropietario(id: number) {
+  try {
+    const resenas = await ResenaModel.findResenasByPropietario(id);
+    return NextResponse.json({ resenas });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Error al obtener reseñas del propietario" }, { status: 500 });
+  }
+}
+
+// ── GET /api/resena/vehiculo/:id ─────────────────────────
+export async function getResenasByVehiculo(id: number) {
+  try {
+    const resenas = await ResenaModel.findResenasByVehiculo(id);
+    return NextResponse.json({ resenas });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Error al obtener reseñas del vehículo" }, { status: 500 });
+  }
+}
+
+// ── GET /api/resena/alquilador/:id/promedio ──────────────
+export async function getPromedioAlquilador(id: number) {
+  try {
+    const result = await ResenaModel.calcPromedioAlquilador(id);
+    return NextResponse.json({ id_alquilador: id, ...result });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Error al calcular promedio" }, { status: 500 });
+  }
+}
+
+// ── GET /api/resena/propietario/:id/promedio ─────────────
+export async function getPromedioPropietario(id: number) {
+  try {
+    const result = await ResenaModel.calcPromedioPropietario(id);
+    return NextResponse.json({ id_propietario: id, ...result });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Error al calcular promedio" }, { status: 500 });
+  }
+}
+
+// ── GET /api/resena/vehiculo/:id/promedio ────────────────
+export async function getPromedioVehiculo(id: number) {
+  try {
+    const result = await ResenaModel.calcPromedioVehiculo(id);
+    return NextResponse.json({ id_vehiculo: id, ...result });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Error al calcular promedio" }, { status: 500 });
+  }
+}

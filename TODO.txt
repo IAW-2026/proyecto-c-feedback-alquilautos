@@ -8,12 +8,23 @@ General
         Ocultar
     Error.tsx
     Loading.tsx
+    README.md
+    Clerk roles
+
+--------------------------
 
 Seccion moderaciones
     Mostrar moderaciones pendientes
         Aprobar o rechazar
     Ver detalle de reseña
     Ver detalle de emisor y receptor
+
+Seccion reseñas
+    Listar reseñas
+    Ver detalle
+    Ver detalle de emisor y receptor
+
+--------------------------
 
 Seccion datos (CRUDs)
     Reseñas
@@ -41,45 +52,49 @@ Seccion calculos (promedios, resumenes y reseñas de X que redirige a datos)
         Error por limite
     Obtener reseñas -> datos
 
+--------------------------
 
 Endpoints (Controller -> Model)
     Mocks
-        Obtener propietario
-        Obtener propietarios
-        Obtener vehiculo
-        Obtener vehiculos
-        Obtener alquilador
-        Obtener alquiladores
-        Obtener reserva
-        Obtener reservas
+        Obtener propietario     /api/propietario/{id}
+        Obtener propietarios    /api/propietario
+        Obtener vehiculo        /api/vehiculo/{id}
+        Obtener vehiculos       /api/vehiculo
+        Obtener alquilador      /api/alquilador/{id}
+        Obtener alquiladores    /api/alquilador
+        Obtener reserva         /api/reserva/{id}
+        Obtener reservas        /api/reserva
     Proteger locales
-        Obtener moderacion
-        Crear moderacion
-        Modificar moderacion
-        Eliminar moderacion
-        Obtener reseñas
-        Obtener moderaciones
-        Obtener respuestas
+        Obtener moderaciones    /api/moderacion
+        Obtener moderacion      /api/moderacion/{id}
+        Crear moderacion        /api/moderacion/{id}
+        Modificar moderacion    /api/moderacion/{id}
+        Eliminar moderacion     /api/moderacion/{id}
+        Obtener reseñas         /api/resena
+        Obtener reseña          /api/resena/{id}
+        Modificar reseña        /api/resena/{id}
+        Eliminar reseña         /api/resena/{id}
+        Obtener respuestas      /api/respuesta
+        Obtener respuesta       /api/respuesta/{id}
+        Modificar respuesta     /api/respuesta/{id}
+        Eliminar respuesta      /api/respuesta/{id}
     Exponer
-        Obtener reseñas de X propietario
-        Obtener reseñas de X vehiculo
-        Obtener reseñas de X alquilador
-        Obtener promedio de X propietario
-        Obtener promedio de X vehiculo
-        Obtener promedio de X alquilador
-        Obtener resumen de X propietario
-        Obtener resumen de X vehiculo
-        Obtener resumen de X alquilador
-        Obtener reseña
-        Crear reseña
-        Modificar reseña
-        Eliminar reseña
-        Obtener respuesta
-        Crear respuesta
-        Modificar respuesta
-        Eliminar respuesta
+        Obtener reseñas de X propietario                        /api/resena/propietario/{id}
+        Obtener reseñas de X vehiculo                           /api/resena/vehiculo/{id}
+        Obtener reseñas de X alquilador                         /api/resena/alquilador/{id}
+        Obtener reseña de X propietario en determinada reserva  /api/resena/propietario/reserva/{id}
+        Obtener reseña de X vehiculo en determinada reserva     /api/resena/vehiculo/reserva/{id}
+        Obtener reseña de X alquilador en determinada reserva   /api/resena/alquilador/reserva/{id}
+        Obtener promedio de X propietario                       /api/promedio/propietario/{id}
+        Obtener promedio de X vehiculo                          /api/promedio/vehiculo/{id}
+        Obtener promedio de X alquilador                        /api/promedio/alquilador/{id}
+        Obtener resumen de X propietario                        /api/resumen/propietario/{id}
+        Obtener resumen de X vehiculo                           /api/resumen/vehiculo/{id}
+        Obtener resumen de X alquilador                         /api/resumen/alquilador/{id}
+        Crear reseña                                            /api/resena
+        Crear respuesta                                         /api/respuesta
 
-
+--------------------------
 
 EXTRA
     Eliminar testAuth
@@ -95,7 +110,5 @@ CHECK
     Controllers
     UseEffects
     Redundancia de tipos
-
-
 
 OPCIONAL - Seccion aprobar creacion de cuentas admin?

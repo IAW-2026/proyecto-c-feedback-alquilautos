@@ -1,4 +1,4 @@
-import { db } from "@/app/lib/prisma";
+import { db } from "@/lib/prisma";
 import { EstadoModeracion } from "@prisma/client";
 import { CreateModeracionDto } from "@/types";
 

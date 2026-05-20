@@ -1,4 +1,4 @@
-import { db } from "@/app/lib/prisma";
+import { db } from "@/lib/prisma";
 import { CreateResenaDto, UpdateResenaDto } from "@/types";
 
 // Incluir todas las relaciones en las consultas
@@ -134,4 +134,70 @@ export async function updateResena(id: number, dto: UpdateResenaDto) {
 // ── Eliminar reseña ──────────────────────────────────────
 export async function deleteResena(id: number) {
   return db.resena.delete({ where: { id } });
+}
+
+// ── Reseñas de un alquilador ─────────────────────────────
+export async function findResenasByAlquilador(idAlquilador: number) {
+  return db.resena.findMany({
+    where: { resenaAlquilador: { is: { idAlquilador } } },
+    include: RESENA_INCLUDE,
+    orderBy: { fechaCreacion: "desc" },
+  });
+}
+
+// ── Reseñas de un propietario ────────────────────────────
+export async function findResenasByPropietario(idPropietario: number) {
+  return db.resena.findMany({
+    where: { resenaPropietario: { is: { idPropietario } } },
+    include: RESENA_INCLUDE,
+    orderBy: { fechaCreacion: "desc" },
+  });
+}
+
+// ── Reseñas de un vehículo ───────────────────────────────
+export async function findResenasByVehiculo(idVehiculo: number) {
+  return db.resena.findMany({
+    where: { resenaVehiculo: { is: { idVehiculo } } },
+    include: RESENA_INCLUDE,
+    orderBy: { fechaCreacion: "desc" },
+  });
+}
+
+// ── Promedio de calificacion de alquilador ──────────────
+export async function calcPromedioAlquilador(idAlquilador: number) {
+  const result = await db.resena.aggregate({
+    where: { resenaAlquilador: { is: { idAlquilador } } },
+    _avg: { calificacionGeneral: true },
+    _count: { _all: true },
+  });
+  return {
+    calificacion_promedio: result._avg.calificacionGeneral ?? 0,
+    cantidad_resenas: result._count._all ?? 0,
+  };
+}
+
+// ── Promedio de calificacion de propietario ─────────────
+export async function calcPromedioPropietario(idPropietario: number) {
+  const result = await db.resena.aggregate({
+    where: { resenaPropietario: { is: { idPropietario } } },
+    _avg: { calificacionGeneral: true },
+    _count: { _all: true },
+  });
+  return {
+    calificacion_promedio: result._avg.calificacionGeneral ?? 0,
+    cantidad_resenas: result._count._all ?? 0,
+  };
+}
+
+// ── Promedio de calificacion de vehículo ────────────────
+export async function calcPromedioVehiculo(idVehiculo: number) {
+  const result = await db.resena.aggregate({
+    where: { resenaVehiculo: { is: { idVehiculo } } },
+    _avg: { calificacionGeneral: true },
+    _count: { _all: true },
+  });
+  return {
+    calificacion_promedio: result._avg.calificacionGeneral ?? 0,
+    cantidad_resenas: result._count._all ?? 0,
+  };
 }
