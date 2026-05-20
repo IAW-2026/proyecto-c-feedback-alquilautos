@@ -55,15 +55,15 @@ Seccion calculos (promedios, resumenes y reseñas de X que redirige a datos)
 --------------------------
 
 Endpoints (Controller -> Model)
-    Mocks
-        Obtener propietario     /api/propietario/{id}
-        Obtener propietarios    /api/propietario
-        Obtener vehiculo        /api/vehiculo/{id}
-        Obtener vehiculos       /api/vehiculo
-        Obtener alquilador      /api/alquilador/{id}
-        Obtener alquiladores    /api/alquilador
-        Obtener reserva         /api/reserva/{id}
-        Obtener reservas        /api/reserva
+    DONE - Mocks
+        DONE - Obtener propietario     /api/propietario/{id}
+        DONE - Obtener propietarios    /api/propietario
+        DONE - Obtener vehiculo        /api/vehiculo/{id}
+        DONE - Obtener vehiculos       /api/vehiculo
+        DONE - Obtener alquilador      /api/alquilador/{id}
+        DONE - Obtener alquiladores    /api/alquilador
+        DONE - Obtener reserva         /api/reserva/{id}
+        DONE - Obtener reservas        /api/reserva
     Proteger locales
         Obtener moderaciones    /api/moderacion
         Obtener moderacion      /api/moderacion/{id}
