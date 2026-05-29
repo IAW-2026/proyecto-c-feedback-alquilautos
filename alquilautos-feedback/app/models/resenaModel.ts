@@ -73,6 +73,15 @@ export async function createResena(dto: CreateResenaDto) {
           },
         },
       }),
+      moderaciones: {
+        create: [
+          {
+            idModerador: "SYSTEM",
+            estado: "PENDIENTE",
+            motivo: "Reseña creada"
+          }
+        ],
+      },
     },
     include: RESENA_INCLUDE,
   });
@@ -87,7 +96,7 @@ export async function updateResena(id: number, dto: UpdateResenaDto) {
   if (!resena) return null;
 
   return db.$transaction(async (tx) => {
-    const updated = await tx.resena.update({
+    await tx.resena.update({
       where: { id },
       data: {
         ...(dto.calificacionGeneral !== undefined && { calificacionGeneral: dto.calificacionGeneral }),
@@ -161,6 +170,27 @@ export async function findResenasByVehiculo(idVehiculo: number) {
     include: RESENA_INCLUDE,
     orderBy: { fechaCreacion: "desc" },
   });
+}
+
+export async function findResenaAlquiladorByReserva(idReserva: number) {
+  return db.resena.findFirst({
+    where: { idReserva, resenaAlquilador: { is: {} }},
+    include: RESENA_INCLUDE,
+  })
+}
+
+export async function findResenaPropietarioByReserva(idReserva: number) {
+  return db.resena.findFirst({
+    where: { idReserva, resenaPropietario: { is: {} }},
+    include: RESENA_INCLUDE,
+  })
+}
+
+export async function findResenaVehiculoByReserva(idReserva: number) {
+  return db.resena.findFirst({
+    where: { idReserva, resenaVehiculo: { is: {} }},
+    include: RESENA_INCLUDE,
+  })
 }
 
 // ── Promedio de calificacion de alquilador ──────────────

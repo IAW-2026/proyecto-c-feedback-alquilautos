@@ -51,6 +51,36 @@ export async function postResena(body: unknown) {
     const errCalGen = validarCalificacion(dto.calificacionGeneral, "calificacion_general");
     if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
 
+    if(dto.calificacionComodidad){
+      const errCalGen = validarCalificacion(dto.calificacionComodidad, "calificacion_comodidad");
+      if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+    }
+
+    if(dto.calificacionComunicacion){
+      const errCalGen = validarCalificacion(dto.calificacionComunicacion, "calificacion_comunicacion");
+      if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+    }
+
+    if(dto.calificacionDevolucion){
+      const errCalGen = validarCalificacion(dto.calificacionDevolucion, "calificacion_devolucion");
+      if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+    }
+
+    if(dto.calificacionEstado){
+      const errCalGen = validarCalificacion(dto.calificacionEstado, "calificacion_estado");
+      if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+    }
+
+    if(dto.calificacionLimpieza){
+      const errCalGen = validarCalificacion(dto.calificacionLimpieza, "calificacion_limpieza");
+      if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+    }
+
+    if(dto.calificacionPuntualidad){
+      const errCalGen = validarCalificacion(dto.calificacionPuntualidad, "calificacion_puntualidad");
+      if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+    }
+
     const tiposDefinidos = [dto.idVehiculo, dto.idPropietario, dto.idAlquilador].filter(Boolean).length;
     if (tiposDefinidos > 1) {
       return NextResponse.json({ error: "Una reseña solo puede ser de un tipo: vehiculo, propietario o alquilador" }, { status: 400 });
@@ -71,6 +101,36 @@ export async function putResena(id: number, body: unknown) {
 
     const errCalGen = validarCalificacion(dto.calificacionGeneral, "calificacion_general");
     if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+
+    if(dto.calificacionComodidad){
+      const errCalGen = validarCalificacion(dto.calificacionComodidad, "calificacion_comodidad");
+      if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+    }
+
+    if(dto.calificacionComunicacion){
+      const errCalGen = validarCalificacion(dto.calificacionComunicacion, "calificacion_comunicacion");
+      if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+    }
+
+    if(dto.calificacionDevolucion){
+      const errCalGen = validarCalificacion(dto.calificacionDevolucion, "calificacion_devolucion");
+      if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+    }
+
+    if(dto.calificacionEstado){
+      const errCalGen = validarCalificacion(dto.calificacionEstado, "calificacion_estado");
+      if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+    }
+
+    if(dto.calificacionLimpieza){
+      const errCalGen = validarCalificacion(dto.calificacionLimpieza, "calificacion_limpieza");
+      if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+    }
+
+    if(dto.calificacionPuntualidad){
+      const errCalGen = validarCalificacion(dto.calificacionPuntualidad, "calificacion_puntualidad");
+      if (errCalGen) return NextResponse.json({ error: errCalGen }, { status: 400 });
+    }
 
     const resena = await ResenaModel.updateResena(id, dto);
     if (!resena) return NextResponse.json({ error: "Reseña no encontrada" }, { status: 404 });
@@ -125,6 +185,36 @@ export async function getResenasByVehiculo(id: number) {
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Error al obtener reseñas del vehículo" }, { status: 500 });
+  }
+}
+
+export async function getResenaAlquiladorByReserva(id: number){
+  try {
+    const resena = await ResenaModel.findResenaAlquiladorByReserva(id);
+    return NextResponse.json({ resena });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Error al obtener reseña del alquilador" }, { status: 500 });
+  }
+}
+
+export async function getResenaPropietarioByReserva(id: number){
+  try {
+    const resena = await ResenaModel.findResenaPropietarioByReserva(id);
+    return NextResponse.json({ resena });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Error al obtener reseña del propietario" }, { status: 500 });
+  }
+}
+
+export async function getResenaVehiculoByReserva(id: number){
+  try {
+    const resena = await ResenaModel.findResenaVehiculoByReserva(id);
+    return NextResponse.json({ resena });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Error al obtener reseña del vehículo" }, { status: 500 });
   }
 }
 

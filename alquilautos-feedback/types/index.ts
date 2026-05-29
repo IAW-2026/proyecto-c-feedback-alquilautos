@@ -45,9 +45,6 @@ export interface ResenaCompleta {
   } | null;
 }
 
-// ── Tipo de reseña ───────────────────────────────────────
-export type TipoResena = "vehiculo" | "propietario" | "alquilador";
-
 // ── DTOs para creación ───────────────────────────────────
 export interface CreateResenaDto {
   idReserva: number;
@@ -90,17 +87,4 @@ export interface CreateRespuestaDto {
   idResena: number;
   idAutor: string;
   comentario: string;
-}
-
-// ── Respuesta de promedio ────────────────────────────────
-export interface PromedioCalificacion {
-  calificacionPromedio: number;
-  cantidadResenas: number;
-}
-
-// ── Respuesta API genérica ───────────────────────────────
-export interface ApiResponse<T> {
-  data?: T;
-  error?: string;
-  message?: string;
 }

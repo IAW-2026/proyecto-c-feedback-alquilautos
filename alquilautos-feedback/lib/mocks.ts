@@ -32,7 +32,6 @@ export interface Vehiculo {
   marca: string;
   modelo: string;
   precio: number;
-  ubicacion: string;
   fotos: string;
 }
 
@@ -69,12 +68,12 @@ const MOCK_PROPIETARIOS: Record<number, Propietario> = {
 
 // ── Vehículos (Seller App) ───────────────────────────────
 const MOCK_VEHICULOS: Record<number, Vehiculo> = {
-  1: { idVehiculo: 1, idPropietario: 1, marca: "Toyota", modelo: "Corolla", precio: 8000, ubicacion: "Bahía Blanca", fotos: "https://placehold.co/400x300?text=Toyota+Corolla" },
-  2: { idVehiculo: 2, idPropietario: 1, marca: "Ford", modelo: "Focus", precio: 6500, ubicacion: "Bahía Blanca", fotos: "https://placehold.co/400x300?text=Ford+Focus" },
-  3: { idVehiculo: 3, idPropietario: 2, marca: "Chevrolet", modelo: "Cruze", precio: 7000, ubicacion: "Buenos Aires", fotos: "https://placehold.co/400x300?text=Chevrolet+Cruze" },
-  4: { idVehiculo: 4, idPropietario: 3, marca: "Honda", modelo: "Civic", precio: 9000, ubicacion: "Rosario", fotos: "https://placehold.co/400x300?text=Honda+Civic" },
-  5: { idVehiculo: 5, idPropietario: 4, marca: "Volkswagen", modelo: "Golf", precio: 7500, ubicacion: "Córdoba", fotos: "https://placehold.co/400x300?text=VW+Golf" },
-  6: { idVehiculo: 6, idPropietario: 5, marca: "Renault", modelo: "Megane", precio: 5500, ubicacion: "Mendoza", fotos: "https://placehold.co/400x300?text=Renault+Megane" },
+  1: { idVehiculo: 1, idPropietario: 1, marca: "Toyota", modelo: "Corolla", precio: 8000, fotos: "https://placehold.co/400x300?text=Toyota+Corolla" },
+  2: { idVehiculo: 2, idPropietario: 1, marca: "Ford", modelo: "Focus", precio: 6500, fotos: "https://placehold.co/400x300?text=Ford+Focus" },
+  3: { idVehiculo: 3, idPropietario: 2, marca: "Chevrolet", modelo: "Cruze", precio: 7000, fotos: "https://placehold.co/400x300?text=Chevrolet+Cruze" },
+  4: { idVehiculo: 4, idPropietario: 3, marca: "Honda", modelo: "Civic", precio: 9000, fotos: "https://placehold.co/400x300?text=Honda+Civic" },
+  5: { idVehiculo: 5, idPropietario: 4, marca: "Volkswagen", modelo: "Golf", precio: 7500, fotos: "https://placehold.co/400x300?text=VW+Golf" },
+  6: { idVehiculo: 6, idPropietario: 5, marca: "Renault", modelo: "Megane", precio: 5500, fotos: "https://placehold.co/400x300?text=Renault+Megane" },
 };
 
 // ── Reservas (Seller App) ────────────────────────────────
