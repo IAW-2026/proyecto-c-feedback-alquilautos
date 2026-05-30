@@ -1,5 +1,5 @@
 import * as ResenaModel from "@/app/models/resenaModel";
-import { CreateResenaDto, UpdateResenaDto } from "@/types";
+import { CreateResenaDto, UpdateResenaDto } from "@/lib/types";
 import { NextResponse } from "next/server";
 
 // ── Validar rango de calificación (1-5) ──────────────────

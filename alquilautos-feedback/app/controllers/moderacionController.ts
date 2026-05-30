@@ -1,7 +1,7 @@
 import * as ModeracionModel from "@/app/models/moderacionModel";
 import { EstadoModeracion } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { CreateModeracionDto } from "@/types";
+import { CreateModeracionDto } from "@/lib/types";
 
 const ESTADOS_VALIDOS = Object.values(EstadoModeracion);
 

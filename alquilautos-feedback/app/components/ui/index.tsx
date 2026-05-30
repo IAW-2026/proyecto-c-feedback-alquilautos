@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 // ── Stars ─────────────────────────────────────────────────
 export function Stars({ value, max = 5 }: { value: number; max?: number }) {
@@ -20,7 +20,7 @@ export function EstadoBadge({ estado }: { estado: string }) {
     aprobada:  "badge-approved",
     rechazada: "badge-rejected",
   };
-  return <span className={`badge ${map[estado.toLowerCase()] ?? "badge-pending"}`}>{estado}</span>;
+  return <span className={`badge ${map[estado.toLowerCase()] ?? "badge-missing"}`}>{estado}</span>;
 }
 
 // ── Tipo badge ────────────────────────────────────────────
@@ -88,5 +88,36 @@ export function PageHeader({ title, subtitle, action }: { title: string; subtitl
       </div>
       {action}
     </div>
+  );
+}
+
+// ── Texto truncado con tooltip ────────────────────────────
+export function Truncated({ text, maxW = 260 }: { text: string; maxW?: number }) {
+  const [show, setShow] = useState(false);
+  return (
+    <span
+      style={{ position: "relative", display: "inline-block", maxWidth: maxW }}
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+    >
+      <span style={{
+        display: "block", overflow: "hidden",
+        textOverflow: "ellipsis", whiteSpace: "nowrap",
+      }}>
+        {text}
+      </span>
+      {show && text.length > 40 && (
+        <span style={{
+          position: "absolute", bottom: "100%", left: 0, zIndex: 9999,
+          background: "#1a1d27", border: "1px solid var(--border)",
+          borderRadius: "var(--radius-sm)", padding: "8px 12px",
+          fontSize: 12, color: "var(--text)", whiteSpace: "normal",
+          maxWidth: 320, boxShadow: "var(--shadow)", lineHeight: 1.5,
+          marginBottom: 4,
+        }}>
+          {text}
+        </span>
+      )}
+    </span>
   );
 }

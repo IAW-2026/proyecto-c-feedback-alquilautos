@@ -83,6 +83,7 @@ body {
 .badge-pending  { background: var(--warning-light); color: var(--warning); }
 .badge-approved { background: var(--success-light); color: var(--success); }
 .badge-rejected { background: var(--danger-light);  color: var(--danger); }
+.badge-missing  { background: var(--border-light);    color: var(--text); }
 .badge-vehiculo    { background: #3b82f620; color: #60a5fa; }
 .badge-propietario { background: #8b5cf620; color: #a78bfa; }
 .badge-alquilador  { background: #ec489920; color: #f472b6; }

@@ -1,5 +1,5 @@
 import { db } from "@/lib/prisma";
-import { CreateRespuestaDto } from "@/types";
+import { CreateRespuestaDto } from "@/lib/types";
 
 // ── Todas las respuestas ─────────────────────────────────
 export async function findAllRespuestas() {

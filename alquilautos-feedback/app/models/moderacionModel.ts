@@ -1,6 +1,6 @@
 import { db } from "@/lib/prisma";
 import { EstadoModeracion } from "@prisma/client";
-import { CreateModeracionDto } from "@/types";
+import { CreateModeracionDto } from "@/lib/types";
 
 const MODERACION_INCLUDE = {
   resena: {

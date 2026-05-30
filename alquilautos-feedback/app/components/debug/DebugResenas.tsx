@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Stars, TipoBadge, EstadoBadge, Modal, Loading, Alert } from "@/app/components/ui";
-import { ResenaCompleta as Resena } from "@/types";
+import { ResenaCompleta as Resena } from "@/lib/types";
 
 const EMPTY_FORM = {
   tipo: "vehiculo",

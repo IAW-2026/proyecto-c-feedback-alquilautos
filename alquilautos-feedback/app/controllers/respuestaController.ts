@@ -1,6 +1,6 @@
 import * as RespuestaModel from "@/app/models/respuestaModel";
 import { NextResponse } from "next/server";
-import { CreateRespuestaDto } from "@/types";
+import { CreateRespuestaDto } from "@/lib/types";
 
 // ── GET /api/respuesta ───────────────────────────────────
 export async function getAllRespuestas() {

@@ -1,5 +1,5 @@
 import { db } from "@/lib/prisma";
-import { CreateResenaDto, UpdateResenaDto } from "@/types";
+import { CreateResenaDto, UpdateResenaDto } from "@/lib/types";
 
 // Incluir todas las relaciones en las consultas
 const RESENA_INCLUDE = {

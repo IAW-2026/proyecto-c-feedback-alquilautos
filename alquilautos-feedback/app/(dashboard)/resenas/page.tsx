@@ -1,94 +1,147 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Stars, TipoBadge, EstadoBadge, Modal, Loading, PageHeader } from "@/app/components/ui";
-import { ResenaCompleta as Resena } from "@/types";
+import { Stars, TipoBadge, EstadoBadge, Loading, PageHeader, Truncated } from "@/app/components/ui";
+import ResenaModal from "@/app/components/modal/ResenaModal";
+import {
+  ResenaCompleta, ModalMode,
+  getTipo, getReceptorId, getLastEstado, fmtDate,
+} from "@/lib/types";
 
-function getTipo(r: Resena): "vehiculo" | "propietario" | "alquilador" {
-  if (r.resenaVehiculo) return "vehiculo";
-  if (r.resenaPropietario) return "propietario";
-  return "alquilador";
+// ── Estado del modal ──────────────────────────────────────
+interface ModalState {
+  open: boolean;
+  resena: ResenaCompleta | null;
+  mode: ModalMode;
 }
-function getReceptorId(r: Resena) {
-  if (r.resenaVehiculo) return r.resenaVehiculo.idVehiculo;
-  if (r.resenaPropietario) return r.resenaPropietario.idPropietario;
-  if (r.resenaAlquilador) return r.resenaAlquilador.idAlquilador;
-  return 0;
-}
-function getLastEstado(r: Resena) {
-  return r.moderaciones[0]?.estado ?? "Sin moderación";
-}
+
+const MODAL_CLOSED: ModalState = { open: false, resena: null, mode: "view" };
 
 export default function ResenasPage() {
-  const [resenas, setResenas] = useState<Resena[]>([]);
+  const [resenas, setResenas] = useState<ResenaCompleta[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState<Resena | null>(null);
+  const [loadingResena, setLoadingResena] = useState(false);
+
+  // Filtros
+  const [busqueda, setBusqueda] = useState("");
   const [filtroTipo, setFiltroTipo] = useState("todos");
   const [filtroEstado, setFiltroEstado] = useState("todos");
-  const [busqueda, setBusqueda] = useState("");
+  const [filtroDesde, setFiltroDesde] = useState("");
+  const [filtroHasta, setFiltroHasta] = useState("");
 
+  // Modales
+  const [modal, setModal] = useState<ModalState>(MODAL_CLOSED);
+  const [historialMod, setHistorialMod] = useState(false);
+  const [historialResp, setHistorialResp] = useState(false);
+
+  // ── Fetch lista ─────────────────────────────────────────
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const res = await fetch("/api/resena");
-    const data = await res.json();
-    setResenas(data.resenas ?? []);
+    const r = await fetch("/api/resena", { cache: "no-store" });
+    const d = await r.json();
+    setResenas(d.resenas ?? []);
     setLoading(false);
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  // ── Abrir reseña por ID (para historial) ────────────────
+  const openResenaById = async (id: number, mode: ModalMode = "view") => {
+    setLoadingResena(true);
+    const r = await fetch(`/api/resena/${id}`);
+    const d = await r.json();
+    setLoadingResena(false);
+    if (d.resena) setModal({ open: true, resena: d.resena, mode });
+  };
+
+  // ── Eliminar ────────────────────────────────────────────
+  const handleDelete = async (r: ResenaCompleta, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm(`¿Eliminar la reseña #${r.id}?\n"${r.descripcion.slice(0, 60)}..."`)) return;
+    await fetch(`/api/resena/${r.id}`, { method: "DELETE" });
+    fetchData();
+  };
+
+  // ── Filtrado ────────────────────────────────────────────
   const filtered = resenas.filter(r => {
-    const tipo = getTipo(r);
-    if (filtroTipo !== "todos" && tipo !== filtroTipo) return false;
+    if (filtroTipo !== "todos" && getTipo(r) !== filtroTipo) return false;
     const estado = getLastEstado(r).toLowerCase();
-    if (filtroEstado !== "todos" && !estado.includes(filtroEstado.toLowerCase())) return false;
+    if (filtroEstado !== "todos" && !estado.startsWith(filtroEstado.toLowerCase())) return false;
     if (busqueda && !r.descripcion.toLowerCase().includes(busqueda.toLowerCase())) return false;
+    if (filtroDesde && new Date(r.fechaCreacion) < new Date(filtroDesde)) return false;
+    if (filtroHasta && new Date(r.fechaCreacion) > new Date(filtroHasta + "T23:59:59")) return false;
     return true;
   });
+
+  const hayFiltros = filtroTipo !== "todos" || filtroEstado !== "todos" || busqueda || filtroDesde || filtroHasta;
 
   return (
     <div>
       <PageHeader
         title="⭐ Reseñas"
         subtitle={`${resenas.length} reseñas en total`}
-        action={<button className="btn btn-ghost" onClick={fetchData}>↻ Actualizar</button>}
+        action={
+          <div style={{ display: "flex", gap: 8 }}>
+            <button className="btn btn-ghost" onClick={fetchData} title="Refrescar lista">↻ Actualizar</button>
+            <button className="btn btn-ghost" onClick={() => setHistorialMod(true)}>🛡️ Historial moder.</button>
+            <button className="btn btn-ghost" onClick={() => setHistorialResp(true)}>💬 Historial resp.</button>
+            <button className="btn btn-primary" onClick={() => setModal({ open: true, resena: null, mode: "create" })}>
+              + Nueva reseña
+            </button>
+          </div>
+        }
       />
 
-      {/* Filtros */}
-      <div className="card" style={{ marginBottom: 20, padding: 16, display: "flex", gap: 12, flexWrap: "wrap" }}>
-        <input
-          className="form-input"
-          style={{ maxWidth: 240 }}
-          placeholder="🔍 Buscar en descripción..."
-          value={busqueda}
-          onChange={e => setBusqueda(e.target.value)}
-        />
-        <select className="form-select" style={{ maxWidth: 160 }} value={filtroTipo} onChange={e => setFiltroTipo(e.target.value)}>
-          <option value="todos">Todos los tipos</option>
-          <option value="vehiculo">Vehículo</option>
-          <option value="propietario">Propietario</option>
-          <option value="alquilador">Alquilador</option>
-        </select>
-        <select className="form-select" style={{ maxWidth: 160 }} value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
-          <option value="todos">Todos los estados</option>
-          <option value="pendiente">Pendiente</option>
-          <option value="aprobada">Aprobada</option>
-          <option value="rechazada">Rechazada</option>
-        </select>
-        {(filtroTipo !== "todos" || filtroEstado !== "todos" || busqueda) && (
-          <button className="btn btn-ghost btn-sm" onClick={() => { setFiltroTipo("todos"); setFiltroEstado("todos"); setBusqueda(""); }}>
-            ✕ Limpiar filtros
-          </button>
-        )}
-        <span style={{ marginLeft: "auto", alignSelf: "center", fontSize: 12, color: "var(--text-muted)" }}>
-          {filtered.length} resultado{filtered.length !== 1 ? "s" : ""}
-        </span>
+      {/* ── Filtros ───────────────────────────────────────── */}
+      <div className="card" style={{ marginBottom: 18, padding: "14px 16px" }}>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+          <input className="form-input" style={{ minWidth: 180, flex: 1 }}
+            placeholder="🔍 Buscar descripción..." value={busqueda} onChange={e => setBusqueda(e.target.value)} />
+
+          <select className="form-select" style={{ maxWidth: 150 }} value={filtroTipo} onChange={e => setFiltroTipo(e.target.value)}>
+            <option value="todos">Todos los tipos</option>
+            <option value="vehiculo">🚗 Vehículo</option>
+            <option value="propietario">👤 Propietario</option>
+            <option value="alquilador">🔑 Alquilador</option>
+          </select>
+
+          <select className="form-select" style={{ maxWidth: 150 }} value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
+            <option value="todos">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="aprobada">Aprobada</option>
+            <option value="rechazada">Rechazada</option>
+            <option value="sin">Sin moderar</option>
+          </select>
+
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <span style={{ fontSize: 12, color: "var(--text-muted)", whiteSpace: "nowrap" }}>Desde</span>
+            <input type="date" className="form-input" style={{ maxWidth: 140 }} value={filtroDesde} onChange={e => setFiltroDesde(e.target.value)} />
+          </div>
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <span style={{ fontSize: 12, color: "var(--text-muted)", whiteSpace: "nowrap" }}>Hasta</span>
+            <input type="date" className="form-input" style={{ maxWidth: 140 }} value={filtroHasta} onChange={e => setFiltroHasta(e.target.value)} />
+          </div>
+
+          {hayFiltros && (
+            <button className="btn btn-ghost btn-sm" onClick={() => {
+              setBusqueda(""); setFiltroTipo("todos"); setFiltroEstado("todos");
+              setFiltroDesde(""); setFiltroHasta("");
+            }}>
+              ✕ Limpiar
+            </button>
+          )}
+
+          <span style={{ marginLeft: "auto", fontSize: 12, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
+            {filtered.length} resultado{filtered.length !== 1 ? "s" : ""}
+          </span>
+        </div>
       </div>
 
-      {loading ? <Loading /> : filtered.length === 0 ? (
+      {/* ── Tabla ─────────────────────────────────────────── */}
+      {loading || loadingResena ? <Loading /> : filtered.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-icon">🔍</div>
-          <div className="empty-state-text">No se encontraron reseñas</div>
+          <div className="empty-state-text">{hayFiltros ? "Sin reseñas para los filtros aplicados" : "No hay reseñas registradas"}</div>
         </div>
       ) : (
         <div className="card" style={{ padding: 0 }}>
@@ -99,33 +152,53 @@ export default function ResenasPage() {
                   <th>ID</th>
                   <th>Tipo</th>
                   <th>Emisor</th>
-                  <th>Receptor (ID)</th>
-                  <th>Calificación</th>
+                  <th>Receptor</th>
+                  <th>Calif.</th>
                   <th>Descripción</th>
-                  <th>Moderación</th>
+                  <th>Estado</th>
                   <th>Fecha</th>
-                  <th></th>
+                  <th style={{ textAlign: "right" }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map(r => (
                   <tr key={r.id}>
-                    <td style={{ color: "var(--text-muted)", fontSize: 12 }}>#{r.id}</td>
+                    <td style={{ fontSize: 12, color: "var(--text-muted)" }}>#{r.id}</td>
                     <td><TipoBadge tipo={getTipo(r)} /></td>
                     <td style={{ fontSize: 12 }}>#{r.idEmisor}</td>
                     <td style={{ fontSize: 12 }}>#{getReceptorId(r)}</td>
                     <td><Stars value={r.calificacionGeneral} /></td>
                     <td style={{ maxWidth: 220 }}>
-                      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block", fontSize: 13 }}>
-                        {r.descripcion}
-                      </span>
+                      <Truncated text={r.descripcion} maxW={220} />
                     </td>
                     <td><EstadoBadge estado={getLastEstado(r)} /></td>
-                    <td style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                      {new Date(r.fechaCreacion).toLocaleDateString("es-AR")}
+                    <td style={{ fontSize: 12, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
+                      {fmtDate(r.fechaCreacion)}
                     </td>
                     <td>
-                      <button className="btn btn-ghost btn-sm" onClick={() => setSelected(r)}>Detalle</button>
+                      <div style={{ display: "flex", gap: 5, justifyContent: "flex-end" }}>
+                        <button
+                          className="btn btn-ghost btn-sm"
+                          title="Ver detalle"
+                          onClick={() => setModal({ open: true, resena: r, mode: "view" })}
+                        >
+                          👁️
+                        </button>
+                        <button
+                          className="btn btn-ghost btn-sm"
+                          title="Editar"
+                          onClick={() => setModal({ open: true, resena: r, mode: "edit" })}
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          title="Eliminar"
+                          onClick={e => handleDelete(r, e)}
+                        >
+                          🗑️
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -135,93 +208,14 @@ export default function ResenasPage() {
         </div>
       )}
 
-      {/* Detail Modal */}
-      {selected && (
-        <Modal
-          title={`Reseña #${selected.id}`}
-          onClose={() => setSelected(null)}
-          footer={<button className="btn btn-ghost" onClick={() => setSelected(null)}>Cerrar</button>}
-        >
-          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            <TipoBadge tipo={getTipo(selected)} />
-            <Stars value={selected.calificacionGeneral} />
-            <span style={{ fontSize: 12, color: "var(--text-muted)" }}>{selected.calificacionGeneral}/5</span>
-          </div>
-
-          <div className="card" style={{ background: "var(--bg)" }}>
-            <p style={{ fontSize: 14 }}>{selected.descripcion}</p>
-          </div>
-
-          <div className="detail-grid">
-            <div className="detail-item"><span className="detail-label">Reserva</span><span className="detail-value">#{selected.idReserva}</span></div>
-            <div className="detail-item"><span className="detail-label">Emisor</span><span className="detail-value">Usuario #{selected.idEmisor}</span></div>
-            <div className="detail-item">
-              <span className="detail-label">Receptor</span>
-              <span className="detail-value">
-                {selected.resenaVehiculo ? `Vehículo #${selected.resenaVehiculo.idVehiculo}` :
-                 selected.resenaPropietario ? `Propietario #${selected.resenaPropietario.idPropietario}` :
-                 `Alquilador #${selected.resenaAlquilador?.idAlquilador}`}
-              </span>
-            </div>
-            <div className="detail-item"><span className="detail-label">Fecha</span><span className="detail-value">{new Date(selected.fechaCreacion).toLocaleDateString("es-AR")}</span></div>
-          </div>
-
-          {/* Sub-calificaciones */}
-          {selected.resenaVehiculo && (
-            <div>
-              <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 8 }}>CALIFICACIONES DETALLADAS</div>
-              <div style={{ display: "flex", gap: 20 }}>
-                {[["Limpieza", selected.resenaVehiculo.calificacionLimpieza], ["Estado", selected.resenaVehiculo.calificacionEstado], ["Comodidad", selected.resenaVehiculo.calificacionComodidad]].map(([l, v]) => (
-                  <div key={l as string} style={{ textAlign: "center" }}>
-                    <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 2 }}>{l}</div>
-                    <Stars value={v as number} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {(selected.resenaPropietario || selected.resenaAlquilador) && (
-            <div>
-              <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 8 }}>CALIFICACIONES DETALLADAS</div>
-              <div style={{ display: "flex", gap: 20 }}>
-                {[
-                  ["Comunicación", selected.resenaPropietario?.calificacionComunicacion ?? selected.resenaAlquilador?.calificacionComunicacion],
-                  ["Puntualidad", selected.resenaPropietario?.calificacionPuntualidad ?? selected.resenaAlquilador?.calificacionPuntualidad],
-                  ...(selected.resenaAlquilador ? [["Devolución", selected.resenaAlquilador.calificacionDevolucion]] : []),
-                ].map(([l, v]) => (
-                  <div key={l as string} style={{ textAlign: "center" }}>
-                    <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 2 }}>{l}</div>
-                    <Stars value={v as number} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Moderaciones */}
-          {selected.moderaciones.length > 0 && (
-            <div>
-              <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 8 }}>HISTORIAL DE MODERACIÓN</div>
-              {selected.moderaciones.map((m, i) => (
-                <div key={i} style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 6 }}>
-                  <EstadoBadge estado={m.estado} />
-                  {m.motivo && <span style={{ fontSize: 12, color: "var(--text-muted)" }}>{m.motivo}</span>}
-                  <span style={{ fontSize: 11, color: "var(--text-muted)", marginLeft: "auto" }}>{new Date(m.fechaCreacion).toLocaleDateString("es-AR")}</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Respuesta */}
-          {selected.respuesta && (
-            <div className="card" style={{ background: "var(--bg)", borderLeft: "3px solid var(--primary)" }}>
-              <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 4 }}>
-                Respuesta del receptor (Usuario #{selected.respuesta.idAutor})
-              </div>
-              <p style={{ fontSize: 13 }}>{selected.respuesta.comentario}</p>
-            </div>
-          )}
-        </Modal>
+      {/* ── Modales ───────────────────────────────────────── */}
+      {modal.open && (
+        <ResenaModal
+          resena={modal.resena}
+          initialMode={modal.mode}
+          onClose={() => setModal(MODAL_CLOSED)}
+          onSaved={fetchData}
+        />
       )}
     </div>
   );

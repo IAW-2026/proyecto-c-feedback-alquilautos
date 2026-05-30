@@ -1,48 +1,90 @@
 import { EstadoModeracion } from "@prisma/client";
 
-// ── Reseña completa con relaciones ──────────────────────
+export type EstadoMod = "Pendiente" | "Aprobada" | "Rechazada";
+export type TipoResena = "vehiculo" | "propietario" | "alquilador";
+export type ModalMode = "view" | "edit" | "create";
+
+export interface ModeracionItem {
+  id: number;
+  idModerador: number;
+  estado: EstadoMod;
+  motivo: string | null;
+  fechaCreacion: string;
+}
+
+export interface RespuestaItem {
+  id: number;
+  idAutor: number;
+  comentario: string;
+  fechaCreacion: string;
+}
+
 export interface ResenaCompleta {
   id: number;
   idReserva: number;
-  idEmisor: string;
+  idEmisor: number | string;
   calificacionGeneral: number;
   descripcion: string;
-  fechaCreacion: Date;
+  fechaCreacion: string;
   resenaVehiculo: {
-    id: number;
     idVehiculo: number;
     calificacionLimpieza: number;
     calificacionEstado: number;
     calificacionComodidad: number;
   } | null;
   resenaPropietario: {
-    id: number;
     idPropietario: number;
     calificacionComunicacion: number;
     calificacionPuntualidad: number;
   } | null;
   resenaAlquilador: {
-    id: number;
     idAlquilador: number;
     calificacionComunicacion: number;
     calificacionPuntualidad: number;
     calificacionDevolucion: number;
   } | null;
-  moderaciones: {
-    id: number;
-    idResena: number;
-    idModerador: string;
-    estado: EstadoModeracion;
-    motivo: string | null;
-    fechaCreacion: Date;
-  }[];
-  respuesta: {
-    id: number;
-    idResena: number;
-    idAutor: string;
-    comentario: string;
-    fechaCreacion: Date;
-  } | null;
+  moderaciones: ModeracionItem[];
+  respuesta: RespuestaItem | null;
+}
+
+export interface ModeracionCompleta {
+  id: number;
+  idResena: number;
+  idModerador: number;
+  estado: EstadoMod;
+  motivo: string | null;
+  fechaCreacion: string;
+  resena: ResenaCompleta;
+}
+
+export interface RespuestaCompleta {
+  id: number;
+  idResena: number;
+  idAutor: number;
+  comentario: string;
+  fechaCreacion: string;
+  resena: ResenaCompleta;
+}
+
+// ── Helpers ──────────────────────────────────────────────
+export function getTipo(r: ResenaCompleta): TipoResena {
+  if (r.resenaVehiculo) return "vehiculo";
+  if (r.resenaPropietario) return "propietario";
+  return "alquilador";
+}
+
+export function getReceptorId(r: ResenaCompleta): number {
+  if (r.resenaVehiculo) return r.resenaVehiculo.idVehiculo;
+  if (r.resenaPropietario) return r.resenaPropietario.idPropietario;
+  return r.resenaAlquilador?.idAlquilador ?? 0;
+}
+
+export function getLastEstado(r: ResenaCompleta): string {
+  return r.moderaciones[0]?.estado ?? "Sin moderar";
+}
+
+export function fmtDate(d: string) {
+  return new Date(d).toLocaleDateString("es-AR");
 }
 
 // ── DTOs para creación ───────────────────────────────────

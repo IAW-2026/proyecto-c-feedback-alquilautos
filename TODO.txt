@@ -20,24 +20,19 @@ Seccion moderaciones
     Ver detalle de emisor y receptor
 
 Seccion reseñas
-    Listar reseñas
-    Ver detalle
-    Ver detalle de emisor y receptor
-Seccion datos (CRUDs)
     Reseñas
+        DONE - Listar
+        DONE - Ver detalle
         Filtrar por receptor
-        Ver detalle
-        Crear moderacion pendiente por defecto
-        Fix Fetch
-    Moderaciones
-        ID moderador automatica
-    Respuestas
+        Ver detalle de emisor y receptor
+        Fix Fetch (turbo?)
+    DONE - Moderaciones
+    DONE - Respuestas
     Exportar tablas a PDF
     Ver detalle de emisor y receptor
     Edicion completa
     Alerta delete -> modal
     Skeleton
-    Paginado de tabla
 
 Seccion calculos (promedios, resumenes y reseñas de X que redirige a datos)
     Propietarios
@@ -94,8 +89,9 @@ Endpoints (Controller -> Model)
 --------------------------
 
 EXTRA
-    Eliminar testAuth
+    Eliminar testAuth y Debug
     Estandarizar estados de moderacion
+    Pasar IDs a String
     Emojis -> Icons
     Middleware -> Proxy
     Server actions?
@@ -103,10 +99,10 @@ EXTRA
     Responsive
     Mobile
     Lighthouse
+    ESLint
     Accesibilidad y temas
 
 CHECK
-    Controllers
     UseEffects
     Redundancia de tipos
 
