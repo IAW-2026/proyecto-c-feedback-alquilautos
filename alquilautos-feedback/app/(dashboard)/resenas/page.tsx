@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Stars, TipoBadge, EstadoBadge, Loading, PageHeader, Truncated } from "@/app/components/ui";
 import ResenaModal from "@/app/components/modal/ResenaModal";
+import { HistorialModeraciones, HistorialRespuestas } from "@/app/components/modal/HistorialModal";
 import {
   ResenaCompleta, ModalMode,
   getTipo, getReceptorId, getLastEstado, fmtDate,
@@ -15,7 +16,7 @@ interface ModalState {
   mode: ModalMode;
 }
 
-const MODAL_CLOSED: ModalState = { open: false, resena: null, mode: "view" };
+const MODAL_CLOSED: ModalState = { open: false, resena: null, mode: ModalMode.VIEW };
 
 export default function ResenasPage() {
   const [resenas, setResenas] = useState<ResenaCompleta[]>([]);
@@ -46,7 +47,7 @@ export default function ResenasPage() {
   useEffect(() => { fetchData(); }, [fetchData]);
 
   // ── Abrir reseña por ID (para historial) ────────────────
-  const openResenaById = async (id: number, mode: ModalMode = "view") => {
+  const openResenaById = async (id: number, mode: ModalMode = ModalMode.VIEW) => {
     setLoadingResena(true);
     const r = await fetch(`/api/resena/${id}`);
     const d = await r.json();
@@ -85,7 +86,7 @@ export default function ResenasPage() {
             <button className="btn btn-ghost" onClick={fetchData} title="Refrescar lista">↻ Actualizar</button>
             <button className="btn btn-ghost" onClick={() => setHistorialMod(true)}>🛡️ Historial moder.</button>
             <button className="btn btn-ghost" onClick={() => setHistorialResp(true)}>💬 Historial resp.</button>
-            <button className="btn btn-primary" onClick={() => setModal({ open: true, resena: null, mode: "create" })}>
+            <button className="btn btn-primary" onClick={() => setModal({ open: true, resena: null, mode: ModalMode.CREATE })}>
               + Nueva reseña
             </button>
           </div>
@@ -180,14 +181,14 @@ export default function ResenasPage() {
                         <button
                           className="btn btn-ghost btn-sm"
                           title="Ver detalle"
-                          onClick={() => setModal({ open: true, resena: r, mode: "view" })}
+                          onClick={() => setModal({ open: true, resena: r, mode: ModalMode.VIEW })}
                         >
                           👁️
                         </button>
                         <button
                           className="btn btn-ghost btn-sm"
                           title="Editar"
-                          onClick={() => setModal({ open: true, resena: r, mode: "edit" })}
+                          onClick={() => setModal({ open: true, resena: r, mode: ModalMode.EDIT })}
                         >
                           ✏️
                         </button>
@@ -215,6 +216,26 @@ export default function ResenasPage() {
           initialMode={modal.mode}
           onClose={() => setModal(MODAL_CLOSED)}
           onSaved={fetchData}
+        />
+      )}
+
+      {historialMod && (
+        <HistorialModeraciones
+          onClose={() => setHistorialMod(false)}
+          onOpenResena={id => {
+            setHistorialMod(false);
+            openResenaById(id, ModalMode.VIEW);
+          }}
+        />
+      )}
+
+      {historialResp && (
+        <HistorialRespuestas
+          onClose={() => setHistorialResp(false)}
+          onOpenResena={id => {
+            setHistorialResp(false);
+            openResenaById(id, ModalMode.VIEW);
+          }}
         />
       )}
     </div>

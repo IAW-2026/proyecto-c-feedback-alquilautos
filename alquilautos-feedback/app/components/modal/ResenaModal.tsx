@@ -339,8 +339,8 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
     setCreateForm(p => ({ ...p, [k]: e.target.value }));
 
   const tipo = resena ? getTipo(resena) : createForm.tipo;
-  const isView = mode === "view";
-  const isCreate = mode === "create";
+  const isView = mode === ModalMode.VIEW;
+  const isCreate = mode === ModalMode.CREATE;
 
   // Refetch resena después de cambios en respuesta/moderaciones
   const refresh = async () => {
@@ -380,7 +380,7 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
       if (!r.ok) throw new Error((await r.json()).error);
       const d = await r.json();
       setResena(d.resena);
-      setMode("view");
+      setMode(ModalMode.VIEW);
       onSaved();
     } catch (e) { setErr((e as Error).message); }
     finally { setSaving(false); }
@@ -567,13 +567,13 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
                   respuesta={resena.respuesta}
                   idResena={resena.id}
                   onRefresh={refresh}
-                  editable={mode === "edit"}
+                  editable={mode === ModalMode.EDIT}
                 />
                 <ModeracionesSection
                   moderaciones={resena.moderaciones}
                   idResena={resena.id}
                   onRefresh={refresh}
-                  editable={mode === "edit"}
+                  editable={mode === ModalMode.EDIT}
                 />
               </div>
             </>
@@ -593,12 +593,12 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
           {isView && resena && (
             <>
               <button className="btn btn-ghost" onClick={onClose}>Cerrar</button>
-              <button className="btn btn-primary" onClick={() => setMode("edit")}>✏️ Editar</button>
+              <button className="btn btn-primary" onClick={() => setMode(ModalMode.EDIT)}>✏️ Editar</button>
             </>
           )}
-          {mode === "edit" && resena && (
+          {mode === ModalMode.EDIT && resena && (
             <>
-              <button className="btn btn-ghost" onClick={() => { setMode("view"); setErr(""); }}>Cancelar edición</button>
+              <button className="btn btn-ghost" onClick={() => { setMode(ModalMode.VIEW); setErr(""); }}>Cancelar edición</button>
               <button className="btn btn-primary" onClick={saveEdit} disabled={saving}>{saving ? "Guardando..." : "Guardar cambios"}</button>
             </>
           )}

@@ -2,7 +2,12 @@ import { EstadoModeracion } from "@prisma/client";
 
 export type EstadoMod = "Pendiente" | "Aprobada" | "Rechazada";
 export type TipoResena = "vehiculo" | "propietario" | "alquilador";
-export type ModalMode = "view" | "edit" | "create";
+
+export enum ModalMode {
+  VIEW = "view",
+  EDIT = "edit",
+  CREATE = "create",
+}
 
 export interface ModeracionItem {
   id: number;
