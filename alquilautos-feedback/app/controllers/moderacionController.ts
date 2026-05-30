@@ -3,12 +3,12 @@ import { EstadoModeracion } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { CreateModeracionDto } from "@/types";
 
-const ESTADOS_VALIDOS: EstadoModeracion[] = ["PENDIENTE", "APROBADA", "RECHAZADA"];
+const ESTADOS_VALIDOS = Object.values(EstadoModeracion);
 
 // ── GET /api/moderacion ──────────────────────────────────
-export async function getAllModeraciones(soloPerndientes = false) {
+export async function getAllModeraciones(soloPendientes = false) {
   try {
-    const moderaciones = soloPerndientes
+    const moderaciones = soloPendientes
       ? await ModeracionModel.findModeracionesPendientes()
       : await ModeracionModel.findAllModeraciones();
     return NextResponse.json({ moderaciones });
@@ -45,6 +45,13 @@ export async function postModeracion(body: unknown) {
     if (dto.estado && !ESTADOS_VALIDOS.includes(dto.estado)) {
       return NextResponse.json(
         { error: `Estado inválido. Valores permitidos: ${ESTADOS_VALIDOS.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
+    if (dto.estado === "RECHAZADA" && !dto.motivo) {
+      return NextResponse.json(
+        { error: "Se requiere un motivo al rechazar una moderación" },
         { status: 400 }
       );
     }

@@ -59,7 +59,7 @@ export async function updateModeracionEstado(
 ) {
   return db.moderacion.update({
     where: { id },
-    data: { estado, motivo: motivo },
+    data: { estado, motivo: motivo ?? "" },
     include: MODERACION_INCLUDE,
   });
 }

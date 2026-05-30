@@ -23,9 +23,6 @@ Seccion reseñas
     Listar reseñas
     Ver detalle
     Ver detalle de emisor y receptor
-
---------------------------
-
 Seccion datos (CRUDs)
     Reseñas
         Filtrar por receptor
@@ -64,20 +61,20 @@ Endpoints (Controller -> Model)
         DONE - Obtener alquiladores    /api/alquilador
         DONE - Obtener reserva         /api/reserva/{id}
         DONE - Obtener reservas        /api/reserva
-    Proteger locales
-        Obtener moderaciones    /api/moderacion
-        Obtener moderacion      /api/moderacion/{id}
-        Crear moderacion        /api/moderacion/{id}
-        Modificar moderacion    /api/moderacion/{id}
-        Eliminar moderacion     /api/moderacion/{id}
+    Proteger locales (manejar id moderador en moderaciones)
+        DONE - Obtener moderaciones    /api/moderacion
+        DONE - Obtener moderacion      /api/moderacion/{id}
+        DONE - Crear moderacion        /api/moderacion/{id}
+        DONE - Modificar moderacion    /api/moderacion/{id}
+        DONE - Eliminar moderacion     /api/moderacion/{id}
         DONE - Obtener reseñas         /api/resena
         DONE - Obtener reseña          /api/resena/{id}
         DONE - Modificar reseña        /api/resena/{id}
         DONE - Eliminar reseña         /api/resena/{id}
-        Obtener respuestas      /api/respuesta
-        Obtener respuesta       /api/respuesta/{id}
-        Modificar respuesta     /api/respuesta/{id}
-        Eliminar respuesta      /api/respuesta/{id}
+        DONE - Obtener respuestas      /api/respuesta
+        DONE - Obtener respuesta       /api/respuesta/{id}
+        DONE - Modificar respuesta     /api/respuesta/{id}
+        DONE - Eliminar respuesta      /api/respuesta/{id}
     Exponer
         DONE - Obtener reseñas de X propietario                        /api/resena/propietario/{id}
         DONE - Obtener reseñas de X vehiculo                           /api/resena/vehiculo/{id}
@@ -92,14 +89,16 @@ Endpoints (Controller -> Model)
         Obtener resumen de X vehiculo                           /api/resumen/vehiculo/{id}
         Obtener resumen de X alquilador                         /api/resumen/alquilador/{id}
         DONE - Crear reseña                                            /api/resena
-        Crear respuesta                                         /api/respuesta
+        DONE - Crear respuesta                                         /api/respuesta
 
 --------------------------
 
 EXTRA
     Eliminar testAuth
+    Estandarizar estados de moderacion
     Emojis -> Icons
     Middleware -> Proxy
+    Server actions?
     Swagger
     Responsive
     Mobile
