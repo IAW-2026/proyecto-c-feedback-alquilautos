@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Stars, TipoBadge, EstadoBadge, Loading, PageHeader, Truncated } from "@/app/components/ui";
 import ResenaModal from "@/app/components/modal/ResenaModal";
 import { HistorialModeraciones, HistorialRespuestas } from "@/app/components/modal/HistorialModal";
@@ -18,17 +19,21 @@ interface ModalState {
 
 const MODAL_CLOSED: ModalState = { open: false, resena: null, mode: ModalMode.VIEW };
 
-export default function ResenasPage() {
+function ResenasContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const [resenas, setResenas] = useState<ResenaCompleta[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingResena, setLoadingResena] = useState(false);
 
   // Filtros
   const [busqueda, setBusqueda] = useState("");
-  const [filtroTipo, setFiltroTipo] = useState("todos");
+  const [filtroTipo, setFiltroTipo] = useState(searchParams.get("tipo") ?? "todos");
   const [filtroEstado, setFiltroEstado] = useState("todos");
   const [filtroDesde, setFiltroDesde] = useState("");
   const [filtroHasta, setFiltroHasta] = useState("");
+  const [filtroReceptorId, setFiltroReceptorId] = useState(searchParams.get("receptorId") ?? "");
 
   // Modales
   const [modal, setModal] = useState<ModalState>(MODAL_CLOSED);
@@ -63,6 +68,12 @@ export default function ResenasPage() {
     fetchData();
   };
 
+  const clearFiltroReceptor = () => {
+    setFiltroReceptorId("");
+    setFiltroTipo("todos");
+    router.replace("/resenas");
+  };
+
   // ── Filtrado ────────────────────────────────────────────
   const filtered = resenas.filter(r => {
     if (filtroTipo !== "todos" && getTipo(r) !== filtroTipo) return false;
@@ -71,10 +82,11 @@ export default function ResenasPage() {
     if (busqueda && !r.descripcion.toLowerCase().includes(busqueda.toLowerCase())) return false;
     if (filtroDesde && new Date(r.fechaCreacion) < new Date(filtroDesde)) return false;
     if (filtroHasta && new Date(r.fechaCreacion) > new Date(filtroHasta + "T23:59:59")) return false;
+    if (filtroReceptorId && String(getReceptorId(r)) !== filtroReceptorId) return false;
     return true;
   });
 
-  const hayFiltros = filtroTipo !== "todos" || filtroEstado !== "todos" || busqueda || filtroDesde || filtroHasta;
+  const hayFiltros = filtroTipo !== "todos" || filtroEstado !== "todos" || busqueda || filtroDesde || filtroHasta  || filtroReceptorId;
 
   return (
     <div>
@@ -92,6 +104,29 @@ export default function ResenasPage() {
           </div>
         }
       />
+
+      {/* ── Filtro de receptor activo (viene de /entidades) ── */}
+      {filtroReceptorId && (
+        <div style={{
+          display: "flex", alignItems: "center", gap: 10, marginBottom: 14,
+          background: "var(--primary-light)", border: "1px solid var(--primary)",
+          borderRadius: "var(--radius-sm)", padding: "8px 14px",
+        }}>
+          <span style={{ fontSize: 13, color: "var(--primary)" }}>
+            🔗 Mostrando reseñas de{" "}
+            <strong>
+              {filtroTipo !== "todos" ? filtroTipo : "entidad"} #{filtroReceptorId}
+            </strong>
+          </span>
+          <button
+            className="btn btn-ghost btn-sm"
+            style={{ marginLeft: "auto", color: "var(--primary)" }}
+            onClick={clearFiltroReceptor}
+          >
+            ✕ Quitar filtro
+          </button>
+        </div>
+      )}
 
       {/* ── Filtros ───────────────────────────────────────── */}
       <div className="card" style={{ marginBottom: 18, padding: "14px 16px" }}>
@@ -126,7 +161,7 @@ export default function ResenasPage() {
           {hayFiltros && (
             <button className="btn btn-ghost btn-sm" onClick={() => {
               setBusqueda(""); setFiltroTipo("todos"); setFiltroEstado("todos");
-              setFiltroDesde(""); setFiltroHasta("");
+              setFiltroDesde(""); setFiltroHasta(""); clearFiltroReceptor();
             }}>
               ✕ Limpiar
             </button>
@@ -239,5 +274,14 @@ export default function ResenasPage() {
         />
       )}
     </div>
+  );
+}
+
+// ── Page con Suspense requerido por useSearchParams ───────
+export default function ResenasPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <ResenasContent />
+    </Suspense>
   );
 }
