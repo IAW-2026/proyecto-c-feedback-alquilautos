@@ -196,7 +196,13 @@ export async function findResenaVehiculoByReserva(idReserva: number) {
 // ── Promedio de calificacion de alquilador ──────────────
 export async function calcPromedioAlquilador(idAlquilador: string) {
   const result = await db.resena.aggregate({
-    where: { resenaAlquilador: { is: { idAlquilador } } },
+    where: {
+      resenaAlquilador: { is: { idAlquilador } },
+      moderaciones: {
+        some: { estado: "APROBADA" },
+        none: { estado: "RECHAZADA" },
+      },
+    },
     _avg: { calificacionGeneral: true },
     _count: { _all: true },
   });
@@ -209,7 +215,13 @@ export async function calcPromedioAlquilador(idAlquilador: string) {
 // ── Promedio de calificacion de propietario ─────────────
 export async function calcPromedioPropietario(idPropietario: string) {
   const result = await db.resena.aggregate({
-    where: { resenaPropietario: { is: { idPropietario } } },
+    where: {
+      resenaPropietario: { is: { idPropietario } },
+      moderaciones: {
+        some: { estado: "APROBADA" },
+        none: { estado: "RECHAZADA" },
+      },
+    },
     _avg: { calificacionGeneral: true },
     _count: { _all: true },
   });
@@ -222,7 +234,13 @@ export async function calcPromedioPropietario(idPropietario: string) {
 // ── Promedio de calificacion de vehículo ────────────────
 export async function calcPromedioVehiculo(idVehiculo: number) {
   const result = await db.resena.aggregate({
-    where: { resenaVehiculo: { is: { idVehiculo } } },
+    where: {
+      resenaVehiculo: { is: { idVehiculo } },
+      moderaciones: {
+        some: { estado: "APROBADA" },
+        none: { estado: "RECHAZADA" },
+      },
+    },
     _avg: { calificacionGeneral: true },
     _count: { _all: true },
   });

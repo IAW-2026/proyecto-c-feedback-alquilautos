@@ -7,6 +7,7 @@ General
     Sign-Up
         Ocultar
     Error.tsx
+    NotFound.tsx
     Loading.tsx
     README.md
 
@@ -34,7 +35,7 @@ DONE - Seccion calculos (promedios, resumenes y reseñas de X que redirige a dat
     DONE - Vehiculos
     DONE - Alquiladores
     DONE - Promedios
-    Resumenes (gemini google ai studio, solo reseñas aprobadas)
+    DONE - Resumenes (gemini google ai studio, solo reseñas aprobadas)
         DONE - Error por limite
     DONE - Obtener reseñas -> datos
 
@@ -87,8 +88,8 @@ DONE - Endpoints (Controller -> Model)
 
 EXTRA
     Documentacion APIs
-    Clerk roles
-    Proteger endpoints
+    Clerk rol adminFeedback
+    Clerk dev keys
     DONE - ID-Moderador auto por Clerk?
     DONE - Mostrar correctamente IDs de usuarios
     DONE - Eliminar testAuth, Debug

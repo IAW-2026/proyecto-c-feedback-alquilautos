@@ -35,12 +35,14 @@ export async function generarResumenResponse(tipo: TipoResena, id: number | stri
 
   const resp = await fetchResenas(tipo, id);
   const payload: any = await extractPayload(resp);
-  const resenas: any[] = payload?.resenas ?? payload ?? [];
+  const todasLasResenas: any[] = payload?.resenas ?? payload ?? [];
+
+  const resenas = todasLasResenas.filter(r => r.moderaciones?.[0]?.estado === "APROBADA");
 
   if (!resenas || resenas.length === 0) {
     return NextResponse.json({
       [ID_KEY[tipo]]: id,
-      resumen: `No hay reseñas registradas para este ${tipo}.`,
+      resumen: `No hay suficientes reseñas aprobadas para generar un resumen de este ${tipo}.`,
     });
   }
 
