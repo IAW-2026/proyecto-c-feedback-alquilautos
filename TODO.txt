@@ -23,26 +23,24 @@ Seccion reseñas
     Reseñas
         DONE - Listar
         DONE - Ver detalle
-        Filtrar por receptor
+        DONE - Filtrar por receptor
         Ver detalle de emisor y receptor
         Fix Fetch (turbo?)
     DONE - Moderaciones
     DONE - Respuestas
     Exportar tablas a PDF
     Ver detalle de emisor y receptor
-    Edicion completa
     Alerta delete -> modal
     Skeleton
 
 Seccion calculos (promedios, resumenes y reseñas de X que redirige a datos)
-    Propietarios
-    Vehiculos
-    Alquiladores
-    Promedios
-    Resumenes (gemini google ai studio)
-        Gemini Google AI Studio
+    DONE - Propietarios
+    DONE - Vehiculos
+    DONE - Alquiladores
+    DONE - Promedios
+    DONE - Resumenes (gemini google ai studio)
         Error por limite
-    Obtener reseñas -> datos
+    DONE - Obtener reseñas -> datos
 
 --------------------------
 
@@ -89,7 +87,7 @@ Endpoints (Controller -> Model)
 --------------------------
 
 EXTRA
-    Eliminar testAuth y Debug
+    Eliminar testAuth, Debug y logs
     Estandarizar estados de moderacion
     Pasar IDs a String
     Emojis -> Icons
