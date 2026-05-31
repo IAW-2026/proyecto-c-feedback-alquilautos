@@ -6,5 +6,5 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   const { userId } = await auth();
   if (!userId) return new Response("Unauthorized", { status: 401 });
   const { id } = await params;
-  return ResenaController.getResenasByAlquilador(Number(id));
+  return ResenaController.getResenasByAlquilador(id);
 }

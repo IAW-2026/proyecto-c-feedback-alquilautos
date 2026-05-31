@@ -31,13 +31,13 @@ export async function getModeracionById(id: number) {
 }
 
 // ── POST /api/moderacion ─────────────────────────────────
-export async function postModeracion(body: unknown) {
+export async function postModeracion(body: unknown, idModerador: string) {
   try {
     const dto = body as CreateModeracionDto;
 
-    if (!dto.idResena || !dto.idModerador) {
+    if (!dto.idResena) {
       return NextResponse.json(
-        { error: "Campos requeridos: id_resena, id_moderador" },
+        { error: "Campo requerido: idResena" },
         { status: 400 }
       );
     }
@@ -56,7 +56,7 @@ export async function postModeracion(body: unknown) {
       );
     }
 
-    const moderacion = await ModeracionModel.createModeracion(dto);
+    const moderacion = await ModeracionModel.createModeracion({ ...dto, idModerador });
     return NextResponse.json({ moderacion }, { status: 201 });
   } catch (e) {
     console.error(e);

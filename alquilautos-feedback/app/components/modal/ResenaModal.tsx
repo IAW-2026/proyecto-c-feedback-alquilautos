@@ -64,7 +64,7 @@ function RespuestaSection({
         const r = await fetch("/api/respuesta", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ idResena, idAutor: Number(idAutor), comentario }),
+          body: JSON.stringify({ idResena, idAutor, comentario }),
         });
         if (!r.ok) throw new Error((await r.json()).error);
         setAdding(false);
@@ -105,7 +105,7 @@ function RespuestaSection({
         </div>
       ) : adding ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <input className="form-input" type="number" placeholder="ID Autor" value={idAutor} onChange={e => setIdAutor(e.target.value)} />
+          <input className="form-input" type="text" placeholder="ID Autor" value={idAutor} onChange={e => setIdAutor(e.target.value)} />
           <textarea className="form-textarea" style={{ minHeight: 64 }} value={comentario} onChange={e => setComentario(e.target.value)} placeholder="Comentario..." />
           {err && <span style={{ fontSize: 11, color: "var(--danger)" }}>{err}</span>}
           <div style={{ display: "flex", gap: 6 }}>
@@ -229,7 +229,7 @@ function ModeracionesSection({
         {adding && (
           <div style={{ background: "var(--bg)", borderRadius: "var(--radius-sm)", padding: "10px 12px", border: "1px dashed var(--border)" }}>
             <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
-              <input className="form-input" type="number" placeholder="ID Moderador" style={{ flex: 1 }}
+              <input className="form-input" type="text" placeholder="ID Moderador" style={{ flex: 1 }}
                 value={addForm.idModerador} onChange={e => setAddForm(p => ({ ...p, idModerador: e.target.value }))} />
               <select className="form-select" style={{ flex: 1 }} value={addForm.estado}
                 onChange={e => setAddForm(p => ({ ...p, estado: e.target.value as EstadoMod }))}>
@@ -398,8 +398,8 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
       };
       let extra = {};
       if (createForm.tipo === "vehiculo") extra = { idVehiculo: Number(createForm.idVehiculo), calificacionLimpieza: Number(createForm.calificacionLimpieza), calificacionEstado: Number(createForm.calificacionEstado), calificacionComodidad: Number(createForm.calificacionComodidad) };
-      else if (createForm.tipo === "propietario") extra = { idPropietario: Number(createForm.idPropietario), calificacionComunicacion: Number(createForm.calificacionComunicacion), calificacionPuntualidad: Number(createForm.calificacionPuntualidad) };
-      else extra = { idAlquilador: Number(createForm.idAlquilador), calificacionComunicacion: Number(createForm.calificacionComunicacion), calificacionPuntualidad: Number(createForm.calificacionPuntualidad), calificacionDevolucion: Number(createForm.calificacionDevolucion) };
+      else if (createForm.tipo === "propietario") extra = { idPropietario: createForm.idPropietario, calificacionComunicacion: Number(createForm.calificacionComunicacion), calificacionPuntualidad: Number(createForm.calificacionPuntualidad) };
+      else extra = { idAlquilador: createForm.idAlquilador, calificacionComunicacion: Number(createForm.calificacionComunicacion), calificacionPuntualidad: Number(createForm.calificacionPuntualidad), calificacionDevolucion: Number(createForm.calificacionDevolucion) };
 
       const r = await fetch("/api/resena", {
         method: "POST",
@@ -446,10 +446,10 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 <div className="form-group"><label className="form-label">ID Reserva</label><input className="form-input" type="number" value={createForm.idReserva} onChange={cf("idReserva")} /></div>
-                <div className="form-group"><label className="form-label">ID Emisor</label><input className="form-input" type="number" value={createForm.idEmisor} onChange={cf("idEmisor")} /></div>
+                <div className="form-group"><label className="form-label">ID Emisor</label><input className="form-input" type="text" value={createForm.idEmisor} onChange={cf("idEmisor")} /></div>
                 {createForm.tipo === "vehiculo" && <div className="form-group"><label className="form-label">ID Vehículo</label><input className="form-input" type="number" value={createForm.idVehiculo} onChange={cf("idVehiculo")} /></div>}
-                {createForm.tipo === "propietario" && <div className="form-group"><label className="form-label">ID Propietario</label><input className="form-input" type="number" value={createForm.idPropietario} onChange={cf("idPropietario")} /></div>}
-                {createForm.tipo === "alquilador" && <div className="form-group"><label className="form-label">ID Alquilador</label><input className="form-input" type="number" value={createForm.idAlquilador} onChange={cf("idAlquilador")} /></div>}
+                {createForm.tipo === "propietario" && <div className="form-group"><label className="form-label">ID Propietario</label><input className="form-input" type="text" value={createForm.idPropietario} onChange={cf("idPropietario")} /></div>}
+                {createForm.tipo === "alquilador" && <div className="form-group"><label className="form-label">ID Alquilador</label><input className="form-input" type="text" value={createForm.idAlquilador} onChange={cf("idAlquilador")} /></div>}
                 <div className="form-group"><label className="form-label">Calificación general</label><CalifSelect value={Number(createForm.calificacionGeneral)} onChange={v => setCreateForm(p => ({ ...p, calificacionGeneral: v }))} /></div>
               </div>
               <div className="form-group"><label className="form-label">Descripción</label><textarea className="form-textarea" value={createForm.descripcion} onChange={cf("descripcion")} /></div>
@@ -574,9 +574,12 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
                       ["Puntualidad", "calificacionPuntualidad"],
                       ...(tipo === "alquilador" ? [["Devolución", "calificacionDevolucion"]] : []),
                     ].map(([l, k]) => {
-                      const srcView = tipo === "propietario"
-                        ? (resena.resenaPropietario as Record<string, number>)?.[k]
-                        : (resena.resenaAlquilador as Record<string, number>)?.[k];
+                      const srcView = Number(
+                        (tipo === "propietario"
+                          ? resena.resenaPropietario as Record<string, unknown>
+                          : resena.resenaAlquilador  as Record<string, unknown>
+                        )?.[k] ?? 0
+                      );
                       return (
                         <div key={k} style={{ textAlign: "center" }}>
                           <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 4 }}>{l}</div>

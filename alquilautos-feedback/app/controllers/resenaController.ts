@@ -156,7 +156,7 @@ export async function deleteResena(id: number) {
 }
 
 // ── GET /api/resena/alquilador/:id ───────────────────────
-export async function getResenasByAlquilador(id: number) {
+export async function getResenasByAlquilador(id: string) {
   try {
     const resenas = await ResenaModel.findResenasByAlquilador(id);
     return NextResponse.json({ resenas });
@@ -167,7 +167,7 @@ export async function getResenasByAlquilador(id: number) {
 }
 
 // ── GET /api/resena/propietario/:id ─────────────────────
-export async function getResenasByPropietario(id: number) {
+export async function getResenasByPropietario(id: string) {
   try {
     const resenas = await ResenaModel.findResenasByPropietario(id);
     return NextResponse.json({ resenas });
@@ -219,7 +219,7 @@ export async function getResenaVehiculoByReserva(id: number){
 }
 
 // ── GET /api/resena/alquilador/:id/promedio ──────────────
-export async function getPromedioAlquilador(id: number) {
+export async function getPromedioAlquilador(id: string) {
   try {
     const result = await ResenaModel.calcPromedioAlquilador(id);
     return NextResponse.json({ id_alquilador: id, ...result });
@@ -230,7 +230,7 @@ export async function getPromedioAlquilador(id: number) {
 }
 
 // ── GET /api/resena/propietario/:id/promedio ─────────────
-export async function getPromedioPropietario(id: number) {
+export async function getPromedioPropietario(id: string) {
   try {
     const result = await ResenaModel.calcPromedioPropietario(id);
     return NextResponse.json({ id_propietario: id, ...result });

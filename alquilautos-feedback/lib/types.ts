@@ -11,7 +11,7 @@ export enum ModalMode {
 
 export interface ModeracionItem {
   id: number;
-  idModerador: number;
+  idModerador: string;
   estado: EstadoMod;
   motivo: string | null;
   fechaCreacion: string;
@@ -19,7 +19,7 @@ export interface ModeracionItem {
 
 export interface RespuestaItem {
   id: number;
-  idAutor: number;
+  idAutor: string;
   comentario: string;
   fechaCreacion: string;
 }
@@ -27,7 +27,7 @@ export interface RespuestaItem {
 export interface ResenaCompleta {
   id: number;
   idReserva: number;
-  idEmisor: number | string;
+  idEmisor: string;
   calificacionGeneral: number;
   descripcion: string;
   fechaCreacion: string;
@@ -38,12 +38,12 @@ export interface ResenaCompleta {
     calificacionComodidad: number;
   } | null;
   resenaPropietario: {
-    idPropietario: number;
+    idPropietario: string;
     calificacionComunicacion: number;
     calificacionPuntualidad: number;
   } | null;
   resenaAlquilador: {
-    idAlquilador: number;
+    idAlquilador: string;
     calificacionComunicacion: number;
     calificacionPuntualidad: number;
     calificacionDevolucion: number;
@@ -55,7 +55,7 @@ export interface ResenaCompleta {
 export interface ModeracionCompleta {
   id: number;
   idResena: number;
-  idModerador: number;
+  idModerador: string;
   estado: EstadoModeracion;
   motivo: string | null;
   fechaCreacion: string;
@@ -65,7 +65,7 @@ export interface ModeracionCompleta {
 export interface RespuestaCompleta {
   id: number;
   idResena: number;
-  idAutor: number;
+  idAutor: string;
   comentario: string;
   fechaCreacion: string;
   resena: ResenaCompleta;
@@ -78,10 +78,10 @@ export function getTipo(r: ResenaCompleta): TipoResena {
   return "alquilador";
 }
 
-export function getReceptorId(r: ResenaCompleta): number {
+export function getReceptorId(r: ResenaCompleta): number | string {
   if (r.resenaVehiculo) return r.resenaVehiculo.idVehiculo;
   if (r.resenaPropietario) return r.resenaPropietario.idPropietario;
-  return r.resenaAlquilador?.idAlquilador ?? 0;
+  return r.resenaAlquilador?.idAlquilador ?? "";
 }
 
 export function getLastEstado(r: ResenaCompleta): string {
@@ -104,11 +104,11 @@ export interface CreateResenaDto {
   calificacionEstado?: number;
   calificacionComodidad?: number;
   // Tipo propietario
-  idPropietario?: number;
+  idPropietario?: string;
   calificacionComunicacion?: number;
   calificacionPuntualidad?: number;
   // Tipo alquilador
-  idAlquilador?: number;
+  idAlquilador?: string;
   calificacionDevolucion?: number;
 }
 

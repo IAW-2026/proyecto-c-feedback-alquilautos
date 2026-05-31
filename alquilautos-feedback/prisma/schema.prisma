@@ -46,7 +46,7 @@ model ResenaVehiculo {
 
 model ResenaPropietario {
   id                          Int     @id
-  idPropietario               Int
+  idPropietario               String
   calificacionComunicacion    Int
   calificacionPuntualidad     Int
 
@@ -56,7 +56,7 @@ model ResenaPropietario {
 
 model ResenaAlquilador {
   id                          Int     @id
-  idAlquilador                Int
+  idAlquilador                String
   calificacionComunicacion    Int
   calificacionPuntualidad     Int
   calificacionDevolucion      Int

@@ -146,7 +146,7 @@ export async function deleteResena(id: number) {
 }
 
 // ── Reseñas de un alquilador ─────────────────────────────
-export async function findResenasByAlquilador(idAlquilador: number) {
+export async function findResenasByAlquilador(idAlquilador: string) {
   return db.resena.findMany({
     where: { resenaAlquilador: { is: { idAlquilador } } },
     include: RESENA_INCLUDE,
@@ -155,7 +155,7 @@ export async function findResenasByAlquilador(idAlquilador: number) {
 }
 
 // ── Reseñas de un propietario ────────────────────────────
-export async function findResenasByPropietario(idPropietario: number) {
+export async function findResenasByPropietario(idPropietario: string) {
   return db.resena.findMany({
     where: { resenaPropietario: { is: { idPropietario } } },
     include: RESENA_INCLUDE,
@@ -194,7 +194,7 @@ export async function findResenaVehiculoByReserva(idReserva: number) {
 }
 
 // ── Promedio de calificacion de alquilador ──────────────
-export async function calcPromedioAlquilador(idAlquilador: number) {
+export async function calcPromedioAlquilador(idAlquilador: string) {
   const result = await db.resena.aggregate({
     where: { resenaAlquilador: { is: { idAlquilador } } },
     _avg: { calificacionGeneral: true },
@@ -207,7 +207,7 @@ export async function calcPromedioAlquilador(idAlquilador: number) {
 }
 
 // ── Promedio de calificacion de propietario ─────────────
-export async function calcPromedioPropietario(idPropietario: number) {
+export async function calcPromedioPropietario(idPropietario: string) {
   const result = await db.resena.aggregate({
     where: { resenaPropietario: { is: { idPropietario } } },
     _avg: { calificacionGeneral: true },

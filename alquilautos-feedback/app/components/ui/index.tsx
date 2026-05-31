@@ -1,6 +1,7 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 
 // ── Stars ─────────────────────────────────────────────────
 export function Stars({ value, max = 5 }: { value: number; max?: number }) {
@@ -162,6 +163,9 @@ export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW =
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [entityData, setEntityData] = useState<Record<string, unknown> | null>(null);
+  const anchorRef = useRef<HTMLSpanElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const [coords, setCoords] = useState<{ left: number; top: number }>({ left: 0, top: 0 });
 
   const fetchUrl = entityType && entityId ? getEntityFetchUrl(entityType, entityId) : undefined;
   const cacheKey = fetchUrl ?? "";
@@ -196,28 +200,56 @@ export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW =
 
   const hasContent = tooltip || entityData;
 
+  const handleEnter = () => {
+    if (anchorRef.current) {
+      const r = anchorRef.current.getBoundingClientRect();
+      setCoords({ left: r.left + window.scrollX, top: r.top + window.scrollY });
+    }
+    setShow(true);
+  };
+  const handleLeave = () => setShow(false);
+
   return (
-    <span
-      style={{ position: "relative", display: "inline-block", maxWidth: maxW, cursor: "help", textDecoration: "underline dotted" }}
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
-    >
-      <span style={{ color: "inherit" }}>{text}</span>
-      {show && hasContent && (
-        <span
+    <>
+      <span
+        ref={anchorRef}
+        style={{ position: "relative", display: "inline-block", maxWidth: maxW, cursor: "help", textDecoration: "underline dotted" }}
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
+      >
+        <span style={{ color: "inherit" }}>{text}</span>
+      </span>
+
+      {typeof document !== "undefined" && show && hasContent && createPortal(
+        <div
+          ref={tooltipRef}
+          onMouseEnter={() => setShow(true)}
+          onMouseLeave={() => setShow(false)}
           style={{
-            position: "absolute", bottom: "100%", left: 0, zIndex: 9999, minWidth: 220,
-            background: "#1a1d27", border: "1px solid var(--border)", borderRadius: "var(--radius-sm)",
-            padding: "10px 12px", fontSize: 12, color: "var(--text)", whiteSpace: "normal",
-            maxWidth: 340, boxShadow: "var(--shadow)", lineHeight: 1.5, marginBottom: 4,
+            position: "absolute",
+            left: coords.left,
+            top: coords.top,
+            transform: "translateY(-100%)",
+            zIndex: 999999,
+            minWidth: 220,
+            background: "#1a1d27",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius-sm)",
+            padding: "10px 12px",
+            fontSize: 12,
+            color: "var(--text)",
+            whiteSpace: "normal",
+            maxWidth: 340,
+            boxShadow: "var(--shadow)",
+            lineHeight: 1.5,
+            pointerEvents: "auto",
           }}
         >
-          {loading ? ( "Cargando..." ) : tooltip ? ( tooltip ) : (
-            <TooltipContent data={entityData!} type={entityType!} />
-          )}
-        </span>
+          {loading ? ("Cargando...") : tooltip ? (tooltip) : (<TooltipContent data={entityData!} type={entityType!} />)}
+        </div>,
+        document.body
       )}
-    </span>
+    </>
   );
 }
 

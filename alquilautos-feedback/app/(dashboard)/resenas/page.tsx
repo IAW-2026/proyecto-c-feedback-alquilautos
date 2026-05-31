@@ -203,7 +203,7 @@ function ResenasContent() {
                     <td><TipoBadge tipo={getTipo(r)} /></td>
                     <td style={{ fontSize: 12 }}>
                       <EntityTooltipLabel
-                        text={`Usuario #${r.idEmisor}`}
+                        text={`#${r.idEmisor}`}
                         entityType={getTipo(r) === "alquilador" ? "propietario" : "alquilador"}
                         entityId={r.idEmisor}
                       />

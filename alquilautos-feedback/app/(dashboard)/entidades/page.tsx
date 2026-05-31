@@ -14,7 +14,7 @@ interface Vehiculo {
 }
 
 interface Alquilador {
-  idAlquilador: number;
+  idAlquilador: string;
   nombre: string;
   apellido: string;
   email: string;
@@ -24,7 +24,7 @@ interface Alquilador {
 }
 
 interface Propietario {
-  idPropietario: number;
+  idPropietario: string;
   nombre: string;
   apellido: string;
   email: string;
@@ -78,7 +78,7 @@ function ResumenModal({
 }
 
 // ── Botón de promedio (inline) ────────────────────────────
-function PromedioBtn({ tipo, id }: { tipo: TipoResena; id: number }) {
+function PromedioBtn({ tipo, id }: { tipo: TipoResena; id: number | string }) {
   const [state, setState] = useState<"idle" | "loading" | PromedioResult>("idle");
  
   const fetch_ = async () => {
@@ -115,7 +115,7 @@ function PromedioBtn({ tipo, id }: { tipo: TipoResena; id: number }) {
 }
 
 // ── Botón de resumen IA ───────────────────────────────────
-function ResumenBtn({ tipo, id, label }: { tipo: TipoResena; id: number; label: string }) {
+function ResumenBtn({ tipo, id, label }: { tipo: TipoResena; id: number | string; label: string }) {
   const [loading, setLoading] = useState(false);
   const [resumen, setResumen] = useState<string | null>(null);
   const [err, setErr] = useState("");

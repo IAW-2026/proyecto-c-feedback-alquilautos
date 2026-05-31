@@ -8,11 +8,11 @@ const ID_KEY: Record<TipoResena, string> = {
   alquilador:  "id_alquilador",
 };
 
-async function fetchResenas(tipo: TipoResena, id: number) {
+async function fetchResenas(tipo: TipoResena, id: number | string) {
   switch (tipo) {
-    case "vehiculo":    return ResenaController.getResenasByVehiculo(id);
-    case "propietario": return ResenaController.getResenasByPropietario(id);
-    case "alquilador":  return ResenaController.getResenasByAlquilador(id);
+    case "vehiculo":    return ResenaController.getResenasByVehiculo(Number(id));
+    case "propietario": return ResenaController.getResenasByPropietario(String(id));
+    case "alquilador":  return ResenaController.getResenasByAlquilador(String(id));
   }
 }
 
@@ -24,7 +24,7 @@ async function extractPayload(resp: any) {
   return resp;
 }
 
-export async function generarResumenResponse(tipo: TipoResena, id: number) {
+export async function generarResumenResponse(tipo: TipoResena, id: number | string) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return NextResponse.json(

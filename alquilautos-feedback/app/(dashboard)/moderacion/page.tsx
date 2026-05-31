@@ -11,7 +11,15 @@ const AVATAR_COLORS = [
 ];
 
 function avatarColor(id: number | string) {
-  return AVATAR_COLORS[Number(id) % AVATAR_COLORS.length];
+  const text = String(id);
+  const hash = Array.from(text).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
+}
+
+function shortenId(id: number | string, start = 8, end = 6) {
+  const s = String(id);
+  if (s.length <= start + end + 1) return s;
+  return `${s.slice(0, start)}…${s.slice(-end)}`;
 }
 
 function getReceptorLabel(r: ResenaCompleta) {
@@ -60,7 +68,6 @@ function ModeracionCard({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           idResena: m.idResena,
-          idModerador: m.idModerador,
           estado: estado,
           motivo: motivo || undefined,
         }),
@@ -81,7 +88,7 @@ function ModeracionCard({
         borderRadius: "var(--radius)",
         display: "flex",
         flexDirection: "column",
-        overflow: "visible",
+        overflow: "hidden",
         opacity: pending ? 1 : 0.65,
         transition: "box-shadow 0.15s, border-color 0.15s",
       }}
@@ -101,14 +108,14 @@ function ModeracionCard({
             width: 46, height: 46, borderRadius: "50%", flexShrink: 0,
             background: color, color: "#fff",
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontWeight: 700, fontSize: 15,
+            fontWeight: 700, fontSize: 15, overflow: "hidden",
           }}>
-            {m.resena.idEmisor}
+            {shortenId(m.resena.idEmisor)}
           </div>
           <div>
             <div style={{ fontWeight: 600, fontSize: 14 }}>
               <EntityTooltipLabel
-                text={`Usuario #${m.resena.idEmisor}`}
+                text={`Usuario ${shortenId(m.resena.idEmisor)}`}
                 entityType={tipo === "alquilador" ? "propietario" : "alquilador"}
                 entityId={m.resena.idEmisor}
               />
@@ -253,7 +260,6 @@ function DetalleModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           idResena: m.idResena,
-          idModerador: m.idModerador,
           estado: estado,
           motivo: motivo || undefined,
         }),
