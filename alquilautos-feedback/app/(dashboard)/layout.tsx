@@ -8,7 +8,6 @@ const NAV_ITEMS = [
   { href: "/moderacion", label: "Moderación", icon: "🛡️", desc: "Aprobar / Rechazar reseñas" },
   { href: "/resenas",    label: "Reseñas",    icon: "⭐", desc: "Listado completo" },
   { href: "/entidades",  label: "Entidades",  icon: "🗂️" },
-  { href: "/debug",      label: "Debug",      icon: "🔧", desc: "CRUDs de entidades" },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
