@@ -253,6 +253,33 @@ export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW =
   );
 }
 
+// ── Confirm Modal ─────────────────────────────────────────
+export function ConfirmModal({
+  title, message, isOpen, onConfirm, onClose,
+  confirmText = "Confirmar", cancelText = "Cancelar", variant = "danger",
+}: {
+  title: string; message: string; isOpen: boolean; onConfirm: () => void;
+  onClose: () => void; confirmText?: string; cancelText?: string; variant?: "danger" | "primary";
+}) {
+  if (!isOpen) return null;
+  return (
+    <Modal
+      title={title}
+      onClose={onClose}
+      footer={
+        <div style={{ display: "flex", gap: 8 }}>
+          <button className="btn btn-ghost" onClick={onClose}>{cancelText}</button>
+          <button className={`btn btn-${variant}`} onClick={() => { onConfirm(); onClose(); }}>{confirmText}</button>
+        </div>
+      }
+    >
+      <div style={{ padding: "10px 0" }}>
+        <p style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.5 }}>{message}</p>
+      </div>
+    </Modal>
+  );
+}
+
 // ── Texto truncado con tooltip ────────────────────────────
 export function Truncated({ text, maxW = 260 }: { text: string; maxW?: number }) {
   const [show, setShow] = useState(false);

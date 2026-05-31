@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Stars, TipoBadge, EstadoBadge, Loading, PageHeader, Truncated, EntityTooltipLabel } from "@/app/components/ui";
+import { Stars, TipoBadge, EstadoBadge, Loading, PageHeader, Truncated, EntityTooltipLabel, ConfirmModal } from "@/app/components/ui";
 import ResenaModal from "@/app/components/modal/ResenaModal";
 import { HistorialModeraciones, HistorialRespuestas } from "@/app/components/modal/HistorialModal";
 import {
@@ -39,6 +39,7 @@ function ResenasContent() {
   const [modal, setModal] = useState<ModalState>(MODAL_CLOSED);
   const [historialMod, setHistorialMod] = useState(false);
   const [historialResp, setHistorialResp] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<ResenaCompleta | null>(null);
 
   // ── Fetch lista ─────────────────────────────────────────
   const fetchData = useCallback(async () => {
@@ -63,8 +64,12 @@ function ResenasContent() {
   // ── Eliminar ────────────────────────────────────────────
   const handleDelete = async (r: ResenaCompleta, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm(`¿Eliminar la reseña #${r.id}?\n"${r.descripcion.slice(0, 60)}..."`)) return;
-    await fetch(`/api/resena/${r.id}`, { method: "DELETE" });
+    setConfirmDelete(r);
+  };
+
+  const executeDelete = async () => {
+    if (!confirmDelete) return;
+    await fetch(`/api/resena/${confirmDelete.id}`, { method: "DELETE" });
     fetchData();
   };
 
@@ -285,6 +290,14 @@ function ResenasContent() {
           }}
         />
       )}
+
+    <ConfirmModal
+      isOpen={confirmDelete !== null}
+      title="Eliminar reseña"
+      message={`¿Estás seguro de que deseas eliminar la reseña #${confirmDelete?.id}? Esta acción no se puede deshacer.`}
+      onConfirm={executeDelete}
+      onClose={() => setConfirmDelete(null)}
+    />
     </div>
   );
 }

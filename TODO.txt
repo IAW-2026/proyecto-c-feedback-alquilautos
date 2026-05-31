@@ -19,7 +19,7 @@ DONE - Seccion moderaciones
     DONE - Ver detalle de reseña
     DONE - Ver detalle de emisor y receptor
 
-Seccion reseñas
+DONE - Seccion reseñas
     DONE - Reseñas
         DONE - Listar
         DONE - Ver detalle
@@ -28,7 +28,7 @@ Seccion reseñas
         DONE - Fix Fetch (turbo?)
     DONE - Moderaciones
     DONE - Respuestas
-    Alerta delete -> modal
+    DONE - Alerta delete -> modal
 
 DONE - Seccion calculos (promedios, resumenes y reseñas de X que redirige a datos)
     DONE - Propietarios

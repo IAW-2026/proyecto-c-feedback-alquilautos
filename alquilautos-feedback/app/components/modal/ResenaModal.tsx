@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Stars, EstadoBadge, TipoBadge, EntityTooltipLabel } from "@/app/components/ui";
+import { Stars, EstadoBadge, TipoBadge, EntityTooltipLabel, ConfirmModal } from "@/app/components/ui";
 import {
   ResenaCompleta, ModeracionItem, RespuestaItem,
   EstadoMod, TipoResena, ModalMode,
@@ -42,6 +42,7 @@ function RespuestaSection({
   const [idAutor, setIdAutor] = useState("");
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     setComentario(respuesta?.comentario ?? "");
@@ -83,7 +84,6 @@ function RespuestaSection({
   };
 
   const del = async () => {
-    if (!confirm("¿Eliminar la respuesta?")) return;
     await fetch(`/api/respuesta/${respuesta!.id}`, { method: "DELETE" });
     onRefresh();
   };
@@ -133,10 +133,18 @@ function RespuestaSection({
           <p style={{ fontSize: 13, marginBottom: 10 }}>{respuesta!.comentario}</p>
           {editable && (<div style={{ display: "flex", gap: 6 }}>
             <button className="btn btn-ghost btn-sm" onClick={() => { setEditing(true); setComentario(respuesta!.comentario); }}>✏️ Editar</button>
-            <button className="btn btn-danger btn-sm" onClick={del}>🗑️ Eliminar</button>
+            <button className="btn btn-danger btn-sm" onClick={() => setShowConfirm(true)}>🗑️ Eliminar</button>
           </div>)}
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={showConfirm}
+        title="Eliminar respuesta"
+        message="¿Estás seguro de que deseas eliminar esta respuesta? Esta acción no se puede deshacer."
+        onConfirm={del}
+        onClose={() => setShowConfirm(false)}
+      />
     </div>
   );
 }
@@ -156,6 +164,7 @@ function ModeracionesSection({
   const [addForm, setAddForm] = useState({ idModerador: "", estado: "Pendiente" as EstadoMod, motivo: "" });
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
+  const [confirmDelId, setConfirmDelId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!editable) {
@@ -186,9 +195,8 @@ function ModeracionesSection({
     finally { setSaving(false); }
   };
 
-  const del = async (id: number) => {
-    if (!confirm("¿Eliminar esta moderación?")) return;
-    await fetch(`/api/moderacion/${id}`, { method: "DELETE" });
+  const del = async () => {
+    if (confirmDelId) await fetch(`/api/moderacion/${confirmDelId}`, { method: "DELETE" });
     onRefresh();
   };
 
@@ -280,7 +288,7 @@ function ModeracionesSection({
                   {editable && (
                     <div style={{ display: "flex", gap: 4 }}>
                       <button className="btn btn-ghost btn-sm" style={{ padding: "3px 7px" }} onClick={() => startEdit(m)}>✏️</button>
-                      <button className="btn btn-danger btn-sm" style={{ padding: "3px 7px" }} onClick={() => del(m.id)}>🗑️</button>
+                      <button className="btn btn-danger btn-sm" style={{ padding: "3px 7px" }} onClick={() => setConfirmDelId(m.id)}>🗑️</button>
                     </div>
                   )}
                 </div>
@@ -293,6 +301,14 @@ function ModeracionesSection({
           </div>
         ))}
       </div>
+
+      <ConfirmModal
+        isOpen={confirmDelId !== null}
+        title="Eliminar moderación"
+        message="¿Estás seguro de que deseas eliminar este registro de moderación?"
+        onConfirm={del}
+        onClose={() => setConfirmDelId(null)}
+      />
     </div>
   );
 }
