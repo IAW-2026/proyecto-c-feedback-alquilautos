@@ -25,21 +25,19 @@ Seccion reseñas
         DONE - Ver detalle
         DONE - Filtrar por receptor
         Ver detalle de emisor y receptor
-        Fix Fetch (turbo?)
+        DONE - Fix Fetch (turbo?)
     DONE - Moderaciones
     DONE - Respuestas
-    Exportar tablas a PDF
-    Ver detalle de emisor y receptor
     Alerta delete -> modal
     Skeleton
 
-Seccion calculos (promedios, resumenes y reseñas de X que redirige a datos)
+DONE - Seccion calculos (promedios, resumenes y reseñas de X que redirige a datos)
     DONE - Propietarios
     DONE - Vehiculos
     DONE - Alquiladores
     DONE - Promedios
     DONE - Resumenes (gemini google ai studio)
-        Error por limite
+        DONE - Error por limite
     DONE - Obtener reseñas -> datos
 
 --------------------------
@@ -68,19 +66,19 @@ Endpoints (Controller -> Model)
         DONE - Obtener respuesta       /api/respuesta/{id}
         DONE - Modificar respuesta     /api/respuesta/{id}
         DONE - Eliminar respuesta      /api/respuesta/{id}
-    Exponer
+    DONE - Exponer
         DONE - Obtener reseñas de X propietario                        /api/resena/propietario/{id}
         DONE - Obtener reseñas de X vehiculo                           /api/resena/vehiculo/{id}
         DONE - Obtener reseñas de X alquilador                         /api/resena/alquilador/{id}
         DONE - Obtener reseña de X propietario en determinada reserva  /api/resena/propietario/reserva/{id}
         DONE - Obtener reseña de X vehiculo en determinada reserva     /api/resena/vehiculo/reserva/{id}
         DONE - Obtener reseña de X alquilador en determinada reserva   /api/resena/alquilador/reserva/{id}
-        Obtener promedio de X propietario                       /api/promedio/propietario/{id}
-        Obtener promedio de X vehiculo                          /api/promedio/vehiculo/{id}
-        Obtener promedio de X alquilador                        /api/promedio/alquilador/{id}
-        Obtener resumen de X propietario                        /api/resumen/propietario/{id}
-        Obtener resumen de X vehiculo                           /api/resumen/vehiculo/{id}
-        Obtener resumen de X alquilador                         /api/resumen/alquilador/{id}
+        DONE - Obtener promedio de X propietario                       /api/promedio/propietario/{id}
+        DONE - Obtener promedio de X vehiculo                          /api/promedio/vehiculo/{id}
+        DONE - Obtener promedio de X alquilador                        /api/promedio/alquilador/{id}
+        DONE - Obtener resumen de X propietario                        /api/resumen/propietario/{id}
+        DONE - Obtener resumen de X vehiculo                           /api/resumen/vehiculo/{id}
+        DONE - Obtener resumen de X alquilador                         /api/resumen/alquilador/{id}
         DONE - Crear reseña                                            /api/resena
         DONE - Crear respuesta                                         /api/respuesta
 
@@ -104,4 +102,5 @@ CHECK
     UseEffects
     Redundancia de tipos
 
-OPCIONAL - Seccion aprobar creacion de cuentas admin?
+OPCIONAL - Seccion aprobar creacion de cuentas admin
+OPCIONAL - Exportar tablas a PDF
