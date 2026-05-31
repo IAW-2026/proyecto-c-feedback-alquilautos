@@ -95,9 +95,9 @@ EXTRA
     DONE - Eliminar testAuth, Debug
     Eliminar logs
     Estandarizar estados de moderacion
-    Pasar IDs a String
+    DONE - Pasar IDs a String
     Emojis -> Icons
-    Middleware -> Proxy
+    DONE - Middleware -> Proxy
     Server actions?
     Swagger
     Responsive
