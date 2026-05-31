@@ -14,9 +14,9 @@ General
 --------------------------
 
 Seccion moderaciones
-    Mostrar moderaciones pendientes
-        Aprobar o rechazar
-    Ver detalle de reseña
+    DONE - Mostrar moderaciones pendientes
+        DONE - Aprobar o rechazar
+    DONE - Ver detalle de reseña
     Ver detalle de emisor y receptor
 
 Seccion reseñas
