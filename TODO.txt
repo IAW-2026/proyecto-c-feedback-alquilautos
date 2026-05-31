@@ -85,7 +85,8 @@ Endpoints (Controller -> Model)
 --------------------------
 
 EXTRA
-    Eliminar testAuth, Debug y logs
+    DONE - Eliminar testAuth, Debug
+    Eliminar logs
     Estandarizar estados de moderacion
     Pasar IDs a String
     Emojis -> Icons

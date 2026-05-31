@@ -56,7 +56,7 @@ export interface ModeracionCompleta {
   id: number;
   idResena: number;
   idModerador: number;
-  estado: EstadoMod;
+  estado: EstadoModeracion;
   motivo: string | null;
   fechaCreacion: string;
   resena: ResenaCompleta;
