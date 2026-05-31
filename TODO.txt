@@ -65,13 +65,13 @@ DONE - Endpoints (Controller -> Model)
         DONE - Obtener respuesta       /api/respuesta/{id}
         DONE - Modificar respuesta     /api/respuesta/{id}
         DONE - Eliminar respuesta      /api/respuesta/{id}
-        Obtener reseñas detalladas de propietario               /api/resena/propietario/{id}/detallada
-        Obtener reseñas detalladas de vehiculo                  /api/resena/vehiculo/{id}/detallada
-        Obtener reseñas detalladas de alquilador                /api/resena/alquilador/{id}/detallada
+        DONE - Obtener reseñas detalladas de propietario               /api/resena/propietario/{id}/detallada
+        DONE - Obtener reseñas detalladas de vehiculo                  /api/resena/vehiculo/{id}/detallada
+        DONE - Obtener reseñas detalladas de alquilador                /api/resena/alquilador/{id}/detallada
     DONE - Exponer
-        Obtener reseñas de X propietario                        /api/resena/propietario/{id}
-        Obtener reseñas de X vehiculo                           /api/resena/vehiculo/{id}
-        Obtener reseñas de X alquilador                         /api/resena/alquilador/{id}
+        DONE - Obtener reseñas de X propietario                        /api/resena/propietario/{id}
+        DONE - Obtener reseñas de X vehiculo                           /api/resena/vehiculo/{id}
+        DONE - Obtener reseñas de X alquilador                         /api/resena/alquilador/{id}
         DONE - Obtener reseña de X propietario en determinada reserva  /api/resena/propietario/reserva/{id}
         DONE - Obtener reseña de X vehiculo en determinada reserva     /api/resena/vehiculo/reserva/{id}
         DONE - Obtener reseña de X alquilador en determinada reserva   /api/resena/alquilador/reserva/{id}

@@ -158,18 +158,54 @@ export async function deleteResena(id: number) {
 // ── GET /api/resena/alquilador/:id ───────────────────────
 export async function getResenasByAlquilador(id: string) {
   try {
-    const resenas = await ResenaModel.findResenasByAlquilador(id);
+    const data = await ResenaModel.findResenasByAlquilador(id);
+
+    const resenas = data.map(r => ({
+      id_resena: r.id,
+      id_reserva: r.idReserva,
+      id_emisor: r.idEmisor,
+      calificacion_general: r.calificacionGeneral,
+      descripcion: r.descripcion,
+      fecha_creacion: r.fechaCreacion,
+      calificacion_comunicacion: r.resenaAlquilador?.calificacionComunicacion,
+      calificacion_puntualidad: r.resenaAlquilador?.calificacionPuntualidad,
+      calificacion_devolucion: r.resenaAlquilador?.calificacionDevolucion,
+    }));
+
     return NextResponse.json({ resenas });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: "Error al obtener reseñas del alquilador" }, { status: 500 });
+    return NextResponse.json( { error: "Error al obtener reseñas del alquilador" }, { status: 500 } );
+  }
+}
+
+// ── GET /api/resena/alquilador/:id/detallada ─────────────
+export async function getResenasDetalladasByAlquilador(id: string) {
+  try {
+    const resenas = await ResenaModel.findResenasDetalladasByAlquilador(id);
+    return NextResponse.json({ resenas });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json( { error: "Error al obtener reseñas detalladas del alquilador" }, { status: 500 } );
   }
 }
 
 // ── GET /api/resena/propietario/:id ─────────────────────
 export async function getResenasByPropietario(id: string) {
   try {
-    const resenas = await ResenaModel.findResenasByPropietario(id);
+    const data = await ResenaModel.findResenasByPropietario(id);
+
+    const resenas = data.map(r => ({
+      id_resena: r.id,
+      id_reserva: r.idReserva,
+      id_emisor: r.idEmisor,
+      calificacion_general: r.calificacionGeneral,
+      descripcion: r.descripcion,
+      fecha_creacion: r.fechaCreacion,
+      calificacion_comunicacion: r.resenaPropietario?.calificacionComunicacion,
+      calificacion_puntualidad: r.resenaPropietario?.calificacionPuntualidad,
+    }));
+
     return NextResponse.json({ resenas });
   } catch (e) {
     console.error(e);
@@ -177,14 +213,49 @@ export async function getResenasByPropietario(id: string) {
   }
 }
 
+// ── GET /api/resena/propietario/:id/detallada ────────────
+export async function getResenasDetalladasByPropietario(id: string) {
+  try {
+    const resenas = await ResenaModel.findResenasDetalladasByPropietario(id);
+    return NextResponse.json({ resenas });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json( { error: "Error al obtener reseñas detalladas del propietario" }, { status: 500 } );
+  }
+}
+
 // ── GET /api/resena/vehiculo/:id ─────────────────────────
 export async function getResenasByVehiculo(id: number) {
   try {
-    const resenas = await ResenaModel.findResenasByVehiculo(id);
+    const data = await ResenaModel.findResenasByVehiculo(id);
+
+    const resenas = data.map(r => ({
+      id_resena: r.id,
+      id_reserva: r.idReserva,
+      id_emisor: r.idEmisor,
+      calificacion_general: r.calificacionGeneral,
+      descripcion: r.descripcion,
+      fecha_creacion: r.fechaCreacion,
+      calificacion_comodidad: r.resenaVehiculo?.calificacionComodidad,
+      calificacion_estado: r.resenaVehiculo?.calificacionEstado,
+      calificacion_limpieza: r.resenaVehiculo?.calificacionLimpieza,
+    }));
+
     return NextResponse.json({ resenas });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Error al obtener reseñas del vehículo" }, { status: 500 });
+  }
+}
+
+// ── GET /api/resena/vehiculo/:id/detallada ───────────────
+export async function getResenasDetalladasByVehiculo(id: number) {
+  try {
+    const resenas = await ResenaModel.findResenasDetalladasByVehiculo(id);
+    return NextResponse.json({ resenas });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json( { error: "Error al obtener reseñas detalladas del vehículo" }, { status: 500 } );
   }
 }
 

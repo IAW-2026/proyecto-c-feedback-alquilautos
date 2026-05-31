@@ -146,7 +146,7 @@ export async function deleteResena(id: number) {
 }
 
 // ── Reseñas de un alquilador ─────────────────────────────
-export async function findResenasByAlquilador(idAlquilador: string) {
+export async function findResenasDetalladasByAlquilador(idAlquilador: string) {
   return db.resena.findMany({
     where: { resenaAlquilador: { is: { idAlquilador } } },
     include: RESENA_INCLUDE,
@@ -154,8 +154,30 @@ export async function findResenasByAlquilador(idAlquilador: string) {
   });
 }
 
+export async function findResenasByAlquilador(idAlquilador: string) {
+  return db.resena.findMany({
+    where: { resenaAlquilador: { is: { idAlquilador } } },
+    select: {
+      id: true,
+      idReserva: true,
+      idEmisor: true,
+      calificacionGeneral: true,
+      descripcion: true,
+      fechaCreacion: true,
+      resenaAlquilador: {
+        select: {
+          calificacionComunicacion: true,
+          calificacionPuntualidad: true,
+          calificacionDevolucion: true,
+        },
+      },
+    },
+    orderBy: { fechaCreacion: "desc" },
+  });
+}
+
 // ── Reseñas de un propietario ────────────────────────────
-export async function findResenasByPropietario(idPropietario: string) {
+export async function findResenasDetalladasByPropietario(idPropietario: string) {
   return db.resena.findMany({
     where: { resenaPropietario: { is: { idPropietario } } },
     include: RESENA_INCLUDE,
@@ -163,11 +185,54 @@ export async function findResenasByPropietario(idPropietario: string) {
   });
 }
 
+export async function findResenasByPropietario(idPropietario: string) {
+  return db.resena.findMany({
+    where: { resenaPropietario: { is: { idPropietario } } },
+    select: {
+      id: true,
+      idReserva: true,
+      idEmisor: true,
+      calificacionGeneral: true,
+      descripcion: true,
+      fechaCreacion: true,
+      resenaPropietario: {
+        select: {
+          calificacionComunicacion: true,
+          calificacionPuntualidad: true,
+        },
+      },
+    },
+    orderBy: { fechaCreacion: "desc" },
+  });
+}
+
 // ── Reseñas de un vehículo ───────────────────────────────
-export async function findResenasByVehiculo(idVehiculo: number) {
+export async function findResenasDetalladasByVehiculo(idVehiculo: number) {
   return db.resena.findMany({
     where: { resenaVehiculo: { is: { idVehiculo } } },
     include: RESENA_INCLUDE,
+    orderBy: { fechaCreacion: "desc" },
+  });
+}
+
+export async function findResenasByVehiculo(idVehiculo: number) {
+  return db.resena.findMany({
+    where: { resenaVehiculo: { is: { idVehiculo } } },
+    select: {
+      id: true,
+      idReserva: true,
+      idEmisor: true,
+      calificacionGeneral: true,
+      descripcion: true,
+      fechaCreacion: true,
+      resenaVehiculo: {
+        select: {
+          calificacionLimpieza: true,
+          calificacionEstado: true,
+          calificacionComodidad: true,
+        },
+      },
+    },
     orderBy: { fechaCreacion: "desc" },
   });
 }
