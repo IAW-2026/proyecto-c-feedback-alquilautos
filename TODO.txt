@@ -9,7 +9,6 @@ General
     Error.tsx
     Loading.tsx
     README.md
-    Clerk roles
 
 --------------------------
 
@@ -29,7 +28,6 @@ Seccion reseñas
     DONE - Moderaciones
     DONE - Respuestas
     Alerta delete -> modal
-    Skeleton
 
 DONE - Seccion calculos (promedios, resumenes y reseñas de X que redirige a datos)
     DONE - Propietarios
@@ -42,7 +40,7 @@ DONE - Seccion calculos (promedios, resumenes y reseñas de X que redirige a dat
 
 --------------------------
 
-Endpoints (Controller -> Model)
+DONE - Endpoints (Controller -> Model)
     DONE - Mocks
         DONE - Obtener propietario     /api/propietario/{id}
         DONE - Obtener propietarios    /api/propietario
@@ -52,7 +50,7 @@ Endpoints (Controller -> Model)
         DONE - Obtener alquiladores    /api/alquilador
         DONE - Obtener reserva         /api/reserva/{id}
         DONE - Obtener reservas        /api/reserva
-    Proteger locales (manejar id moderador en moderaciones)
+    DONE - Locales
         DONE - Obtener moderaciones    /api/moderacion
         DONE - Obtener moderacion      /api/moderacion/{id}
         DONE - Crear moderacion        /api/moderacion/{id}
@@ -85,6 +83,9 @@ Endpoints (Controller -> Model)
 --------------------------
 
 EXTRA
+    Clerk roles
+    Proteger endpoints
+    ID-Moderador auto por Clerk?
     DONE - Eliminar testAuth, Debug
     Eliminar logs
     Estandarizar estados de moderacion
@@ -98,6 +99,7 @@ EXTRA
     Lighthouse
     ESLint
     Accesibilidad y temas
+    Skeleton
 
 CHECK
     UseEffects
