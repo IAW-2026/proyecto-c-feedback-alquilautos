@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Stars, EstadoBadge, TipoBadge } from "@/app/components/ui";
+import { Stars, EstadoBadge, TipoBadge, EntityTooltipLabel } from "@/app/components/ui";
 import {
   ResenaCompleta, ModeracionItem, RespuestaItem,
   EstadoMod, TipoResena, ModalMode,
@@ -284,7 +284,7 @@ function ModeracionesSection({
                     </div>
                   )}
                 </div>
-                {m.motivo && <div style={{ fontSize: 12, color: "var(--danger)", marginBottom: 2 }}>{m.motivo}</div>}
+                {m.motivo && <div style={{ fontSize: 12, color: "var(--text-light)", marginBottom: 2 }}>"{m.motivo}"</div>}
                 <div style={{ fontSize: 11, color: "var(--text-muted)" }}>
                   Mod. #{m.idModerador} · {fmtDate(m.fechaCreacion)}
                 </div>
@@ -498,17 +498,51 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
 
               {/* Info readonly */}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-                {[
-                  ["Reserva", `#${resena.idReserva}`],
-                  ["Emisor", `Usuario #${resena.idEmisor}`],
-                  ["Receptor", resena.resenaVehiculo ? `Vehículo #${resena.resenaVehiculo.idVehiculo}` : resena.resenaPropietario ? `Propietario #${resena.resenaPropietario.idPropietario}` : `Alquilador #${resena.resenaAlquilador?.idAlquilador}`],
-                  ["Fecha", fmtDate(resena.fechaCreacion)],
-                ].map(([l, v]) => (
-                  <div key={l} className="detail-item">
-                    <span className="detail-label">{l}</span>
-                    <span className="detail-value">{v}</span>
-                  </div>
-                ))}
+                <div className="detail-item">
+                  <span className="detail-label">Reserva</span>
+                  <span className="detail-value">#{resena.idReserva}</span>
+                </div>
+
+                <div className="detail-item">
+                  <span className="detail-label">Emisor</span>
+                  <span className="detail-value">
+                    <EntityTooltipLabel
+                      text={`Usuario #${resena.idEmisor}`}
+                      entityType={tipo === "alquilador" ? "propietario" : "alquilador"}
+                      entityId={resena.idEmisor}
+                    />
+                  </span>
+                </div>
+
+                <div className="detail-item">
+                  <span className="detail-label">Receptor</span>
+                  <span className="detail-value">
+                    {resena.resenaVehiculo ? (
+                      <EntityTooltipLabel
+                        text={`Vehículo #${resena.resenaVehiculo.idVehiculo}`}
+                        entityType="vehiculo"
+                        entityId={resena.resenaVehiculo.idVehiculo}
+                      />
+                    ) : resena.resenaPropietario ? (
+                      <EntityTooltipLabel
+                        text={`Propietario #${resena.resenaPropietario.idPropietario}`}
+                        entityType="propietario"
+                        entityId={resena.resenaPropietario.idPropietario}
+                      />
+                    ) : (
+                      <EntityTooltipLabel
+                        text={`Alquilador #${resena.resenaAlquilador?.idAlquilador}`}
+                        entityType="alquilador"
+                        entityId={resena.resenaAlquilador?.idAlquilador}
+                      />
+                    )}
+                  </span>
+                </div>
+
+                <div className="detail-item">
+                  <span className="detail-label">Fecha</span>
+                  <span className="detail-value">{fmtDate(resena.fechaCreacion)}</span>
+                </div>
               </div>
 
               {/* Sub-calificaciones */}

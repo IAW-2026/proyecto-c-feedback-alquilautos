@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Stars, TipoBadge, EstadoBadge, Loading, PageHeader, Truncated } from "@/app/components/ui";
+import { Stars, TipoBadge, EstadoBadge, Loading, PageHeader, Truncated, EntityTooltipLabel } from "@/app/components/ui";
 import ResenaModal from "@/app/components/modal/ResenaModal";
 import { HistorialModeraciones, HistorialRespuestas } from "@/app/components/modal/HistorialModal";
 import {
@@ -201,8 +201,20 @@ function ResenasContent() {
                   <tr key={r.id}>
                     <td style={{ fontSize: 12, color: "var(--text-muted)" }}>#{r.id}</td>
                     <td><TipoBadge tipo={getTipo(r)} /></td>
-                    <td style={{ fontSize: 12 }}>#{r.idEmisor}</td>
-                    <td style={{ fontSize: 12 }}>#{getReceptorId(r)}</td>
+                    <td style={{ fontSize: 12 }}>
+                      <EntityTooltipLabel
+                        text={`Usuario #${r.idEmisor}`}
+                        entityType={getTipo(r) === "alquilador" ? "propietario" : "alquilador"}
+                        entityId={r.idEmisor}
+                      />
+                    </td>
+                    <td style={{ fontSize: 12 }}>
+                      <EntityTooltipLabel
+                        text={`#${getReceptorId(r)}`}
+                        entityType={r.resenaVehiculo ? "vehiculo" : r.resenaPropietario ? "propietario" : "alquilador"}
+                        entityId={getReceptorId(r)}
+                      />
+                    </td>
                     <td><Stars value={r.calificacionGeneral} /></td>
                     <td style={{ maxWidth: 220 }}>
                       <Truncated text={r.descripcion} maxW={220} />

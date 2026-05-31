@@ -13,18 +13,18 @@ General
 
 --------------------------
 
-Seccion moderaciones
+DONE - Seccion moderaciones
     DONE - Mostrar moderaciones pendientes
         DONE - Aprobar o rechazar
     DONE - Ver detalle de reseña
-    Ver detalle de emisor y receptor
+    DONE - Ver detalle de emisor y receptor
 
 Seccion reseñas
-    Reseñas
+    DONE - Reseñas
         DONE - Listar
         DONE - Ver detalle
         DONE - Filtrar por receptor
-        Ver detalle de emisor y receptor
+        DONE - Ver detalle de emisor y receptor
         DONE - Fix Fetch (turbo?)
     DONE - Moderaciones
     DONE - Respuestas

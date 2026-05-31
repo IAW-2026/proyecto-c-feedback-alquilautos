@@ -91,6 +91,136 @@ export function PageHeader({ title, subtitle, action }: { title: string; subtitl
   );
 }
 
+type EntityType = "vehiculo" | "propietario" | "alquilador";
+
+const ENTITY_TOOLTIP_CACHE = new Map<string,Record<string, unknown>>();
+
+function getEntityFetchUrl(type: EntityType, id: number | string) {
+  if (!id) return undefined;
+  if (type === "vehiculo") return `/api/mock/vehiculo/${id}`;
+  if (type === "propietario") return `/api/mock/propietario/${id}`;
+  if (type === "alquilador") return `/api/mock/alquilador/${id}`;
+  return undefined;
+}
+
+function TooltipContent({ data, type }: {
+  data: Record<string, unknown>;
+  type: EntityType;
+}) {
+  if (data && typeof data.error === "string") {
+    return (
+      <div style={{ 
+        display: "flex", flexDirection: "column", gap: 4, 
+        color: "#ef4444", maxWidth: 200, whiteSpace: "normal" 
+      }}>
+        <strong>⚠️ Error al cargar</strong>
+        <div style={{ fontSize: "0.85em" }}>{data.error}</div>
+      </div>
+    );
+  }
+  if (type === "vehiculo") {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <strong> 🚗 {String(data.marca)} {String(data.modelo)} </strong>
+        <div>ID: {String(data.idVehiculo)}</div>
+        <div>Propietario: #{String(data.idPropietario)}</div>
+        <div>Precio: ${String(data.precio)}</div>
+      </div>
+    );
+  }
+  if (type === "propietario") {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <strong> 👤 {String(data.nombre)} {String(data.apellido)} </strong>
+        <div>Email: {String(data.email)}</div>
+        <div>DNI: {String(data.dni)}</div>
+        <div>ID: {String(data.idPropietario)}</div>
+      </div>
+    );
+  }
+  if (type === "alquilador") {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <strong> 🔑 {String(data.nombre)} {String(data.apellido)} </strong>
+        <div>Email: {String(data.email)}</div>
+        <div>DNI: {String(data.dni)}</div>
+        <div>Licencia: {String(data.licenciaConducir)}</div>
+        <div>ID: {String(data.idAlquilador)}</div>
+      </div>
+    );
+  }
+  return (
+    <pre style={{ margin: 0 }}>
+      {JSON.stringify(data, null, 2)}
+    </pre>
+  );
+}
+
+export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW = 260 }: {
+  text: string; tooltip?: string; entityType?: EntityType; entityId?: number | string; maxW?: number;
+}) {
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [entityData, setEntityData] = useState<Record<string, unknown> | null>(null);
+
+  const fetchUrl = entityType && entityId ? getEntityFetchUrl(entityType, entityId) : undefined;
+  const cacheKey = fetchUrl ?? "";
+
+  useEffect(() => {
+  if (!show || entityData || !fetchUrl) return;
+
+  if (ENTITY_TOOLTIP_CACHE.has(cacheKey)) {
+    setEntityData( ENTITY_TOOLTIP_CACHE.get(cacheKey) ?? null );
+    return;
+  }
+
+  let active = true;
+  setLoading(true);
+  fetch(fetchUrl)
+      .then(async res => {
+        if (!res.ok) { throw new Error(); }
+        return res.json();
+      })
+      .then(data => {
+        if (!active) return;
+        ENTITY_TOOLTIP_CACHE.set(cacheKey, data);
+        setEntityData(data);
+      })
+      .catch(() => {
+        if (!active) return;
+        setEntityData({ error: `Información de ${entityType} #${entityId}` });
+      })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [show, fetchUrl, cacheKey, entityData, entityType, entityId]);
+
+  const hasContent = tooltip || entityData;
+
+  return (
+    <span
+      style={{ position: "relative", display: "inline-block", maxWidth: maxW, cursor: "help", textDecoration: "underline dotted" }}
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+    >
+      <span style={{ color: "inherit" }}>{text}</span>
+      {show && hasContent && (
+        <span
+          style={{
+            position: "absolute", bottom: "100%", left: 0, zIndex: 9999, minWidth: 220,
+            background: "#1a1d27", border: "1px solid var(--border)", borderRadius: "var(--radius-sm)",
+            padding: "10px 12px", fontSize: 12, color: "var(--text)", whiteSpace: "normal",
+            maxWidth: 340, boxShadow: "var(--shadow)", lineHeight: 1.5, marginBottom: 4,
+          }}
+        >
+          {loading ? ( "Cargando..." ) : tooltip ? ( tooltip ) : (
+            <TooltipContent data={entityData!} type={entityType!} />
+          )}
+        </span>
+      )}
+    </span>
+  );
+}
+
 // ── Texto truncado con tooltip ────────────────────────────
 export function Truncated({ text, maxW = 260 }: { text: string; maxW?: number }) {
   const [show, setShow] = useState(false);

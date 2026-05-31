@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { Stars, EstadoBadge, TipoBadge, Alert, Loading, PageHeader } from "@/app/components/ui";
+import { Stars, EstadoBadge, TipoBadge, Alert, Loading, PageHeader, EntityTooltipLabel } from "@/app/components/ui";
 import { ResenaCompleta, ModeracionCompleta, getTipo } from "@/lib/types";
 
 // ── Helpers ───────────────────────────────────────────────
@@ -19,6 +19,13 @@ function getReceptorLabel(r: ResenaCompleta) {
   if (r.resenaPropietario) return `Propietario #${r.resenaPropietario.idPropietario}`;
   if (r.resenaAlquilador)  return `Alquilador #${r.resenaAlquilador.idAlquilador}`;
   return "—";
+}
+
+function getReceptorEntity(r: ResenaCompleta) {
+  if (r.resenaVehiculo) return { type: "vehiculo" as const, id: r.resenaVehiculo.idVehiculo };
+  if (r.resenaPropietario) return { type: "propietario" as const, id: r.resenaPropietario.idPropietario };
+  if (r.resenaAlquilador) return { type: "alquilador" as const, id: r.resenaAlquilador.idAlquilador };
+  return null;
 }
 
 // ── Card individual ───────────────────────────────────────
@@ -74,7 +81,7 @@ function ModeracionCard({
         borderRadius: "var(--radius)",
         display: "flex",
         flexDirection: "column",
-        overflow: "hidden",
+        overflow: "visible",
         opacity: pending ? 1 : 0.65,
         transition: "box-shadow 0.15s, border-color 0.15s",
       }}
@@ -99,7 +106,13 @@ function ModeracionCard({
             {m.resena.idEmisor}
           </div>
           <div>
-            <div style={{ fontWeight: 600, fontSize: 14 }}>Usuario #{m.resena.idEmisor}</div>
+            <div style={{ fontWeight: 600, fontSize: 14 }}>
+              <EntityTooltipLabel
+                text={`Usuario #${m.resena.idEmisor}`}
+                entityType={tipo === "alquilador" ? "propietario" : "alquilador"}
+                entityId={m.resena.idEmisor}
+              />
+            </div>
             <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
               Reserva #{m.resena.idReserva} · {new Date(m.fechaCreacion).toLocaleDateString("es-AR")}
             </div>
@@ -112,7 +125,18 @@ function ModeracionCard({
       <div style={{ padding: "0 18px 10px", display: "flex", gap: 8, alignItems: "center" }}>
         <TipoBadge tipo={tipo} />
         <span style={{ fontSize: 12, color: "var(--text-muted)" }}>→</span>
-        <span style={{ fontSize: 12, color: "var(--text-light)" }}>{getReceptorLabel(m.resena)}</span>
+        <span style={{ fontSize: 12, color: "var(--text-light)" }}>
+          {(() => {
+            const receptor = getReceptorEntity(m.resena);
+            return receptor ? (
+              <EntityTooltipLabel
+                text={getReceptorLabel(m.resena)}
+                entityType={receptor.type}
+                entityId={receptor.id}
+              />
+            ) : getReceptorLabel(m.resena);
+          })()
+        }</span>
       </div>
 
       {/* ── Descripción ── */}
@@ -260,17 +284,41 @@ function DetalleModal({
               "{m.resena.descripcion}"
             </p>
             <div className="detail-grid">
-              {[
-                ["Emisor",   `Usuario #${m.resena.idEmisor}`],
-                ["Receptor", getReceptorLabel(m.resena)],
-                ["Reserva",  `#${m.resena.idReserva}`],
-                ["Fecha",    new Date(m.resena.fechaCreacion).toLocaleDateString("es-AR")],
-              ].map(([l, v]) => (
-                <div key={l} className="detail-item">
-                  <span className="detail-label">{l}</span>
-                  <span className="detail-value">{v}</span>
-                </div>
-              ))}
+              <div className="detail-item">
+                <span className="detail-label">Emisor</span>
+                <span className="detail-value">
+                  <EntityTooltipLabel
+                    text={`Usuario #${m.resena.idEmisor}`}
+                    tooltip={`Emisor de la reseña · Usuario #${m.resena.idEmisor}`}
+                  />
+                </span>
+              </div>
+
+              <div className="detail-item">
+                <span className="detail-label">Receptor</span>
+                <span className="detail-value">
+                  {(() => {
+                    const receptor = getReceptorEntity(m.resena);
+                    return receptor ? (
+                      <EntityTooltipLabel
+                        text={getReceptorLabel(m.resena)}
+                        entityType={receptor.type}
+                        entityId={receptor.id}
+                      />
+                    ) : getReceptorLabel(m.resena);
+                  })()}
+                </span>
+              </div>
+
+              <div className="detail-item">
+                <span className="detail-label">Reserva</span>
+                <span className="detail-value">#{m.resena.idReserva}</span>
+              </div>
+
+              <div className="detail-item">
+                <span className="detail-label">Fecha</span>
+                <span className="detail-value">{new Date(m.resena.fechaCreacion).toLocaleDateString("es-AR")}</span>
+              </div>
             </div>
 
             {m.resena.resenaVehiculo && (
