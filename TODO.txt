@@ -115,12 +115,9 @@ ENTREGA
     DONE - Documentacion APIs
     DONE - README.md
     DONE - .env.example
-    Datos de prueba cargados
+    DONE - Datos de prueba cargados
     DONE - Usuarios de prueba (subir a README.md)
-    Merge a main
-    Vercel produccion
+    DONE - Merge a main
+    DONE - Vercel produccion
     Revisar enunciado completo
     Revisar mail aclaraciones
-
-
-CHECK FECHAS
