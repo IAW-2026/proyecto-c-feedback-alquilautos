@@ -2,6 +2,7 @@
 
 import { SignOutButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { Lock, ArrowLeft } from "lucide-react";
 
 export default function Unauthorized() {
   return (
@@ -21,7 +22,9 @@ export default function Unauthorized() {
         textAlign: "center",
         maxWidth: 420,
       }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>🔒</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+          <Lock size={48} color="var(--danger)" />
+        </div>
 
         <h2 style={{ fontSize: 22, fontWeight: 700, color: "var(--text)", marginBottom: 8 }}>
           Acceso no autorizado
@@ -39,7 +42,7 @@ export default function Unauthorized() {
             padding: "9px 20px", borderRadius: "var(--radius-sm)",
             textDecoration: "none", fontSize: 13, fontWeight: 500,
           }}>
-            ← Volver al inicio
+            <ArrowLeft size={14} /> Volver al inicio
           </Link>
 
           <SignOutButton redirectUrl="/">

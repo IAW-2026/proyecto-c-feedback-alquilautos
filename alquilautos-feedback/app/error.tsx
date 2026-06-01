@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { AlertTriangle, RotateCw } from "lucide-react";
 
 export default function RootError({
   error,
@@ -28,7 +29,9 @@ export default function RootError({
         textAlign: "center",
         maxWidth: 480,
       }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>⚠️</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+          <AlertTriangle size={48} color="var(--danger)" />
+        </div>
         <h2 style={{ fontSize: 20, fontWeight: 700, color: "var(--text)", marginBottom: 8 }}>
           Algo salió mal
         </h2>
@@ -45,7 +48,7 @@ export default function RootError({
             onClick={reset}
             className="btn btn-primary"
           >
-            ↻ Reintentar
+            <RotateCw size={16} style={{ verticalAlign: "middle", marginRight: 6 }} /> Reintentar
           </button>
           <a href="/" className="btn btn-ghost">
             Ir al inicio

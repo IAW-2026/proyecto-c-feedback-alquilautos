@@ -2,13 +2,14 @@
 
 import { ReactNode, useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
+import { AlertTriangle, Car, Key, Star, User } from "lucide-react";
 
 // ── Stars ─────────────────────────────────────────────────
 export function Stars({ value, max = 5 }: { value: number; max?: number }) {
   return (
     <span className="stars">
       {Array.from({ length: max }, (_, i) => (
-        <span key={i} className={i < value ? "star-filled" : "star-empty"}>★</span>
+        <Star key={i} size={14} strokeWidth={2.5} className={i < value ? "star-filled" : "star-empty"} />
       ))}
     </span>
   );
@@ -31,8 +32,10 @@ export function TipoBadge({ tipo }: { tipo: "vehiculo" | "propietario" | "alquil
     propietario: "badge-propietario",
     alquilador:  "badge-alquilador",
   };
-  const labels: Record<string, string> = {
-    vehiculo: "🚗 Vehículo", propietario: "👤 Propietario", alquilador: "🔑 Alquilador",
+  const labels: Record<string, ReactNode> = {
+    vehiculo: <><Car size={14} style={{ verticalAlign: "text-bottom", marginRight: 6 }} /> Vehículo</>,
+    propietario: <><Key size={14} style={{ verticalAlign: "text-bottom", marginRight: 6 }} /> Propietario</>,
+    alquilador: <><User size={14} style={{ verticalAlign: "text-bottom", marginRight: 6 }} /> Alquilador</>,
   };
   return <span className={`badge ${map[tipo] ?? ""}`}>{labels[tipo] ?? tipo}</span>;
 }
@@ -80,7 +83,7 @@ export function Alert({ type, message }: { type: "success" | "error"; message: s
 }
 
 // ── Page header ───────────────────────────────────────────
-export function PageHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: ReactNode }) {
+export function PageHeader({ title, subtitle, action }: { title: ReactNode; subtitle?: string; action?: ReactNode }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28, gap: 12, flexWrap: "wrap" }}>
       <div style={{ minWidth: 0 }}>
@@ -118,7 +121,9 @@ function TooltipContent({ data, type }: {
         display: "flex", flexDirection: "column", gap: 4, 
         color: "#ef4444", maxWidth: 200, whiteSpace: "normal" 
       }}>
-        <strong>⚠️ Error al cargar</strong>
+        <strong style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <AlertTriangle size={16} /> Error al cargar
+        </strong>
         <div style={{ fontSize: "0.85em" }}>{data.error}</div>
       </div>
     );
@@ -126,7 +131,9 @@ function TooltipContent({ data, type }: {
   if (type === "vehiculo") {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-        <strong> 🚗 {String(data.marca)} {String(data.modelo)} </strong>
+        <strong style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <Car size={16} /> {String(data.marca)} {String(data.modelo)}
+        </strong>
         <div>ID: {String(data.idVehiculo)}</div>
         <div>Propietario: #{String(data.idPropietario)}</div>
         <div>Precio: ${String(data.precio)}</div>
@@ -136,7 +143,9 @@ function TooltipContent({ data, type }: {
   if (type === "propietario") {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-        <strong> 👤 {String(data.nombre)} {String(data.apellido)} </strong>
+        <strong style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <Key size={16} /> {String(data.nombre)} {String(data.apellido)}
+        </strong>
         <div>Email: {String(data.email)}</div>
         <div>DNI: {String(data.dni)}</div>
         <div>ID: {String(data.idPropietario)}</div>
@@ -146,7 +155,9 @@ function TooltipContent({ data, type }: {
   if (type === "alquilador") {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-        <strong> 🔑 {String(data.nombre)} {String(data.apellido)} </strong>
+        <strong style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <User size={16} /> {String(data.nombre)} {String(data.apellido)}
+        </strong>
         <div>Email: {String(data.email)}</div>
         <div>DNI: {String(data.dni)}</div>
         <div>Licencia: {String(data.licenciaConducir)}</div>

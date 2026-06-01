@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
@@ -30,7 +31,7 @@ export default function NotFound() {
           padding: "10px 24px", borderRadius: "var(--radius-sm)",
           textDecoration: "none", fontSize: 14, fontWeight: 500,
         }}>
-          ← Volver al panel
+          <ArrowLeft size={14} /> Volver al panel
         </Link>
       </div>
     </div>

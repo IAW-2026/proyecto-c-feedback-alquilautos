@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { Stars, EstadoBadge, TipoBadge, Alert, Loading, PageHeader, EntityTooltipLabel } from "@/app/components/ui";
+import { ArrowRight, Check, CheckCircle2, RefreshCcw, Shield, X } from "lucide-react";
 import { ResenaCompleta, ModeracionCompleta, getTipo, shortenId } from "@/lib/types";
 
 // ── Helpers ───────────────────────────────────────────────
@@ -125,7 +126,7 @@ function ModeracionCard({
       {/* ── Tipo + receptor ── */}
       <div style={{ padding: "0 18px 10px", display: "flex", gap: 8, alignItems: "center" }}>
         <TipoBadge tipo={tipo} />
-        <span style={{ fontSize: 12, color: "var(--text-muted)" }}>→</span>
+        <ArrowRight size={14} style={{ color: "var(--text-muted)" }} />
         <span style={{ fontSize: 12, color: "var(--text-light)" }}>
           {(() => {
             const receptor = getReceptorEntity(m.resena);
@@ -192,14 +193,14 @@ function ModeracionCard({
               onClick={() => resolver("APROBADA")}
               disabled={acting}
             >
-              {acting ? "..." : "✓ Aprobar"}
+              {acting ? "..." : <><Check size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Aprobar</>}
             </button>
             <button
               className="btn btn-sm"
               style={{ background: "transparent", color: "var(--danger)", border: `1px solid var(--danger)` }}
               onClick={() => { setRejecting(true); setMotivo(""); }}
             >
-              ✗ Rechazar
+              <><X size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Rechazar</>
             </button>
           </>
         )}
@@ -218,7 +219,7 @@ function ModeracionCard({
               onClick={() => resolver("RECHAZADA")}
               disabled={acting}
             >
-              {acting ? "..." : "✗ Confirmar"}
+              {acting ? "..." : <><X size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Confirmar</>}
             </button>
           </>
         )}
@@ -389,10 +390,10 @@ function DetalleModal({
           {pending && (
             <>
               <button className="btn btn-danger" onClick={() => resolver("RECHAZADA")} disabled={acting}>
-                {acting ? "..." : "✗ Rechazar"}
+                {acting ? "..." : <><X size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Rechazar</>}
               </button>
               <button className="btn btn-success" onClick={() => resolver("APROBADA")} disabled={acting}>
-                {acting ? "..." : "✓ Aprobar"}
+                {acting ? "..." : <><Check size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Aprobar</>}
               </button>
             </>
           )}
@@ -445,7 +446,7 @@ export default function ModeracionPage() {
   return (
     <div>
       <PageHeader
-        title="🛡️ Moderación de Reseñas"
+        title={<> <Shield size={32} style={{ verticalAlign: "text-bottom", marginRight: 8 }} /> Moderación de Reseñas</>}
         subtitle="Revisá y resolvé las solicitudes de moderación"
         action={
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -455,7 +456,7 @@ export default function ModeracionPage() {
             >
               {soloP ? "Ver todas" : "Solo pendientes"}
             </button>
-            <button className="btn btn-ghost" onClick={fetchData}>↻ Actualizar</button>
+            <button className="btn btn-ghost" onClick={fetchData}><RefreshCcw size={16} style={{ verticalAlign: "middle", marginRight: 6 }} /> Actualizar</button>
           </div>
         }
       />
@@ -479,7 +480,7 @@ export default function ModeracionPage() {
 
       {loading ? <Loading /> : moderaciones.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">✅</div>
+          <div className="empty-state-icon"><CheckCircle2 size={48} /></div>
           <div className="empty-state-text">No hay moderaciones {soloP ? "pendientes" : ""}</div>
         </div>
       ) : (

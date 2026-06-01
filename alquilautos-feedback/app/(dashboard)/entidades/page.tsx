@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Loading, PageHeader } from "@/app/components/ui";
+import { Car, FileText, Key, Bot, Star, User, Folder } from "lucide-react";
 import { TipoResena } from "@/lib/types";
 
 interface Vehiculo {
@@ -53,7 +54,7 @@ function ResumenModal({
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="modal-box" style={{ maxWidth: 520 }}>
         <div className="modal-header">
-          <span className="modal-title">🤖 Resumen IA — {entidad}</span>
+          <span className="modal-title"><Bot size={24} style={{ verticalAlign: "text-bottom", marginRight: 8 }} /> Resumen IA — {entidad}</span>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
  
@@ -92,7 +93,7 @@ function PromedioBtn({ tipo, id }: { tipo: TipoResena; id: number | string }) {
   };
  
   if (state === "idle") {
-    return <button className="btn btn-ghost btn-sm" onClick={fetch_}>⭐ Promedio</button>;
+    return <button className="btn btn-ghost btn-sm" onClick={fetch_}><Star size={14} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 6 }} /> Promedio</button>;
   }
   if (state === "loading") {
     return <button className="btn btn-ghost btn-sm" disabled>Cargando...</button>;
@@ -108,7 +109,7 @@ function PromedioBtn({ tipo, id }: { tipo: TipoResena; id: number | string }) {
     >
       {cantidad_resenas === 0
         ? "Sin reseñas"
-        : <>★ {calificacion_promedio.toFixed(1)} <span style={{ color: "var(--text-muted)", fontWeight: 400 }}>({cantidad_resenas})</span></>
+        : <><Star size={14} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 6 }} /> {calificacion_promedio.toFixed(1)} <span style={{ color: "var(--text-muted)", fontWeight: 400 }}>({cantidad_resenas})</span></>
       }
     </button>
   );
@@ -137,7 +138,7 @@ function ResumenBtn({ tipo, id, label }: { tipo: TipoResena; id: number | string
   return (
     <>
       <button className="btn btn-ghost btn-sm" onClick={fetch_} disabled={loading}>
-        {loading ? "Generando..." : "🤖 Resumen IA"}
+        {loading ? "Generando..." : <><Bot size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Resumen IA</>}
       </button>
       {err && (
         <span style={{ fontSize: 11, color: "var(--danger)", display: "block", marginTop: 2 }}>
@@ -201,7 +202,7 @@ function TabVehiculos() {
                       className="btn btn-ghost btn-sm"
                       onClick={() => router.push(`/resenas?tipo=vehiculo&receptorId=${v.idVehiculo}`)}
                     >
-                      📋 Ver reseñas
+                      <FileText size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Ver reseñas
                     </button>
                   </div>
                 </td>
@@ -261,7 +262,7 @@ function TabAlquiladores() {
                       className="btn btn-ghost btn-sm"
                       onClick={() => router.push(`/resenas?tipo=alquilador&receptorId=${a.idAlquilador}`)}
                     >
-                      📋 Ver reseñas
+                      <FileText size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Ver reseñas
                     </button>
                   </div>
                 </td>
@@ -317,7 +318,7 @@ function TabPropietarios() {
                       className="btn btn-ghost btn-sm"
                       onClick={() => router.push(`/resenas?tipo=propietario&receptorId=${p.idPropietario}`)}
                     >
-                      📋 Ver reseñas
+                      <FileText size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Ver reseñas
                     </button>
                   </div>
                 </td>
@@ -331,10 +332,10 @@ function TabPropietarios() {
 }
 
 // ── Página principal ──────────────────────────────────────
-const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: "vehiculos",    label: "Vehículos",    icon: "🚗" },
-  { id: "alquiladores", label: "Alquiladores", icon: "🔑" },
-  { id: "propietarios", label: "Propietarios", icon: "👤" },
+const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
+  { id: "vehiculos",    label: "Vehículos",    icon: <Car size={14} /> },
+  { id: "alquiladores", label: "Alquiladores", icon: <User size={14} /> },
+  { id: "propietarios", label: "Propietarios", icon: <Key size={14} /> },
 ];
 
 export default function EntidadesPage() {
@@ -343,7 +344,7 @@ export default function EntidadesPage() {
   return (
     <div>
       <PageHeader
-        title="🗂️ Entidades"
+        title={<> <Folder size={32} style={{ verticalAlign: "text-bottom", marginRight: 8 }} /> Entidades</>}
         subtitle="Vehículos, alquiladores y propietarios del sistema"
       />
 

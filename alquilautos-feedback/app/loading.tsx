@@ -1,3 +1,5 @@
+import { Truck } from "lucide-react";
+
 export default function RootLoading() {
   return (
     <div style={{
@@ -9,7 +11,7 @@ export default function RootLoading() {
       flexDirection: "column",
       gap: 16,
     }}>
-      <div style={{ fontSize: 40 }}>🚗</div>
+      <Truck size={48} color="var(--primary)" />
       <div style={{
         width: 36, height: 36,
         border: "3px solid var(--border)",

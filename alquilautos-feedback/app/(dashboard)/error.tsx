@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { AlertTriangle, RotateCw } from "lucide-react";
 
 export default function DashboardError({
   error,
@@ -26,7 +27,9 @@ export default function DashboardError({
         textAlign: "center",
         maxWidth: 440,
       }}>
-        <div style={{ fontSize: 40, marginBottom: 12 }}>⚠️</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
+          <AlertTriangle size={40} color="var(--danger)" />
+        </div>
         <h3 style={{ fontSize: 17, fontWeight: 700, color: "var(--text)", marginBottom: 6 }}>
           Error al cargar esta sección
         </h3>
@@ -34,7 +37,7 @@ export default function DashboardError({
           {error.message || "Ocurrió un error inesperado. El resto del panel sigue funcionando."}
         </p>
         <button onClick={reset} className="btn btn-primary">
-          ↻ Reintentar
+          <RotateCw size={16} style={{ verticalAlign: "middle", marginRight: 6 }} /> Reintentar
         </button>
       </div>
     </div>

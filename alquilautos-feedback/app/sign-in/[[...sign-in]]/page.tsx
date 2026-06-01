@@ -1,5 +1,6 @@
 import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
+import { Truck } from "lucide-react";
 
 export default function SignInPage() {
   return (
@@ -15,7 +16,7 @@ export default function SignInPage() {
       {/* Branding sobre el form */}
       <div style={{ textAlign: "center", marginBottom: 28 }}>
         <Link href="/" style={{ textDecoration: "none" }}>
-          <span style={{ fontSize: 32 }}>🚗</span>
+          <Truck size={44} style={{ display: "block", margin: "0 auto", color: "var(--primary)" }} />
           <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text)", marginTop: 4 }}>
             AlquilAutos <span style={{ color: "var(--primary)" }}>Feedback</span>
           </div>

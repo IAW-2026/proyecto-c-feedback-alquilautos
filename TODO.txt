@@ -88,10 +88,6 @@ DONE - Endpoints (Controller -> Model)
 --------------------------
 
 EXTRA
-    DONE - Documentacion APIs
-    DONE - README.md
-    DONE - .env.example
-    Datos basicos cargados
     DONE - Clerk rol adminFeedback
     Clerk dev keys
     DONE - ID-Moderador auto por Clerk?
@@ -100,9 +96,9 @@ EXTRA
     DONE - Pasar IDs a String
     DONE - Middleware -> Proxy
     DONE - Eliminar logs
-    Emojis -> Icons
-    Server actions
+    DONE - Emojis -> Icons ([\p{Extended_Pictographic}])
     DONE - Responsive + Mobile
+    Pasar APIs locales a server actions
     Lighthouse
     Swagger
     ESLint
@@ -110,10 +106,18 @@ EXTRA
     Estandarizar estados de moderacion
     Mostrar DNI en vez de IDs (fetch y mapeo?)
     Lista desplegable de emisores y receptores
+    Selector de estrellas visual
     Skeleton
     Paginacion de tablas
     Exportar tablas a PDF
 
-CHECK
-    UseEffects
-    Redundancia de tipos
+ENTREGA
+    DONE - Documentacion APIs
+    README.md
+    DONE - .env.example
+    Datos de prueba cargados
+    Usuarios de prueba
+    Merge a main
+    Vercel produccion
+    Revisar enunciado completo
+    Revisar mail aclaraciones

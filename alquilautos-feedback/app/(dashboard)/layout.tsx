@@ -4,11 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
+import { Car, Folder, Menu, Shield, Star } from "lucide-react";
 
 const NAV_ITEMS = [
-  { href: "/moderacion", label: "Moderación", icon: "🛡️", desc: "Aprobar / Rechazar reseñas" },
-  { href: "/resenas",    label: "Reseñas",    icon: "⭐", desc: "Listado completo" },
-  { href: "/entidades",  label: "Entidades",  icon: "🗂️" },
+  { href: "/moderacion", label: "Moderación", icon: <Shield size={24} />, desc: "Aprobar / Rechazar reseñas" },
+  { href: "/resenas",    label: "Reseñas",    icon: <Star size={24} />, desc: "Listado completo" },
+  { href: "/entidades",  label: "Entidades",  icon: <Folder size={24} /> },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -65,7 +66,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Branding */}
         <div style={{ padding: "20px 20px 14px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "var(--text)" }}>🚗 AlquilAutos</div>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+              <Car size={32} />
+              <div style={{ fontSize: 16, fontWeight: 700, color: "var(--text)" }}>AlquilAutos</div>
+            </div>
             <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 1 }}>Feedback App</div>
           </div>
           {/* Botón cerrar en mobile */}
@@ -127,14 +131,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               style={{
                 background: "var(--bg-card)", border: "1px solid var(--border)",
                 borderRadius: "var(--radius-sm)", color: "var(--text)",
-                width: 38, height: 38, fontSize: 18, cursor: "pointer",
+                width: 38, height: 38, cursor: "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}
             >
-              ☰
+              <Menu size={18} />
             </button>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>
-              🚗 AlquilAutos Feedback
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 600, color: "var(--text)" }}>
+              <Car size={32} />
+              AlquilAutos Feedback
             </div>
           </div>
         )}

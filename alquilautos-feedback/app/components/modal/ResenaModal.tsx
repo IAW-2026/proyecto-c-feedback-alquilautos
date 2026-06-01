@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Stars, EstadoBadge, TipoBadge, EntityTooltipLabel, ConfirmModal } from "@/app/components/ui";
+import { Edit3, Trash2 } from "lucide-react";
 import {
   ResenaCompleta, ModeracionItem, RespuestaItem,
   EstadoMod, TipoResena, ModalMode,
@@ -21,7 +22,7 @@ function CalifSelect({
       onChange={e => onChange(Number(e.target.value))}
     >
       {[1, 2, 3, 4, 5].map(n => (
-        <option key={n} value={n}>{n} ★</option>
+        <option key={n} value={n}>{n}★</option>
       ))}
     </select>
   );
@@ -132,8 +133,12 @@ function RespuestaSection({
           </div>
           <p style={{ fontSize: 13, marginBottom: 10 }}>{respuesta!.comentario}</p>
           {editable && (<div style={{ display: "flex", gap: 6 }}>
-            <button className="btn btn-ghost btn-sm" onClick={() => { setEditing(true); setComentario(respuesta!.comentario); }}>✏️ Editar</button>
-            <button className="btn btn-danger btn-sm" onClick={() => setShowConfirm(true)}>🗑️ Eliminar</button>
+            <button className="btn btn-ghost btn-sm" onClick={() => { setEditing(true); setComentario(respuesta!.comentario); }}>
+              <Edit3 size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Editar
+            </button>
+            <button className="btn btn-danger btn-sm" onClick={() => setShowConfirm(true)}>
+              <Trash2 size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Eliminar
+            </button>
           </div>)}
         </div>
       )}
@@ -287,8 +292,12 @@ function ModeracionesSection({
                   <EstadoBadge estado={m.estado} />
                   {editable && (
                     <div style={{ display: "flex", gap: 4 }}>
-                      <button className="btn btn-ghost btn-sm" style={{ padding: "3px 7px" }} onClick={() => startEdit(m)}>✏️</button>
-                      <button className="btn btn-danger btn-sm" style={{ padding: "3px 7px" }} onClick={() => setConfirmDelId(m.id)}>🗑️</button>
+                      <button className="btn btn-ghost btn-sm" style={{ padding: "3px 7px" }} onClick={() => startEdit(m)}>
+                        <Edit3 size={14} />
+                      </button>
+                      <button className="btn btn-danger btn-sm" style={{ padding: "3px 7px" }} onClick={() => setConfirmDelId(m.id)}>
+                        <Trash2 size={14} />
+                      </button>
                     </div>
                   )}
                 </div>
@@ -455,9 +464,9 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
               <div className="form-group">
                 <label className="form-label">Tipo de reseña</label>
                 <select className="form-select" value={createForm.tipo} onChange={cf("tipo")}>
-                  <option value="vehiculo">🚗 Vehículo</option>
-                  <option value="propietario">👤 Propietario</option>
-                  <option value="alquilador">🔑 Alquilador</option>
+                  <option value="vehiculo">Vehículo</option>
+                  <option value="propietario">Propietario</option>
+                  <option value="alquilador">Alquilador</option>
                 </select>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -646,7 +655,9 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
           {isView && resena && (
             <>
               <button className="btn btn-ghost" onClick={onClose}>Cerrar</button>
-              <button className="btn btn-primary" onClick={() => setMode(ModalMode.EDIT)}>✏️ Editar</button>
+              <button className="btn btn-primary" onClick={() => setMode(ModalMode.EDIT)}>
+                <Edit3 size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Editar
+              </button>
             </>
           )}
           {mode === ModalMode.EDIT && resena && (

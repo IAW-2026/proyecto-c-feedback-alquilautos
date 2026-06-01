@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Stars, TipoBadge, EstadoBadge, Loading, PageHeader, Truncated, EntityTooltipLabel, ConfirmModal } from "@/app/components/ui";
+import { Edit3, Eye, Link2, MessageCircle, RefreshCcw, Search, Shield, Star, Trash2, X } from "lucide-react";
 import ResenaModal from "@/app/components/modal/ResenaModal";
 import { HistorialModeraciones, HistorialRespuestas } from "@/app/components/modal/HistorialModal";
 import {
@@ -97,13 +98,13 @@ function ResenasContent() {
   return (
     <div>
       <PageHeader
-        title="⭐ Reseñas"
+        title={<> <Star size={32} style={{ verticalAlign: "text-bottom", marginRight: 8 }} /> Reseñas</>}
         subtitle={`${resenas.length} reseñas en total`}
         action={
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            <button className="btn btn-ghost" onClick={fetchData} title="Refrescar lista">↻ Actualizar</button>
-            <button className="btn btn-ghost" onClick={() => setHistorialMod(true)}>🛡️ Historial moder.</button>
-            <button className="btn btn-ghost" onClick={() => setHistorialResp(true)}>💬 Historial resp.</button>
+            <button className="btn btn-ghost" onClick={fetchData} title="Refrescar lista"><RefreshCcw size={16} style={{ verticalAlign: "middle", marginRight: 6 }} /> Actualizar</button>
+            <button className="btn btn-ghost" onClick={() => setHistorialMod(true)}><Shield size={16} style={{ verticalAlign: "middle", marginRight: 6 }} /> Historial moder.</button>
+            <button className="btn btn-ghost" onClick={() => setHistorialResp(true)}><MessageCircle size={16} style={{ verticalAlign: "middle", marginRight: 6 }} /> Historial resp.</button>
             <button className="btn btn-primary" onClick={() => setModal({ open: true, resena: null, mode: ModalMode.CREATE })}>
               + Nueva reseña
             </button>
@@ -118,8 +119,9 @@ function ResenasContent() {
           background: "var(--primary-light)", border: "1px solid var(--primary)",
           borderRadius: "var(--radius-sm)", padding: "8px 14px",
         }}>
-          <span style={{ fontSize: 13, color: "var(--primary)" }}>
-            🔗 Mostrando reseñas de{" "}
+          <span style={{ fontSize: 13, color: "var(--primary)", display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <Link2 size={14} />
+            <span>Mostrando reseñas de</span>
             <strong>
               {filtroTipo !== "todos" ? filtroTipo : "entidad"} #{filtroReceptorId}
             </strong>
@@ -129,7 +131,7 @@ function ResenasContent() {
             style={{ marginLeft: "auto", color: "var(--primary)" }}
             onClick={clearFiltroReceptor}
           >
-            ✕ Quitar filtro
+            <X size={14} style={{ verticalAlign: "middle", marginRight: 8 }} /> Quitar filtro
           </button>
         </div>
       )}
@@ -137,14 +139,17 @@ function ResenasContent() {
       {/* ── Filtros ───────────────────────────────────────── */}
       <div className="card" style={{ marginBottom: 18, padding: "14px 16px" }}>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-          <input className="form-input" style={{ minWidth: 180, flex: 1 }}
-            placeholder="🔍 Buscar descripción..." value={busqueda} onChange={e => setBusqueda(e.target.value)} />
+          <div style={{ position: "relative", flex: 1, minWidth: 180 }}>
+            <Search size={16} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
+            <input className="form-input" style={{ paddingLeft: 34, width: "100%" }}
+              placeholder="Buscar descripción..." value={busqueda} onChange={e => setBusqueda(e.target.value)} />
+          </div>
 
           <select className="form-select" style={{ maxWidth: 150 }} value={filtroTipo} onChange={e => setFiltroTipo(e.target.value)}>
             <option value="todos">Todos los tipos</option>
-            <option value="vehiculo">🚗 Vehículo</option>
-            <option value="propietario">👤 Propietario</option>
-            <option value="alquilador">🔑 Alquilador</option>
+            <option value="vehiculo">Vehículo</option>
+            <option value="propietario">Propietario</option>
+            <option value="alquilador">Alquilador</option>
           </select>
 
           <select className="form-select" style={{ maxWidth: 150 }} value={filtroEstado} onChange={e => setFiltroEstado(e.target.value)}>
@@ -169,7 +174,7 @@ function ResenasContent() {
               setBusqueda(""); setFiltroTipo("todos"); setFiltroEstado("todos");
               setFiltroDesde(""); setFiltroHasta(""); clearFiltroReceptor();
             }}>
-              ✕ Limpiar
+              <X size={14} style={{ verticalAlign: "middle", marginRight: 6 }} /> Limpiar
             </button>
           )}
 
@@ -182,7 +187,7 @@ function ResenasContent() {
       {/* ── Tabla ─────────────────────────────────────────── */}
       {loading || loadingResena ? <Loading /> : filtered.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">🔍</div>
+          <div className="empty-state-icon"><Search size={48} /></div>
           <div className="empty-state-text">{hayFiltros ? "Sin reseñas para los filtros aplicados" : "No hay reseñas registradas"}</div>
         </div>
       ) : (
@@ -236,21 +241,21 @@ function ResenasContent() {
                           title="Ver detalle"
                           onClick={() => setModal({ open: true, resena: r, mode: ModalMode.VIEW })}
                         >
-                          👁️
+                          <Eye size={16} />
                         </button>
                         <button
                           className="btn btn-ghost btn-sm"
                           title="Editar"
                           onClick={() => setModal({ open: true, resena: r, mode: ModalMode.EDIT })}
                         >
-                          ✏️
+                          <Edit3 size={16} />
                         </button>
                         <button
                           className="btn btn-danger btn-sm"
                           title="Eliminar"
                           onClick={e => handleDelete(r, e)}
                         >
-                          🗑️
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </td>
