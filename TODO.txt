@@ -92,7 +92,7 @@ EXTRA
     DONE - README.md
     DONE - .env.example
     Datos basicos cargados
-    Clerk rol adminFeedback
+    DONE - Clerk rol adminFeedback
     Clerk dev keys
     DONE - ID-Moderador auto por Clerk?
     DONE - Mostrar correctamente IDs de usuarios
