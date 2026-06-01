@@ -26,20 +26,6 @@ https://proyecto-c-feedback-alquilautos.vercel.app/
 
 ---
 
-## Descripción
-
-Aplicación web para gestionar reseñas y calificaciones en una plataforma de alquiler de vehículos entre particulares. Su función es centralizar el feedback (reseñas moderadas, respuestas, calificaciones y resúmenes) del ecosistema.
-
----
-
-## Secciones de la app
-
-- **Moderación:** revisión y aprobación/rechazo de reseñas.
-- **Reseñas:** ABML de reseñas (con respuestas y moderaciones) para alquiladores, propietarios y vehículos.
-- **Entidades:** gestión y visualización de usuarios, propietarios y vehículos.
-
----
-
 ## Instalación y desarrollo (local)
 
 ```bash
@@ -51,7 +37,29 @@ pnpm prisma generate
 
 # Correr en desarrollo
 pnpm dev --webpack
+
 ```
+
+---
+
+## Descripción
+
+Aplicación web para gestionar reseñas y calificaciones en una plataforma de alquiler de vehículos entre particulares. Su función es centralizar el feedback (reseñas moderadas, respuestas, calificaciones y resúmenes) del ecosistema.
+
+### Secciones de la app
+
+- **Moderación:** revisión y aprobación/rechazo de reseñas.
+- **Reseñas:** ABML de reseñas (con respuestas y moderaciones) para alquiladores, propietarios y vehículos.
+- **Entidades:** gestión y visualización de usuarios, propietarios y vehículos.
+
+### Endpoints expuestos
+
+- `/api/resena/` — Crear reseñas
+- `/api/respuesta/` — Crear respuestas a reseñas.
+- `/api/resena/<receptor>/{id}` — Obtener reseñas de un receptor (vehículo/propietario/reserva).
+- `/api/resena/<receptor>/reserva/{id}` — Obtener reseñas de una reserva específica.
+- `/api/promedio/<receptor>/{id}` — Calcular promedio de calificaciones de una entidad.
+- `/api/resumen/<receptor>/{id}` — Generar un resumen del feedback de una entidad.
 
 ---
 
@@ -63,17 +71,6 @@ pnpm dev --webpack
 - Prisma + Neon (PostgreSQL)
 - Vercel
 - pnpm
-
----
-
-## Endpoints expuestos
-
-- `/api/resena/` — Crear reseñas
-- `/api/respuesta/` — Crear respuestas a reseñas.
-- `/api/resena/<receptor>/{id}` — Obtener reseñas de un receptor (vehículo/propietario/reserva).
-- `/api/resena/<receptor>/reserva/{id}` — Obtener reseñas de una reserva específica.
-- `/api/promedio/<receptor>/{id}` — Calcular promedio de calificaciones de una entidad.
-- `/api/resumen/<receptor>/{id}` — Generar un resumen del feedback de una entidad.
 
 ---
 

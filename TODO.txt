@@ -113,10 +113,11 @@ EXTRA
 
 ENTREGA
     DONE - Documentacion APIs
-    README.md
+    DONE - README.md
+    Aclaraciones README.md
     DONE - .env.example
     Datos de prueba cargados
-    Usuarios de prueba
+    Usuarios de prueba (subir a README.md)
     Merge a main
     Vercel produccion
     Revisar enunciado completo
