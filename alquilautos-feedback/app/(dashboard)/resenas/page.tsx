@@ -8,6 +8,7 @@ import { HistorialModeraciones, HistorialRespuestas } from "@/app/components/mod
 import {
   ResenaCompleta, ModalMode,
   getTipo, getReceptorId, getLastEstado, fmtDate,
+  shortenId,
 } from "@/lib/types";
 
 // ── Estado del modal ──────────────────────────────────────
@@ -208,14 +209,14 @@ function ResenasContent() {
                     <td><TipoBadge tipo={getTipo(r)} /></td>
                     <td style={{ fontSize: 12 }}>
                       <EntityTooltipLabel
-                        text={`#${r.idEmisor}`}
+                        text={`#${shortenId(r.idEmisor)}`}
                         entityType={getTipo(r) === "alquilador" ? "propietario" : "alquilador"}
                         entityId={r.idEmisor}
                       />
                     </td>
                     <td style={{ fontSize: 12 }}>
                       <EntityTooltipLabel
-                        text={`#${getReceptorId(r)}`}
+                        text={`#${shortenId(getReceptorId(r))}`}
                         entityType={r.resenaVehiculo ? "vehiculo" : r.resenaPropietario ? "propietario" : "alquilador"}
                         entityId={getReceptorId(r)}
                       />

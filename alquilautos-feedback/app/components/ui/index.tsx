@@ -283,30 +283,74 @@ export function ConfirmModal({
 // ── Texto truncado con tooltip ────────────────────────────
 export function Truncated({ text, maxW = 260 }: { text: string; maxW?: number }) {
   const [show, setShow] = useState(false);
+  const [coords, setCoords] = useState({ left: 0, top: 0 });
+  const [overflow, setOverflow] = useState(false);
+  const anchorRef = useRef<HTMLSpanElement | null>(null);
+  const textRef = useRef<HTMLSpanElement | null>(null);
+
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+    setOverflow(el.scrollWidth > el.clientWidth);
+  }, [text, maxW]);
+
+  const handleEnter = () => {
+    const anchor = anchorRef.current;
+    if (anchor) {
+      const rect = anchor.getBoundingClientRect();
+      setCoords({ left: rect.left + window.scrollX, top: rect.top + window.scrollY });
+    }
+    setShow(true);
+  };
+
   return (
-    <span
-      style={{ position: "relative", display: "inline-block", maxWidth: maxW }}
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
-    >
-      <span style={{
-        display: "block", overflow: "hidden",
-        textOverflow: "ellipsis", whiteSpace: "nowrap",
-      }}>
-        {text}
-      </span>
-      {show && text.length > 40 && (
-        <span style={{
-          position: "absolute", bottom: "100%", left: 0, zIndex: 9999,
-          background: "#1a1d27", border: "1px solid var(--border)",
-          borderRadius: "var(--radius-sm)", padding: "8px 12px",
-          fontSize: 12, color: "var(--text)", whiteSpace: "normal",
-          maxWidth: 320, boxShadow: "var(--shadow)", lineHeight: 1.5,
-          marginBottom: 4,
-        }}>
+    <>
+      <span
+        ref={anchorRef}
+        style={{ position: "relative", display: "inline-block", maxWidth: maxW, 
+                 textDecoration: overflow ? "underline" : "none", cursor: overflow ? "help" : "default", }}
+        onMouseEnter={handleEnter}
+        onMouseLeave={() => setShow(false)}
+      >
+        <span
+          ref={textRef}
+          style={{
+            display: "block", overflow: "hidden",
+            textOverflow: "ellipsis", whiteSpace: "nowrap",
+          }}
+        >
           {text}
         </span>
+      </span>
+
+      {typeof document !== "undefined" && show && overflow && createPortal(
+        <span
+          onMouseEnter={() => setShow(true)}
+          onMouseLeave={() => setShow(false)}
+          style={{
+            position: "absolute",
+            left: coords.left,
+            top: coords.top,
+            transform: "translateY(-100%)",
+            zIndex: 9999,
+            background: "#1a1d27",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius-sm)",
+            padding: "8px 12px",
+            fontSize: 12,
+            color: "var(--text)",
+            whiteSpace: "normal",
+            maxWidth: 320,
+            boxShadow: "var(--shadow)",
+            lineHeight: 1.5,
+            marginBottom: 4,
+            pointerEvents: "auto",
+          }}
+        >
+          {text}
+        </span>,
+        document.body
       )}
-    </span>
+    </>
   );
 }

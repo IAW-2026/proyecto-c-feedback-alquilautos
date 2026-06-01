@@ -1,26 +1,26 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0f1117;
-  --bg-card: #1a1d27;
-  --bg-card-hover: #1f2235;
-  --border: #2a2d3e;
-  --border-light: #363a52;
-  --primary: #6366f1;
-  --primary-hover: #4f52d6;
-  --primary-light: #6366f120;
+  --bg: #0b1220;
+  --bg-card: #161d32;
+  --bg-card-hover: #212b44;
+  --border: #323c59;
+  --border-light: #4f5f8a;
+  --primary: #7c94f1;
+  --primary-hover: #647ce7;
+  --primary-light: #7c94f120;
   --success: #10b981;
   --success-light: #10b98120;
   --danger: #ef4444;
   --danger-light: #ef444420;
   --warning: #f59e0b;
   --warning-light: #f59e0b20;
-  --text: #e2e8f0;
-  --text-muted: #64748b;
-  --text-light: #94a3b8;
+  --text: #e8eef8;
+  --text-muted: #a0aec0;
+  --text-light: #cbd5e1;
   --radius: 10px;
   --radius-sm: 6px;
-  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow: 0 4px 24px rgba(0,0,0,0.35);
 }
 
 body {
@@ -58,7 +58,7 @@ body {
 .btn-success:hover:not(:disabled) { background: #0d9e6e; }
 .btn-danger { background: var(--danger); color: white; }
 .btn-danger:hover:not(:disabled) { background: #dc2626; }
-.btn-ghost { background: transparent; color: var(--text-light); border: 1px solid var(--border); }
+.btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
 .btn-ghost:hover:not(:disabled) { background: var(--bg-card-hover); color: var(--text); }
 .btn-sm { padding: 5px 10px; font-size: 12px; }
 

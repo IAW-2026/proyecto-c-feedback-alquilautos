@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { Stars, EstadoBadge, TipoBadge, Alert, Loading, PageHeader, EntityTooltipLabel } from "@/app/components/ui";
-import { ResenaCompleta, ModeracionCompleta, getTipo } from "@/lib/types";
+import { ResenaCompleta, ModeracionCompleta, getTipo, shortenId } from "@/lib/types";
 
 // ── Helpers ───────────────────────────────────────────────
 const AVATAR_COLORS = [
@@ -16,16 +16,10 @@ function avatarColor(id: number | string) {
   return AVATAR_COLORS[hash % AVATAR_COLORS.length];
 }
 
-function shortenId(id: number | string, start = 8, end = 6) {
-  const s = String(id);
-  if (s.length <= start + end + 1) return s;
-  return `${s.slice(0, start)}…${s.slice(-end)}`;
-}
-
 function getReceptorLabel(r: ResenaCompleta) {
-  if (r.resenaVehiculo)    return `Vehículo #${r.resenaVehiculo.idVehiculo}`;
-  if (r.resenaPropietario) return `Propietario #${r.resenaPropietario.idPropietario}`;
-  if (r.resenaAlquilador)  return `Alquilador #${r.resenaAlquilador.idAlquilador}`;
+  if (r.resenaVehiculo)    return `Vehículo #${shortenId(r.resenaVehiculo.idVehiculo)}`;
+  if (r.resenaPropietario) return `Propietario #${shortenId(r.resenaPropietario.idPropietario)}`;
+  if (r.resenaAlquilador)  return `Alquilador #${shortenId(r.resenaAlquilador.idAlquilador)}`;
   return "—";
 }
 
@@ -115,7 +109,7 @@ function ModeracionCard({
           <div>
             <div style={{ fontWeight: 600, fontSize: 14 }}>
               <EntityTooltipLabel
-                text={`Usuario ${shortenId(m.resena.idEmisor)}`}
+                text={`Usuario #${shortenId(m.resena.idEmisor)}`}
                 entityType={tipo === "alquilador" ? "propietario" : "alquilador"}
                 entityId={m.resena.idEmisor}
               />
@@ -294,8 +288,9 @@ function DetalleModal({
                 <span className="detail-label">Emisor</span>
                 <span className="detail-value">
                   <EntityTooltipLabel
-                    text={`Usuario #${m.resena.idEmisor}`}
-                    tooltip={`Emisor de la reseña · Usuario #${m.resena.idEmisor}`}
+                    text={`Usuario #${shortenId(m.resena.idEmisor)}`}
+                    entityType={tipo === "alquilador" ? "propietario" : "alquilador"}
+                    entityId={m.resena.idEmisor}
                   />
                 </span>
               </div>

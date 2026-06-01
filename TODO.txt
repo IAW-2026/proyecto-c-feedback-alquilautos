@@ -98,7 +98,7 @@ EXTRA
     DONE - Eliminar testAuth, Debug
     DONE - Pasar IDs a String
     DONE - Middleware -> Proxy
-    Eliminar logs
+    DONE - Eliminar logs
     Emojis -> Icons
     Server actions
     Responsive

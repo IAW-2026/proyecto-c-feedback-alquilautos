@@ -92,6 +92,12 @@ export function fmtDate(d: string) {
   return new Date(d).toLocaleDateString("es-AR");
 }
 
+export function shortenId(id: number | string, start = 8, end = 6) {
+  const s = String(id);
+  if (s.length <= start + end + 1) return s;
+  return `${s.slice(0, start)}…${s.slice(-end)}`;
+}
+
 // ── DTOs para creación ───────────────────────────────────
 export interface CreateResenaDto {
   idReserva: number;
