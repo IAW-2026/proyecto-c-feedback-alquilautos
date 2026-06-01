@@ -119,5 +119,5 @@ ENTREGA
     DONE - Usuarios de prueba (subir a README.md)
     DONE - Merge a main
     DONE - Vercel produccion
-    Revisar enunciado completo
-    Revisar mail aclaraciones
+    DONE - Revisar enunciado completo
+    DONE - Revisar mail aclaraciones
