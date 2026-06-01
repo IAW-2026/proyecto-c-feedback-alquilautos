@@ -166,7 +166,7 @@ function ModeracionesSection({
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<{ estado: EstadoMod; motivo: string }>({ estado: "Pendiente", motivo: "" });
   const [adding, setAdding] = useState(false);
-  const [addForm, setAddForm] = useState({ idModerador: "", estado: "Pendiente" as EstadoMod, motivo: "" });
+  const [addForm, setAddForm] = useState({ idModerador: "", estado: "PENDIENTE" as EstadoMod, motivo: "" });
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
   const [confirmDelId, setConfirmDelId] = useState<number | null>(null);
