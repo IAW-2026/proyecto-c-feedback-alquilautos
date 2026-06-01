@@ -4,7 +4,7 @@ export default function Page() {
   return (
     <div className="flex justify-center items-center min-h-screen">
       <SignUp />
-      <p>Hola mundo</p>
+      <p>Desactivado</p>
     </div>
   );
 }

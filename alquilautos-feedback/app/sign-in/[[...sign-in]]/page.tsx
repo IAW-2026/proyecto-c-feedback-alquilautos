@@ -53,6 +53,9 @@ export default function SignInPage() {
             footerActionLink:{ color: "#6366f1" },
             // Ocultar el link de registro
             footerAction:    { display: "none" },
+            lastAuthenticationStrategyBadge: {color: "#64748b"},
+            identityPreviewText: {color: "#64748b"},
+            dividerText: {color: "#64748b"}
           },
         }}
       />
