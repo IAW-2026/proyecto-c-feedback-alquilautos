@@ -1,6 +1,7 @@
 General
     Layout
         Hide Sidebar
+    Landing Page
     Sign-In
         Centrar
         Estilos
@@ -86,9 +87,9 @@ DONE - Endpoints (Controller -> Model)
 --------------------------
 
 EXTRA
-    Documentacion APIs
-    README.md
-    .env.example
+    DONE - Documentacion APIs
+    DONE - README.md
+    DONE - .env.example
     Datos basicos cargados
     Clerk rol adminFeedback
     Clerk dev keys
