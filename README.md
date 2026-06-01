@@ -21,8 +21,8 @@ https://proyecto-c-feedback-alquilautos.vercel.app/
 
 | Campo | Valor |
 |-------|-------|
-| Email | tur9957@gmail.com |
-| Contraseña | tur9957 |
+| Email | adminfeedback+clerk_test@iaw.com |
+| Contraseña | iawuser# |
 
 ---
 

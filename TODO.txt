@@ -89,7 +89,6 @@ DONE - Endpoints (Controller -> Model)
 
 EXTRA
     DONE - Clerk rol adminFeedback
-    Clerk dev keys
     DONE - ID-Moderador auto por Clerk?
     DONE - Mostrar correctamente IDs de usuarios
     DONE - Eliminar testAuth, Debug
@@ -98,7 +97,7 @@ EXTRA
     DONE - Eliminar logs
     DONE - Emojis -> Icons ([\p{Extended_Pictographic}])
     DONE - Responsive + Mobile
-    Pasar APIs locales a server actions
+    Clerk dev keys
     Lighthouse
     Swagger
     ESLint
@@ -110,15 +109,18 @@ EXTRA
     Skeleton
     Paginacion de tablas
     Exportar tablas a PDF
+    Pasar APIs locales a server actions
 
 ENTREGA
     DONE - Documentacion APIs
     DONE - README.md
-    Aclaraciones README.md
     DONE - .env.example
     Datos de prueba cargados
-    Usuarios de prueba (subir a README.md)
+    DONE - Usuarios de prueba (subir a README.md)
     Merge a main
     Vercel produccion
     Revisar enunciado completo
     Revisar mail aclaraciones
+
+
+CHECK FECHAS
