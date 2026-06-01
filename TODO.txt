@@ -1,15 +1,16 @@
-General
-    Layout
-        Hide Sidebar
-    Landing Page
-    Sign-In
-        Centrar
-        Estilos
-    Sign-Up
-        Ocultar
-    Error.tsx
-    NotFound.tsx
-    Loading.tsx
+DONE - General
+    DONE - Layout
+        DONE - Hide Sidebar
+    DONE - Landing Page
+    DONE - Sign-In
+        DONE - Centrar
+        DONE - Estilos
+    DONE - Sign-Up
+        DONE - Ocultar
+    DONE - Error.tsx
+    DONE - NotFound.tsx
+    DONE - Loading.tsx
+    DONE - Unauthorized.tsx
 
 --------------------------
 

@@ -1,7 +1,23 @@
-export default function Loading() {
+export default function RootLoading() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      Loading...
+    <div style={{
+      minHeight: "100vh",
+      background: "var(--bg)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: "column",
+      gap: 16,
+    }}>
+      <div style={{ fontSize: 40 }}>🚗</div>
+      <div style={{
+        width: 36, height: 36,
+        border: "3px solid var(--border)",
+        borderTopColor: "var(--primary)",
+        borderRadius: "50%",
+        animation: "spin 0.7s linear infinite",
+      }} />
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
