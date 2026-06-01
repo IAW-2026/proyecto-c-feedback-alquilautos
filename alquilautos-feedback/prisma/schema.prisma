@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EstadoModeracion {
+  PENDIENTE
+  APROBADA
+  RECHAZADA
+}
+
+model Resena {
+  id                     Int       @id @default(autoincrement())
+  idReserva              Int
+  idEmisor               String
+  calificacionGeneral    Int
+  descripcion            String
+  fechaCreacion          DateTime  @default(now())
+
+  // Relaciones
+  resenaVehiculo         ResenaVehiculo?
+  resenaPropietario      ResenaPropietario?
+  resenaAlquilador       ResenaAlquilador?
+  moderaciones           Moderacion[]
+  respuesta              Respuesta?
+}
+
+model ResenaVehiculo {
+  id                     Int      @id
+  idVehiculo             Int
+  calificacionLimpieza   Int
+  calificacionEstado     Int
+  calificacionComodidad  Int
+
+  // Relación 1:1
+  resena                 Resena  @relation(fields: [id], references: [id], onDelete: Cascade)
+}
+
+model ResenaPropietario {
+  id                          Int     @id
+  idPropietario               String
+  calificacionComunicacion    Int
+  calificacionPuntualidad     Int
+
+  // Relación 1:1
+  resena                      Resena @relation(fields: [id], references: [id], onDelete: Cascade)
+}
+
+model ResenaAlquilador {
+  id                          Int     @id
+  idAlquilador                String
+  calificacionComunicacion    Int
+  calificacionPuntualidad     Int
+  calificacionDevolucion      Int
+
+  // Relación 1:1
+  resena                      Resena @relation(fields: [id], references: [id], onDelete: Cascade)
+}
+
+model Moderacion {
+  id                 Int                @id @default(autoincrement())
+  idResena           Int
+  idModerador        String
+  estado             EstadoModeracion
+  motivo             String
+  fechaCreacion      DateTime           @default(now())
+  
+  // Relación
+  resena             Resena             @relation(fields: [idResena], references: [id], onDelete: Cascade)
+}
+
+model Respuesta {
+  id                 Int       @id @default(autoincrement())
+  idResena           Int       @unique
+  idAutor            String
+  comentario         String
+  fechaCreacion      DateTime  @default(now())
+
+  // Relación
+  resena             Resena    @relation(fields: [idResena], references: [id], onDelete: Cascade)
+}
