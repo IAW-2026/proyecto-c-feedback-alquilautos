@@ -102,8 +102,7 @@ EXTRA
     DONE - Eliminar logs
     Emojis -> Icons
     Server actions
-    Responsive
-    Mobile
+    DONE - Responsive + Mobile
     Lighthouse
     Swagger
     ESLint

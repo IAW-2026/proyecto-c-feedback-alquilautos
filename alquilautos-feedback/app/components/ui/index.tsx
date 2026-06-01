@@ -82,12 +82,16 @@ export function Alert({ type, message }: { type: "success" | "error"; message: s
 // ── Page header ───────────────────────────────────────────
 export function PageHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: ReactNode }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28 }}>
-      <div>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28, gap: 12, flexWrap: "wrap" }}>
+      <div style={{ minWidth: 0 }}>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--text)" }}>{title}</h1>
         {subtitle && <p style={{ color: "var(--text-muted)", marginTop: 4, fontSize: 13 }}>{subtitle}</p>}
       </div>
-      {action}
+      {action && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "flex-end", minWidth: 0 }}>
+          {action}
+        </div>
+      )}
     </div>
   );
 }

@@ -34,19 +34,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     display: "flex",
     flexDirection: "column",
     flexShrink: 0,
+    height: "100vh",
     // En mobile: posición fija con slide desde la izquierda
     ...(mobile ? {
       position: "fixed",
       top: 0,
       left: open ? 0 : -240,
-      height: "100vh",
       zIndex: 200,
       transition: "left 0.25s ease",
     } : {}),
   };
  
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div style={{ display: "flex", height: "100vh" }}>
  
       {/* Overlay oscuro en mobile cuando el sidebar está abierto */}
       {mobile && open && (
@@ -80,7 +80,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
  
         {/* Nav */}
-        <nav style={{ padding: "10px 10px", flex: 1 }}>
+        <nav style={{ padding: "10px 10px", flex: 1, minHeight: 0, overflowY: "auto" }}>
           {NAV_ITEMS.map(item => {
             const active = pathname.startsWith(item.href);
             return (
@@ -114,7 +114,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
  
       {/* ── Main ── */}
-      <main style={{ flex: 1, padding: "28px 32px", overflowY: "auto", minHeight: "100vh", minWidth: 0 }}>
+      <main style={{ flex: 1, padding: "28px 32px", overflowY: "auto", height: "100vh", minWidth: 0 }}>
         {/* Barra superior en mobile con hamburger */}
         {mobile && (
           <div style={{

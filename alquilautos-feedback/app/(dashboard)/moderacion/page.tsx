@@ -448,7 +448,7 @@ export default function ModeracionPage() {
         title="🛡️ Moderación de Reseñas"
         subtitle="Revisá y resolvé las solicitudes de moderación"
         action={
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             <button
               className={`btn ${soloP ? "btn-primary" : "btn-ghost"}`}
               onClick={() => setSoloP(p => !p)}

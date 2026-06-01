@@ -100,7 +100,7 @@ function ResenasContent() {
         title="⭐ Reseñas"
         subtitle={`${resenas.length} reseñas en total`}
         action={
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             <button className="btn btn-ghost" onClick={fetchData} title="Refrescar lista">↻ Actualizar</button>
             <button className="btn btn-ghost" onClick={() => setHistorialMod(true)}>🛡️ Historial moder.</button>
             <button className="btn btn-ghost" onClick={() => setHistorialResp(true)}>💬 Historial resp.</button>
