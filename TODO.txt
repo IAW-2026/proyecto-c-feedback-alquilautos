@@ -103,13 +103,27 @@ EXTRA
     ESLint
     Accesibilidad y temas
     Estandarizar estados de moderacion
-    Mostrar DNI en vez de IDs (fetch y mapeo?)
-    Lista desplegable de emisores y receptores
-    Selector de estrellas visual
-    Skeleton
-    Paginacion de tablas
+    -Mostrar DNI en vez de IDs (fetch y mapeo?)
+    -Lista desplegable de emisores y receptores
+    -Selector de estrellas visual
+    -Skeleton
+    -Paginacion de tablas
     Exportar tablas a PDF
     Pasar APIs locales a server actions
+
+
+ETAPA-3
+    Eliminar mocks, conectar apps
+    Endpoint - Mejores ENTIDAD de la semana / de todo el tiempo
+    Endpoint - Peores ENTIDAD de la semana / de todo el tiempo
+    Endpoint - Propietarios que mas/menos responden
+    Reemplazar IDs por DNIs
+    Lista desplegable de emisores y receptores
+    Selector visual de estrellas
+    Skeleton
+    Paginacion
+    Filtro automatico de reseñas con AI (quizas no rechazar, solo recomendar)
+
 
 ENTREGA
     DONE - Documentacion APIs
