@@ -105,9 +105,9 @@ const ENTITY_TOOLTIP_CACHE = new Map<string,Record<string, unknown>>();
 
 function getEntityFetchUrl(type: EntityType, id: number | string) {
   if (!id) return undefined;
-  if (type === "vehiculo") return `/api/mock/vehiculo/${id}`;
-  if (type === "propietario") return `/api/mock/propietario/${id}`;
-  if (type === "alquilador") return `/api/mock/alquilador/${id}`;
+  if (type === "vehiculo") return `/api/proxy/seller/api/vehiculo/${id}`;
+  if (type === "propietario") return `/api/proxy/seller/api/propietario/${id}`;
+  if (type === "alquilador") return `/api/proxy/buyer/api/alquilador/${id}`;
   return undefined;
 }
 

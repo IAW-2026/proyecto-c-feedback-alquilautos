@@ -26,13 +26,13 @@ export interface RespuestaItem {
 
 export interface ResenaCompleta {
   id: number;
-  idReserva: number;
+  idReserva: string;
   idEmisor: string;
   calificacionGeneral: number;
   descripcion: string;
   fechaCreacion: string;
   resenaVehiculo: {
-    idVehiculo: number;
+    idVehiculo: string;
     calificacionLimpieza: number;
     calificacionEstado: number;
     calificacionComodidad: number;
@@ -100,12 +100,12 @@ export function shortenId(id: number | string, start = 8, end = 6) {
 
 // ── DTOs para creación ───────────────────────────────────
 export interface CreateResenaDto {
-  idReserva: number;
+  idReserva: string;
   idEmisor: string;
   calificacionGeneral: number;
   descripcion: string;
   // Tipo vehiculo
-  idVehiculo?: number;
+  idVehiculo?: string;
   calificacionLimpieza?: number;
   calificacionEstado?: number;
   calificacionComodidad?: number;
