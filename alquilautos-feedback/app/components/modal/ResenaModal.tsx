@@ -416,7 +416,7 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
     setSaving(true); setErr("");
     try {
       const base = {
-        idReserva: Number(createForm.idReserva),
+        idReserva: createForm.idReserva,
         idEmisor: createForm.idEmisor,
         calificacionGeneral: Number(createForm.calificacionGeneral),
         descripcion: createForm.descripcion,
@@ -470,7 +470,7 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
                 </select>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                <div className="form-group"><label className="form-label">ID Reserva</label><input className="form-input" type="number" value={createForm.idReserva} onChange={cf("idReserva")} /></div>
+                <div className="form-group"><label className="form-label">ID Reserva</label><input className="form-input" type="text" value={createForm.idReserva} onChange={cf("idReserva")} /></div>
                 <div className="form-group"><label className="form-label">ID Emisor</label><input className="form-input" type="text" value={createForm.idEmisor} onChange={cf("idEmisor")} /></div>
                 {createForm.tipo === "vehiculo" && <div className="form-group"><label className="form-label">ID Vehículo</label><input className="form-input" type="text" value={createForm.idVehiculo} onChange={cf("idVehiculo")} /></div>}
                 {createForm.tipo === "propietario" && <div className="form-group"><label className="form-label">ID Propietario</label><input className="form-input" type="text" value={createForm.idPropietario} onChange={cf("idPropietario")} /></div>}

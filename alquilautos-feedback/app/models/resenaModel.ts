@@ -237,21 +237,21 @@ export async function findResenasByVehiculo(idVehiculo: string) {
   });
 }
 
-export async function findResenaAlquiladorByReserva(idReserva: number) {
+export async function findResenaAlquiladorByReserva(idReserva: string) {
   return db.resena.findFirst({
     where: { idReserva, resenaAlquilador: { is: {} }},
     include: RESENA_INCLUDE,
   })
 }
 
-export async function findResenaPropietarioByReserva(idReserva: number) {
+export async function findResenaPropietarioByReserva(idReserva: string) {
   return db.resena.findFirst({
     where: { idReserva, resenaPropietario: { is: {} }},
     include: RESENA_INCLUDE,
   })
 }
 
-export async function findResenaVehiculoByReserva(idReserva: number) {
+export async function findResenaVehiculoByReserva(idReserva: string) {
   return db.resena.findFirst({
     where: { idReserva, resenaVehiculo: { is: {} }},
     include: RESENA_INCLUDE,

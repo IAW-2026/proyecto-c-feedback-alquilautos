@@ -19,7 +19,7 @@ enum EstadoModeracion {
 
 model Resena {
   id                     Int       @id @default(autoincrement())
-  idReserva              Int
+  idReserva              String
   idEmisor               String
   calificacionGeneral    Int
   descripcion            String

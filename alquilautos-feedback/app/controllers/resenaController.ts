@@ -259,7 +259,7 @@ export async function getResenasDetalladasByVehiculo(id: string) {
   }
 }
 
-export async function getResenaAlquiladorByReserva(id: number){
+export async function getResenaAlquiladorByReserva(id: string){
   try {
     const resena = await ResenaModel.findResenaAlquiladorByReserva(id);
     return NextResponse.json({ resena });
@@ -269,7 +269,7 @@ export async function getResenaAlquiladorByReserva(id: number){
   }
 }
 
-export async function getResenaPropietarioByReserva(id: number){
+export async function getResenaPropietarioByReserva(id: string){
   try {
     const resena = await ResenaModel.findResenaPropietarioByReserva(id);
     return NextResponse.json({ resena });
@@ -279,7 +279,7 @@ export async function getResenaPropietarioByReserva(id: number){
   }
 }
 
-export async function getResenaVehiculoByReserva(id: number){
+export async function getResenaVehiculoByReserva(id: string){
   try {
     const resena = await ResenaModel.findResenaVehiculoByReserva(id);
     return NextResponse.json({ resena });

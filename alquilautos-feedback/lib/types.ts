@@ -26,7 +26,7 @@ export interface RespuestaItem {
 
 export interface ResenaCompleta {
   id: number;
-  idReserva: number;
+  idReserva: string;
   idEmisor: string;
   calificacionGeneral: number;
   descripcion: string;
@@ -100,7 +100,7 @@ export function shortenId(id: number | string, start = 8, end = 6) {
 
 // ── DTOs para creación ───────────────────────────────────
 export interface CreateResenaDto {
-  idReserva: number;
+  idReserva: string;
   idEmisor: string;
   calificacionGeneral: number;
   descripcion: string;

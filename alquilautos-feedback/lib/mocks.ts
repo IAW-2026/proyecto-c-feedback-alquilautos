@@ -36,7 +36,7 @@ export interface Vehiculo {
 }
 
 export interface Reserva {
-  idReserva: number;
+  idReserva: string;
   idVehiculo: string;
   idPropietario: string;
   idAlquilador: string;
@@ -81,11 +81,12 @@ const MOCK_VEHICULOS: Record<string, Vehiculo> = {
 };
 
 // ── Reservas (Seller App) ────────────────────────────────
-const MOCK_RESERVAS: Record<number, Reserva> = {};
+const MOCK_RESERVAS: Record<string, Reserva> = {};
 const ESTADOS: Reserva["estado"][] = ["Pendiente", "Aceptada", "Rechazada"];
 for (let i = 1; i <= 20; i++) {
-  MOCK_RESERVAS[i] = {
-    idReserva: i,
+  const key = `res_${i}`;
+  MOCK_RESERVAS[key] = {
+    idReserva: key,
     idVehiculo: Object.keys(MOCK_VEHICULOS)[(i - 1) % Object.keys(MOCK_VEHICULOS).length],
     idPropietario: `user_${((i - 1) % 5) + 11}`,
     idAlquilador: `user_${((i - 1) % 8) + 1}`,
@@ -109,7 +110,7 @@ export function getMockVehiculo(id: string): Vehiculo | null {
   return MOCK_VEHICULOS[id] ?? null;
 }
 
-export function getMockReserva(id: number): Reserva | null {
+export function getMockReserva(id: string): Reserva | null {
   return MOCK_RESERVAS[id] ?? null;
 }
 
