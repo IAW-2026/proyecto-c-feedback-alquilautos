@@ -113,7 +113,7 @@ EXTRA
 
 
 ETAPA-3
-    Eliminar mocks, conectar apps
+    DONE - Eliminar mocks, conectar apps
     Endpoint - Mejores ENTIDAD de la semana / de todo el tiempo
     Endpoint - Peores ENTIDAD de la semana / de todo el tiempo
     Endpoint - Propietarios que mas/menos responden
