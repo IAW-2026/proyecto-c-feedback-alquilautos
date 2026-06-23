@@ -7,8 +7,8 @@ import { Car, FileText, Key, Bot, Star, User, Folder } from "lucide-react";
 import { TipoResena } from "@/lib/types";
 
 interface Vehiculo {
-  idVehiculo: number;
-  idPropietario: number;
+  idVehiculo: string;
+  idPropietario: string;
   marca: string;
   modelo: string;
   precio: number;
@@ -166,7 +166,7 @@ function TabVehiculos() {
     setLoading(true);
     const r = await fetch('/api/proxy/seller/api/vehiculo/disponible');
     const d = await r.json();
-    setItems(d.data.vehiculos ?? []);
+    setItems(d.vehiculos ?? []);
     setLoading(false);
   }, []);
 
@@ -285,7 +285,7 @@ function TabPropietarios() {
     setLoading(true);
     const r = await fetch('/api/proxy/seller/api/propietario/');
     const d = await r.json();
-    setItems(d.data ?? []);
+    setItems(d ?? []);
     setLoading(false);
   }, []);
 

@@ -27,7 +27,7 @@ export interface Propietario {
 }
 
 export interface Vehiculo {
-  idVehiculo: number;
+  idVehiculo: string;
   idPropietario: string;
   marca: string;
   modelo: string;
@@ -37,7 +37,7 @@ export interface Vehiculo {
 
 export interface Reserva {
   idReserva: number;
-  idVehiculo: number;
+  idVehiculo: string;
   idPropietario: string;
   idAlquilador: string;
   fechaInicio: string;
@@ -67,17 +67,17 @@ const MOCK_PROPIETARIOS: Record<string, Propietario> = {
 };
 
 // ── Vehículos (Seller App) ───────────────────────────────
-const MOCK_VEHICULOS: Record<number, Vehiculo> = {
-  1:  { idVehiculo: 1,  idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j1", marca: "Toyota", modelo: "Corolla", precio: 8000, fotos: "https://placehold.co/400x300?text=Toyota+Corolla" },
-  2:  { idVehiculo: 2,  idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j1", marca: "Ford", modelo: "Focus", precio: 6500, fotos: "https://placehold.co/400x300?text=Ford+Focus" },
-  3:  { idVehiculo: 3,  idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j2", marca: "Chevrolet", modelo: "Cruze", precio: 7000, fotos: "https://placehold.co/400x300?text=Chevrolet+Cruze" },
-  7:  { idVehiculo: 7,  idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j2", marca: "Fiat", modelo: "Cronos", precio: 5800, fotos: "https://placehold.co/400x300?text=Fiat+Cronos" },
-  4:  { idVehiculo: 4,  idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j3", marca: "Honda", modelo: "Civic", precio: 9000, fotos: "https://placehold.co/400x300?text=Honda+Civic" },
-  8:  { idVehiculo: 8,  idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j3", marca: "Peugeot", modelo: "208", precio: 6200, fotos: "https://placehold.co/400x300?text=Peugeot+208" },
-  5:  { idVehiculo: 5,  idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j4", marca: "Volkswagen", modelo: "Golf", precio: 7500, fotos: "https://placehold.co/400x300?text=VW+Golf" },
-  9:  { idVehiculo: 9,  idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j4", marca: "Jeep", modelo: "Renegade", precio: 9500, fotos: "https://placehold.co/400x300?text=Jeep+Renegade" },
-  6:  { idVehiculo: 6,  idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j5", marca: "Renault", modelo: "Megane", precio: 5500, fotos: "https://placehold.co/400x300?text=Renault+Megane" },
-  10: { idVehiculo: 10, idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j5", marca: "Nissan", modelo: "Sentra", precio: 7800, fotos: "https://placehold.co/400x300?text=Nissan+Sentra" },
+const MOCK_VEHICULOS: Record<string, Vehiculo> = {
+  "veh_1f3a2a71-2d4d-4d7f-b3d8-374fd5e2a1f1": { idVehiculo: "veh_1f3a2a71-2d4d-4d7f-b3d8-374fd5e2a1f1", idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j1", marca: "Toyota", modelo: "Corolla", precio: 8000, fotos: "https://placehold.co/400x300?text=Toyota+Corolla" },
+  "veh_8d6f0c22-5c98-4fdf-8e8f-2b30ab4b15d0": { idVehiculo: "veh_8d6f0c22-5c98-4fdf-8e8f-2b30ab4b15d0", idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j1", marca: "Ford", modelo: "Focus", precio: 6500, fotos: "https://placehold.co/400x300?text=Ford+Focus" },
+  "veh_3c5e4f99-7b1a-49de-bb2b-5c6b8ea9a23d": { idVehiculo: "veh_3c5e4f99-7b1a-49de-bb2b-5c6b8ea9a23d", idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j2", marca: "Chevrolet", modelo: "Cruze", precio: 7000, fotos: "https://placehold.co/400x300?text=Chevrolet+Cruze" },
+  "veh_50b4d328-e2a0-4520-a5b9-89a28e7b2c82": { idVehiculo: "veh_50b4d328-e2a0-4520-a5b9-89a28e7b2c82", idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j2", marca: "Fiat", modelo: "Cronos", precio: 5800, fotos: "https://placehold.co/400x300?text=Fiat+Cronos" },
+  "veh_9a6e4fa4-6c37-44b1-b69d-7d1d8c8f3c3a": { idVehiculo: "veh_9a6e4fa4-6c37-44b1-b69d-7d1d8c8f3c3a", idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j3", marca: "Honda", modelo: "Civic", precio: 9000, fotos: "https://placehold.co/400x300?text=Honda+Civic" },
+  "veh_1c2d3e44-5b6f-47f8-a993-1eef1c47b5a5": { idVehiculo: "veh_1c2d3e44-5b6f-47f8-a993-1eef1c47b5a5", idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j3", marca: "Peugeot", modelo: "208", precio: 6200, fotos: "https://placehold.co/400x300?text=Peugeot+208" },
+  "veh_2b4d5f66-8a7c-41db-b3f8-9f9d5c6a4b1c": { idVehiculo: "veh_2b4d5f66-8a7c-41db-b3f8-9f9d5c6a4b1c", idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j4", marca: "Volkswagen", modelo: "Golf", precio: 7500, fotos: "https://placehold.co/400x300?text=VW+Golf" },
+  "veh_7c8d9e20-3b2a-4c1f-8a0f-6d3b5e6f7a8b": { idVehiculo: "veh_7c8d9e20-3b2a-4c1f-8a0f-6d3b5e6f7a8b", idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j4", marca: "Jeep", modelo: "Renegade", precio: 9500, fotos: "https://placehold.co/400x300?text=Jeep+Renegade" },
+  "veh_4e5f6a77-6b0c-4d1a-8e0f-2b4c6d7e8f9a": { idVehiculo: "veh_4e5f6a77-6b0c-4d1a-8e0f-2b4c6d7e8f9a", idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j5", marca: "Renault", modelo: "Megane", precio: 5500, fotos: "https://placehold.co/400x300?text=Renault+Megane" },
+  "veh_8f9a0b11-2c3d-4e5f-8a9b-0c1d2e3f4a5b": { idVehiculo: "veh_8f9a0b11-2c3d-4e5f-8a9b-0c1d2e3f4a5b", idPropietario: "user_345fgwergoxxklMpbBR3spfNw7j5", marca: "Nissan", modelo: "Sentra", precio: 7800, fotos: "https://placehold.co/400x300?text=Nissan+Sentra" },
 };
 
 // ── Reservas (Seller App) ────────────────────────────────
@@ -86,7 +86,7 @@ const ESTADOS: Reserva["estado"][] = ["Pendiente", "Aceptada", "Rechazada"];
 for (let i = 1; i <= 20; i++) {
   MOCK_RESERVAS[i] = {
     idReserva: i,
-    idVehiculo: ((i - 1) % 6) + 1,
+    idVehiculo: Object.keys(MOCK_VEHICULOS)[(i - 1) % Object.keys(MOCK_VEHICULOS).length],
     idPropietario: `user_${((i - 1) % 5) + 11}`,
     idAlquilador: `user_${((i - 1) % 8) + 1}`,
     fechaInicio: `${String(i % 28 + 1).padStart(2, "0")}-06-2026`,
@@ -105,7 +105,7 @@ export function getMockPropietario(id: string): Propietario | null {
   return MOCK_PROPIETARIOS[id] ?? null;
 }
 
-export function getMockVehiculo(id: number): Vehiculo | null {
+export function getMockVehiculo(id: string): Vehiculo | null {
   return MOCK_VEHICULOS[id] ?? null;
 }
 

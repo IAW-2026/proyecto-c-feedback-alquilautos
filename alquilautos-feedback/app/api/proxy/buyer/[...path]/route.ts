@@ -1,3 +1,4 @@
+import { snakeToCamel } from "@/lib/snakeToCamel";
 import { NextRequest, NextResponse } from "next/server";
 
 const BASE = process.env.BUYER_API_URL;
@@ -7,5 +8,5 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ path
   const url = `${BASE}/${path.join("/")}`;
   const res = await fetch(url);
   const data = await res.json();
-  return NextResponse.json(data, { status: res.status });
+  return NextResponse.json(snakeToCamel(data), { status: res.status });
 }

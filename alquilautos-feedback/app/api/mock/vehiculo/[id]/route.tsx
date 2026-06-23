@@ -3,7 +3,7 @@ import { getMockVehiculo } from "@/lib/mocks";
 
 // GET /api/mock/vehiculo/:id
 export async function GET( _: Request, { params }: { params: Promise<{ id: string }> } ) {
-  const vehiculo = getMockVehiculo(Number((await params).id));
+  const vehiculo = getMockVehiculo((await params).id);
   
   if (!vehiculo) {
     return NextResponse.json(

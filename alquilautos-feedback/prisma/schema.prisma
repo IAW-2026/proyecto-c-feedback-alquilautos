@@ -35,7 +35,7 @@ model Resena {
 
 model ResenaVehiculo {
   id                     Int      @id
-  idVehiculo             Int
+  idVehiculo             String
   calificacionLimpieza   Int
   calificacionEstado     Int
   calificacionComodidad  Int

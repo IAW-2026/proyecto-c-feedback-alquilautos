@@ -422,7 +422,7 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
         descripcion: createForm.descripcion,
       };
       let extra = {};
-      if (createForm.tipo === "vehiculo") extra = { idVehiculo: Number(createForm.idVehiculo), calificacionLimpieza: Number(createForm.calificacionLimpieza), calificacionEstado: Number(createForm.calificacionEstado), calificacionComodidad: Number(createForm.calificacionComodidad) };
+      if (createForm.tipo === "vehiculo") extra = { idVehiculo: createForm.idVehiculo, calificacionLimpieza: Number(createForm.calificacionLimpieza), calificacionEstado: Number(createForm.calificacionEstado), calificacionComodidad: Number(createForm.calificacionComodidad) };
       else if (createForm.tipo === "propietario") extra = { idPropietario: createForm.idPropietario, calificacionComunicacion: Number(createForm.calificacionComunicacion), calificacionPuntualidad: Number(createForm.calificacionPuntualidad) };
       else extra = { idAlquilador: createForm.idAlquilador, calificacionComunicacion: Number(createForm.calificacionComunicacion), calificacionPuntualidad: Number(createForm.calificacionPuntualidad), calificacionDevolucion: Number(createForm.calificacionDevolucion) };
 
@@ -472,7 +472,7 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 <div className="form-group"><label className="form-label">ID Reserva</label><input className="form-input" type="number" value={createForm.idReserva} onChange={cf("idReserva")} /></div>
                 <div className="form-group"><label className="form-label">ID Emisor</label><input className="form-input" type="text" value={createForm.idEmisor} onChange={cf("idEmisor")} /></div>
-                {createForm.tipo === "vehiculo" && <div className="form-group"><label className="form-label">ID Vehículo</label><input className="form-input" type="number" value={createForm.idVehiculo} onChange={cf("idVehiculo")} /></div>}
+                {createForm.tipo === "vehiculo" && <div className="form-group"><label className="form-label">ID Vehículo</label><input className="form-input" type="text" value={createForm.idVehiculo} onChange={cf("idVehiculo")} /></div>}
                 {createForm.tipo === "propietario" && <div className="form-group"><label className="form-label">ID Propietario</label><input className="form-input" type="text" value={createForm.idPropietario} onChange={cf("idPropietario")} /></div>}
                 {createForm.tipo === "alquilador" && <div className="form-group"><label className="form-label">ID Alquilador</label><input className="form-input" type="text" value={createForm.idAlquilador} onChange={cf("idAlquilador")} /></div>}
                 <div className="form-group"><label className="form-label">Calificación general</label><CalifSelect value={Number(createForm.calificacionGeneral)} onChange={v => setCreateForm(p => ({ ...p, calificacionGeneral: v }))} /></div>
@@ -579,7 +579,7 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
                       <div key={k} style={{ textAlign: "center" }}>
                         <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 4 }}>{l}</div>
                         <CalifSelect
-                          value={isView ? (resena.resenaVehiculo as Record<string, number>)[k] : Number((editForm as Record<string, unknown>)[k])}
+                          value={isView ? Number((resena.resenaVehiculo as Record<string, unknown>)[k]) : Number((editForm as Record<string, unknown>)[k])}
                           onChange={v => setEditForm(p => p ? { ...p, [k]: v } : p)}
                           disabled={isView}
                         />

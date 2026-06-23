@@ -10,7 +10,7 @@ const ID_KEY: Record<TipoResena, string> = {
 
 async function fetchResenas(tipo: TipoResena, id: number | string) {
   switch (tipo) {
-    case "vehiculo":    return ResenaController.getResenasDetalladasByVehiculo(Number(id));
+    case "vehiculo":    return ResenaController.getResenasDetalladasByVehiculo(String(id));
     case "propietario": return ResenaController.getResenasDetalladasByPropietario(String(id));
     case "alquilador":  return ResenaController.getResenasDetalladasByAlquilador(String(id));
   }

@@ -207,7 +207,7 @@ export async function findResenasByPropietario(idPropietario: string) {
 }
 
 // ── Reseñas de un vehículo ───────────────────────────────
-export async function findResenasDetalladasByVehiculo(idVehiculo: number) {
+export async function findResenasDetalladasByVehiculo(idVehiculo: string) {
   return db.resena.findMany({
     where: { resenaVehiculo: { is: { idVehiculo } } },
     include: RESENA_INCLUDE,
@@ -215,7 +215,7 @@ export async function findResenasDetalladasByVehiculo(idVehiculo: number) {
   });
 }
 
-export async function findResenasByVehiculo(idVehiculo: number) {
+export async function findResenasByVehiculo(idVehiculo: string) {
   return db.resena.findMany({
     where: { resenaVehiculo: { is: { idVehiculo } } },
     select: {
@@ -297,7 +297,7 @@ export async function calcPromedioPropietario(idPropietario: string) {
 }
 
 // ── Promedio de calificacion de vehículo ────────────────
-export async function calcPromedioVehiculo(idVehiculo: number) {
+export async function calcPromedioVehiculo(idVehiculo: string) {
   const result = await db.resena.aggregate({
     where: {
       resenaVehiculo: { is: { idVehiculo } },

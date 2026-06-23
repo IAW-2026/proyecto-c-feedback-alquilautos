@@ -32,7 +32,7 @@ export interface ResenaCompleta {
   descripcion: string;
   fechaCreacion: string;
   resenaVehiculo: {
-    idVehiculo: number;
+    idVehiculo: string;
     calificacionLimpieza: number;
     calificacionEstado: number;
     calificacionComodidad: number;
@@ -105,7 +105,7 @@ export interface CreateResenaDto {
   calificacionGeneral: number;
   descripcion: string;
   // Tipo vehiculo
-  idVehiculo?: number;
+  idVehiculo?: string;
   calificacionLimpieza?: number;
   calificacionEstado?: number;
   calificacionComodidad?: number;

@@ -225,7 +225,7 @@ export async function getResenasDetalladasByPropietario(id: string) {
 }
 
 // ── GET /api/resena/vehiculo/:id ─────────────────────────
-export async function getResenasByVehiculo(id: number) {
+export async function getResenasByVehiculo(id: string) {
   try {
     const data = await ResenaModel.findResenasByVehiculo(id);
 
@@ -249,7 +249,7 @@ export async function getResenasByVehiculo(id: number) {
 }
 
 // ── GET /api/resena/vehiculo/:id/detallada ───────────────
-export async function getResenasDetalladasByVehiculo(id: number) {
+export async function getResenasDetalladasByVehiculo(id: string) {
   try {
     const resenas = await ResenaModel.findResenasDetalladasByVehiculo(id);
     return NextResponse.json({ resenas });
@@ -312,7 +312,7 @@ export async function getPromedioPropietario(id: string) {
 }
 
 // ── GET /api/resena/vehiculo/:id/promedio ────────────────
-export async function getPromedioVehiculo(id: number) {
+export async function getPromedioVehiculo(id: string) {
   try {
     const result = await ResenaModel.calcPromedioVehiculo(id);
     return NextResponse.json({ id_vehiculo: id, ...result });
