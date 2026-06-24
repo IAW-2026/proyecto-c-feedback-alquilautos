@@ -40,11 +40,6 @@ export async function postResena(body: unknown) {
   try {
     const dto = body as CreateResenaDto;
 
-    console.log(dto);
-    console.log("----------");
-    console.log(body);
-    console.log("---------------------------------");
-
     // Validaciones
     if (!dto.idReserva || !dto.idEmisor || !dto.calificacionGeneral || !dto.descripcion) {
       return NextResponse.json(
@@ -264,9 +259,15 @@ export async function getResenasDetalladasByVehiculo(id: string) {
   }
 }
 
-export async function getResenaAlquiladorByReserva(id: string){
+// ── GET Reseña Alquilador por Reserva ───────────────────────
+export async function getResenaAlquiladorByReserva(id: string) {
   try {
     const resena = await ResenaModel.findResenaAlquiladorByReserva(id);
+    
+    if (!resena) {
+      return NextResponse.json({ error: "Reseña del alquilador no encontrada" }, { status: 404 });
+    }
+    
     return NextResponse.json({ resena });
   } catch (e) {
     console.error(e);
@@ -274,9 +275,15 @@ export async function getResenaAlquiladorByReserva(id: string){
   }
 }
 
-export async function getResenaPropietarioByReserva(id: string){
+// ── GET Reseña Propietario por Reserva ──────────────────────
+export async function getResenaPropietarioByReserva(id: string) {
   try {
     const resena = await ResenaModel.findResenaPropietarioByReserva(id);
+    
+    if (!resena) {
+      return NextResponse.json({ error: "Reseña del propietario no encontrada" }, { status: 404 });
+    }
+    
     return NextResponse.json({ resena });
   } catch (e) {
     console.error(e);
@@ -284,9 +291,15 @@ export async function getResenaPropietarioByReserva(id: string){
   }
 }
 
-export async function getResenaVehiculoByReserva(id: string){
+// ── GET Reseña Vehículo por Reserva ─────────────────────────
+export async function getResenaVehiculoByReserva(id: string) {
   try {
     const resena = await ResenaModel.findResenaVehiculoByReserva(id);
+    
+    if (!resena) {
+      return NextResponse.json({ error: "Reseña del vehículo no encontrada" }, { status: 404 });
+    }
+    
     return NextResponse.json({ resena });
   } catch (e) {
     console.error(e);
