@@ -118,13 +118,14 @@ ETAPA-3
     DONE - Métricas resumen
     DONE - Métricas tendencias semana/mes
     DONE - Métricas distribucion de calificaciones
-    Métricas tiempo promedio de moderacion
-    Métricas entidades con caida brusca de calificaciones
-    Métricas emisores recurrentes
-    Métricas emisor spammer
+    DONE - Métricas tiempo promedio de moderacion
+    DONE - Métricas entidades con caida brusca de calificaciones
+    DONE - Métricas emisores recurrentes
+    DONE - Métricas emisor spammer
     Reemplazar IDs por DNIs
     Lista desplegable de emisores y receptores
     Selector visual de estrellas
+
     Skeleton
     Paginacion
     Filtro automatico de reseñas con AI (quizas no rechazar, solo recomendar)

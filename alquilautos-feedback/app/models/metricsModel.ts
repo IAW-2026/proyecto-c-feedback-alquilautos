@@ -1,12 +1,13 @@
 import { db } from "@/lib/prisma";
-import { Prisma, EstadoModeracion } from "@prisma/client";
+import { EstadoModeracion } from "@prisma/client";
 
-// ── Helpers ───────────────────────────────────────────────
-export type Periodo = "semana" | "mes" | "anio" | "total";
+// ── Tipos compartidos ─────────────────────────────────────
+export type Periodo    = "semana" | "mes" | "anio" | "total";
 export type TipoEntidad = "alquilador" | "propietario" | "vehiculo";
-export type Orden = "desc" | "asc";
+export type Orden       = "desc" | "asc";
+export type Granularidad = "semana" | "mes";
 
-function getFechaDesde(periodo: Periodo): Date | undefined {
+export function getFechaDesde(periodo: Periodo): Date | undefined {
   if (periodo === "total") return undefined;
   const d = new Date();
   if (periodo === "semana") d.setDate(d.getDate() - 7);
@@ -15,103 +16,25 @@ function getFechaDesde(periodo: Periodo): Date | undefined {
   return d;
 }
 
-// ── Ranking de entidades ──────────────────────────────────
-// Devuelve un ranking de entidades ordenado por calificacion promedio.
-// Solo considera reseñas con al menos una moderacion Aprobada.
-export async function getRanking(
-  tipo: TipoEntidad,
-  periodo: Periodo,
-  orden: Orden,
-  limit: number
-) {
-  const fechaDesde = getFechaDesde(periodo);
-
-  const whereBase = {
-    moderaciones: { some: { estado: EstadoModeracion.APROBADA } },
-    ...(fechaDesde ? { fechaCreacion: { gte: fechaDesde } } : {}),
-  };
-
-  if (tipo === "alquilador") {
-    const resenas = await db.resena.findMany({
-      where: { ...whereBase, resenaAlquilador: { isNot: null } },
-      select: {
-        calificacionGeneral: true,
-        resenaAlquilador: { select: { idAlquilador: true } },
-      },
-    });
-
-    return agruparYOrdenar(
-      resenas.map(r => ({
-        id: r.resenaAlquilador!.idAlquilador,
-        calificacion: r.calificacionGeneral,
-      })),
-      "id_alquilador",
-      orden,
-      limit
-    );
-  }
-
-  if (tipo === "propietario") {
-    const resenas = await db.resena.findMany({
-      where: { ...whereBase, resenaPropietario: { isNot: null } },
-      select: {
-        calificacionGeneral: true,
-        resenaPropietario: { select: { idPropietario: true } },
-      },
-    });
-
-    return agruparYOrdenar(
-      resenas.map(r => ({
-        id: r.resenaPropietario!.idPropietario,
-        calificacion: r.calificacionGeneral,
-      })),
-      "id_propietario",
-      orden,
-      limit
-    );
-  }
-
-  // vehiculo
-  const resenas = await db.resena.findMany({
-    where: { ...whereBase, resenaVehiculo: { isNot: null } },
-    select: {
-      calificacionGeneral: true,
-      resenaVehiculo: { select: { idVehiculo: true } },
-    },
-  });
-
-  return agruparYOrdenar(
-    resenas.map(r => ({
-      id: r.resenaVehiculo!.idVehiculo,
-      calificacion: r.calificacionGeneral,
-    })),
-    "id_vehiculo",
-    orden,
-    limit
-  );
-}
-
-// Agrupa por entidad, calcula promedio y ordena
+// ── Util: agrupar items por entidad y calcular promedio ───
 function agruparYOrdenar(
-  items: { id: string | number; calificacion: number }[],
-  idKey: string,
-  orden: Orden,
-  limit: number
+  items:  { id: string | number; calificacion: number }[],
+  idKey:  string,
+  orden:  Orden,
+  limit:  number
 ) {
   const map: Record<string, { suma: number; cantidad: number }> = {};
-
   for (const item of items) {
     const k = String(item.id);
     if (!map[k]) map[k] = { suma: 0, cantidad: 0 };
-    map[k].suma      += item.calificacion;
-    map[k].cantidad  += 1;
+    map[k].suma     += item.calificacion;
+    map[k].cantidad += 1;
   }
-
   return Object.entries(map)
     .map(([id, { suma, cantidad }]) => ({
       [idKey]: id,
       calificacion_promedio: Math.round((suma / cantidad) * 100) / 100,
-      cantidad_resenas:      cantidad,
+      cantidad_resenas: cantidad,
     }))
     .sort((a, b) =>
       orden === "desc"
@@ -121,154 +44,349 @@ function agruparYOrdenar(
     .slice(0, limit);
 }
 
+// ── Ranking ───────────────────────────────────────────────
+export async function getRanking(
+  tipo:    TipoEntidad,
+  periodo: Periodo,
+  orden:   Orden,
+  limit:   number
+) {
+  const fechaDesde = getFechaDesde(periodo);
+  const whereBase = {
+    moderaciones: { some: { estado: EstadoModeracion.APROBADA } },
+    ...(fechaDesde ? { fechaCreacion: { gte: fechaDesde } } : {}),
+  };
+
+  if (tipo === "alquilador") {
+    const rows = await db.resena.findMany({
+      where: { ...whereBase, resenaAlquilador: { isNot: null } },
+      select: { calificacionGeneral: true, resenaAlquilador: { select: { idAlquilador: true } } },
+    });
+    return agruparYOrdenar(
+      rows.map(r => ({ id: r.resenaAlquilador!.idAlquilador, calificacion: r.calificacionGeneral })),
+      "id_alquilador", orden, limit
+    );
+  }
+  if (tipo === "propietario") {
+    const rows = await db.resena.findMany({
+      where: { ...whereBase, resenaPropietario: { isNot: null } },
+      select: { calificacionGeneral: true, resenaPropietario: { select: { idPropietario: true } } },
+    });
+    return agruparYOrdenar(
+      rows.map(r => ({ id: r.resenaPropietario!.idPropietario, calificacion: r.calificacionGeneral })),
+      "id_propietario", orden, limit
+    );
+  }
+  const rows = await db.resena.findMany({
+    where: { ...whereBase, resenaVehiculo: { isNot: null } },
+    select: { calificacionGeneral: true, resenaVehiculo: { select: { idVehiculo: true } } },
+  });
+  return agruparYOrdenar(
+    rows.map(r => ({ id: r.resenaVehiculo!.idVehiculo, calificacion: r.calificacionGeneral })),
+    "id_vehiculo", orden, limit
+  );
+}
+
 // ── Resumen global ────────────────────────────────────────
 export async function getResumenGlobal() {
-  const ahora     = new Date();
+  const ahora        = new Date();
   const haceUnaSemana = new Date(ahora); haceUnaSemana.setDate(ahora.getDate() - 7);
   const haceUnMes     = new Date(ahora); haceUnMes.setDate(ahora.getDate() - 30);
 
   const [
-    totalResenas,
-    resenasConModAprobada,
-    resenasConModRechazada,
-    resenasConModPendiente,
-    resenasConRespuesta,
-    resenasUltimaSemana,
-    resenasUltimoMes,
-    promedioGlobal,
+    totalResenas, aprobadas, rechazadas, pendientes,
+    conRespuesta, ultimaSemana, ultimoMes, promedioAgg,
   ] = await Promise.all([
-    // Total de reseñas
     db.resena.count(),
-
-    // Aprobadas (tienen al menos una mod aprobada)
-    db.resena.count({
-      where: { moderaciones: { some: { estado: EstadoModeracion.APROBADA } } },
-    }),
-
-    // Rechazadas (tienen mod rechazada y ninguna aprobada posterior)
-    db.resena.count({
-      where: {
-        moderaciones: { some: { estado: EstadoModeracion.RECHAZADA } },
-        NOT: { moderaciones: { some: { estado: EstadoModeracion.APROBADA } } },
-      },
-    }),
-
-    // Pendientes (solo mod pendiente)
-    db.resena.count({
-      where: {
-        moderaciones: { every: { estado: EstadoModeracion.PENDIENTE } },
-      },
-    }),
-
-    // Con respuesta
+    db.resena.count({ where: { moderaciones: { some: { estado: EstadoModeracion.APROBADA } } } }),
+    db.resena.count({ where: { moderaciones: { some: { estado: EstadoModeracion.RECHAZADA } }, NOT: { moderaciones: { some: { estado: EstadoModeracion.APROBADA } } } } }),
+    db.resena.count({ where: { moderaciones: { every: { estado: EstadoModeracion.PENDIENTE } } } }),
     db.resena.count({ where: { respuesta: { isNot: null } } }),
-
-    // Última semana (aprobadas)
-    db.resena.count({
-      where: {
-        moderaciones: { some: { estado: EstadoModeracion.APROBADA } },
-        fechaCreacion: { gte: haceUnaSemana },
-      },
-    }),
-
-    // Último mes (aprobadas)
-    db.resena.count({
-      where: {
-        moderaciones: { some: { estado: EstadoModeracion.APROBADA } },
-        fechaCreacion: { gte: haceUnMes },
-      },
-    }),
-
-    // Promedio global (solo aprobadas)
-    db.resena.aggregate({
-      where: { moderaciones: { some: { estado: EstadoModeracion.APROBADA } } },
-      _avg: { calificacionGeneral: true },
-    }),
+    db.resena.count({ where: { moderaciones: { some: { estado: EstadoModeracion.APROBADA } }, fechaCreacion: { gte: haceUnaSemana } } }),
+    db.resena.count({ where: { moderaciones: { some: { estado: EstadoModeracion.APROBADA } }, fechaCreacion: { gte: haceUnMes } } }),
+    db.resena.aggregate({ where: { moderaciones: { some: { estado: EstadoModeracion.APROBADA } } }, _avg: { calificacionGeneral: true } }),
   ]);
 
-  const tasa_aprobacion  = totalResenas > 0 ? Math.round((resenasConModAprobada  / totalResenas) * 1000) / 10 : 0;
-  const tasa_respuesta   = resenasConModAprobada > 0 ? Math.round((resenasConRespuesta / resenasConModAprobada) * 1000) / 10 : 0;
-
   return {
-    total_resenas:           totalResenas,
-    total_aprobadas:         resenasConModAprobada,
-    total_rechazadas:        resenasConModRechazada,
-    total_pendientes:        resenasConModPendiente,
-    tasa_aprobacion,
-    calificacion_promedio_global: Math.round((promedioGlobal._avg.calificacionGeneral ?? 0) * 100) / 100,
-    resenas_con_respuesta:   resenasConRespuesta,
-    tasa_respuesta,
-    resenas_ultima_semana:   resenasUltimaSemana,
-    resenas_ultimo_mes:      resenasUltimoMes,
+    total_resenas:                totalResenas,
+    total_aprobadas:              aprobadas,
+    total_rechazadas:             rechazadas,
+    total_pendientes:             pendientes,
+    tasa_aprobacion:              totalResenas > 0 ? Math.round((aprobadas / totalResenas) * 1000) / 10 : 0,
+    calificacion_promedio_global: Math.round((promedioAgg._avg.calificacionGeneral ?? 0) * 100) / 100,
+    resenas_con_respuesta:        conRespuesta,
+    tasa_respuesta:               aprobadas > 0 ? Math.round((conRespuesta / aprobadas) * 1000) / 10 : 0,
+    resenas_ultima_semana:        ultimaSemana,
+    resenas_ultimo_mes:           ultimoMes,
   };
 }
 
 // ── Tendencia temporal ────────────────────────────────────
-export type Granularidad = "semana" | "mes";
-
 export async function getTendencia(granularidad: Granularidad, cantidad: number) {
-  // Traer todas las reseñas aprobadas con fecha y calificacion
   const resenas = await db.resena.findMany({
     where: { moderaciones: { some: { estado: EstadoModeracion.APROBADA } } },
     select: { calificacionGeneral: true, fechaCreacion: true },
     orderBy: { fechaCreacion: "asc" },
   });
 
-  // Agrupar por periodo
   const map: Record<string, { suma: number; cantidad: number }> = {};
-
   for (const r of resenas) {
     const key = granularidad === "mes"
-      ? r.fechaCreacion.toISOString().slice(0, 7)        // "2025-03"
-      : getISOWeekKey(r.fechaCreacion);                  // "2025-W12"
-
+      ? r.fechaCreacion.toISOString().slice(0, 7)
+      : getISOWeekKey(r.fechaCreacion);
     if (!map[key]) map[key] = { suma: 0, cantidad: 0 };
     map[key].suma     += r.calificacionGeneral;
     map[key].cantidad += 1;
   }
 
-  const datos = Object.entries(map)
+  return Object.entries(map)
     .sort(([a], [b]) => a.localeCompare(b))
-    .slice(-cantidad)                                     // últimos N periodos
+    .slice(-cantidad)
     .map(([periodo, { suma, cantidad }]) => ({
       periodo,
-      cantidad_resenas:     cantidad,
+      cantidad_resenas:      cantidad,
       calificacion_promedio: Math.round((suma / cantidad) * 100) / 100,
     }));
-
-  return datos;
 }
 
 function getISOWeekKey(date: Date): string {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
-  const week1 = new Date(d.getFullYear(), 0, 4);
+  const week1   = new Date(d.getFullYear(), 0, 4);
   const weekNum = 1 + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
   return `${d.getFullYear()}-W${String(weekNum).padStart(2, "0")}`;
 }
 
 // ── Distribución de calificaciones ───────────────────────
 export async function getDistribucion(tipo?: TipoEntidad) {
-  const whereBase = {
-    moderaciones: { some: { estado: EstadoModeracion.APROBADA } },
-    ...(tipo === "alquilador"  ? { resenaAlquilador:  { isNot: null } } : {}),
-    ...(tipo === "propietario" ? { resenaPropietario: { isNot: null } } : {}),
-    ...(tipo === "vehiculo"    ? { resenaVehiculo:    { isNot: null } } : {}),
-  };
-
   const resenas = await db.resena.findMany({
-    where: whereBase,
+    where: {
+      moderaciones: { some: { estado: EstadoModeracion.APROBADA } },
+      ...(tipo === "alquilador"  ? { resenaAlquilador:  { isNot: null } } : {}),
+      ...(tipo === "propietario" ? { resenaPropietario: { isNot: null } } : {}),
+      ...(tipo === "vehiculo"    ? { resenaVehiculo:    { isNot: null } } : {}),
+    },
     select: { calificacionGeneral: true },
   });
 
   const dist: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
   for (const r of resenas) dist[r.calificacionGeneral] = (dist[r.calificacionGeneral] ?? 0) + 1;
-
   const total = resenas.length;
+
   return Object.entries(dist).map(([cal, cantidad]) => ({
-    calificacion:  Number(cal),
+    calificacion: Number(cal),
     cantidad,
-    porcentaje:    total > 0 ? Math.round((cantidad / total) * 1000) / 10 : 0,
+    porcentaje: total > 0 ? Math.round((cantidad / total) * 1000) / 10 : 0,
   }));
+}
+
+// ═════════════════════════════════════════════════════════
+// NUEVAS MÉTRICAS
+// ═════════════════════════════════════════════════════════
+
+// ── 1. Tiempo promedio de moderación ─────────────────────
+// Mide cuántos días pasan entre la creación de una reseña
+// y su primera moderación. Segmentado por estado final.
+export async function getTiempoPromedioModeracion() {
+  const moderaciones = await db.moderacion.findMany({
+    select: {
+      fechaCreacion: true,
+      estado:        true,
+      resena:        { select: { fechaCreacion: true } },
+    },
+  });
+
+  if (moderaciones.length === 0) {
+    return {
+      promedio_dias: 0, mediana_dias: 0, percentil_90_dias: 0,
+      total_moderaciones: 0, por_estado: {},
+    };
+  }
+
+  const calcDias = (m: typeof moderaciones[0]) =>
+    (m.fechaCreacion.getTime() - m.resena.fechaCreacion.getTime()) / 86_400_000;
+
+  // Ignorar diferencias negativas (datos inconsistentes)
+  const validos  = moderaciones.filter(m => calcDias(m) >= 0);
+  const diasList = validos.map(calcDias).sort((a, b) => a - b);
+
+  const promedio = diasList.reduce((a, b) => a + b, 0) / diasList.length;
+  const mediana  = diasList[Math.floor(diasList.length / 2)];
+  const p90      = diasList[Math.floor(diasList.length * 0.9)];
+
+  // Agrupar por estado
+  const porEstadoRaw: Record<string, number[]> = {};
+  for (const m of validos) {
+    if (!porEstadoRaw[m.estado]) porEstadoRaw[m.estado] = [];
+    porEstadoRaw[m.estado].push(calcDias(m));
+  }
+
+  const por_estado = Object.fromEntries(
+    Object.entries(porEstadoRaw).map(([estado, dias]) => [
+      estado,
+      {
+        promedio_dias: Math.round((dias.reduce((a, b) => a + b, 0) / dias.length) * 100) / 100,
+        mediana_dias:  Math.round(dias.sort((a, b) => a - b)[Math.floor(dias.length / 2)] * 100) / 100,
+        cantidad:      dias.length,
+      },
+    ])
+  );
+
+  return {
+    promedio_dias:      Math.round(promedio * 100) / 100,
+    mediana_dias:       Math.round(mediana  * 100) / 100,
+    percentil_90_dias:  Math.round(p90      * 100) / 100,
+    total_moderaciones: validos.length,
+    por_estado,
+  };
+}
+
+// ── 2. Entidades con caída brusca de calificación ────────
+// Compara el promedio histórico (antes de X días) con el
+// promedio reciente (últimos X días). Alerta si la diferencia
+// supera el umbral y hay suficientes reseñas recientes.
+export async function getCaidaCalificacion(
+  tipo:               TipoEntidad,
+  diasReciente:       number,  // cuántos días atrás define "reciente"
+  umbralCaida:        number,  // mínima caída en puntos para alertar
+  minResenasRecientes: number  // mínimo de reseñas recientes para ser significativo
+) {
+  const fechaCorte = new Date();
+  fechaCorte.setDate(fechaCorte.getDate() - diasReciente);
+
+  const selectBase = {
+    calificacionGeneral: true,
+    fechaCreacion: true,
+    ...(tipo === "alquilador"  ? { resenaAlquilador:  { select: { idAlquilador:  true } } } : {}),
+    ...(tipo === "propietario" ? { resenaPropietario: { select: { idPropietario: true } } } : {}),
+    ...(tipo === "vehiculo"    ? { resenaVehiculo:    { select: { idVehiculo:    true } } } : {}),
+  };
+
+  const resenas = await db.resena.findMany({
+    where: {
+      moderaciones: { some: { estado: EstadoModeracion.APROBADA } },
+      ...(tipo === "alquilador"  ? { resenaAlquilador:  { isNot: null } } : {}),
+      ...(tipo === "propietario" ? { resenaPropietario: { isNot: null } } : {}),
+      ...(tipo === "vehiculo"    ? { resenaVehiculo:    { isNot: null } } : {}),
+    },
+    select: selectBase,
+  });
+
+  const getEntityId = (r: typeof resenas[0]): string => {
+    if (tipo === "alquilador"  && r.resenaAlquilador)  return String(r.resenaAlquilador.idAlquilador);
+    if (tipo === "propietario" && r.resenaPropietario) return String(r.resenaPropietario.idPropietario);
+    if (tipo === "vehiculo"    && r.resenaVehiculo)    return String(r.resenaVehiculo.idVehiculo);
+    return "unknown";
+  };
+
+  // Agrupar reseñas en histórico vs reciente por entidad
+  const byEntity: Record<string, { historico: number[]; reciente: number[] }> = {};
+  for (const r of resenas) {
+    const id = getEntityId(r);
+    if (!byEntity[id]) byEntity[id] = { historico: [], reciente: [] };
+    if (r.fechaCreacion >= fechaCorte) byEntity[id].reciente.push(r.calificacionGeneral);
+    else                               byEntity[id].historico.push(r.calificacionGeneral);
+  }
+
+  const idKey = tipo === "alquilador" ? "id_alquilador" : tipo === "propietario" ? "id_propietario" : "id_vehiculo";
+  const avg   = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / arr.length;
+
+  return Object.entries(byEntity)
+    .filter(([, { historico, reciente }]) =>
+      reciente.length >= minResenasRecientes && historico.length >= 1
+    )
+    .map(([id, { historico, reciente }]) => {
+      const promHistorico = avg(historico);
+      const promReciente  = avg(reciente);
+      const caida         = promHistorico - promReciente;
+      return {
+        [idKey]:             id,
+        promedio_historico:  Math.round(promHistorico * 100) / 100,
+        promedio_reciente:   Math.round(promReciente  * 100) / 100,
+        caida:               Math.round(caida * 100) / 100,
+        resenas_historicas:  historico.length,
+        resenas_recientes:   reciente.length,
+      };
+    })
+    .filter(e => e.caida >= umbralCaida)
+    .sort((a, b) => b.caida - a.caida);
+}
+
+// ── 3. Emisores recurrentes ───────────────────────────────
+// Lista usuarios que escribieron >= minResenas reseñas,
+// con su cantidad total y calificación promedio emitida.
+export async function getEmisoresRecurrentes(minResenas: number, limit: number) {
+  const resenas = await db.resena.findMany({
+    select: { idEmisor: true, calificacionGeneral: true, fechaCreacion: true },
+    orderBy: { fechaCreacion: "desc" },
+  });
+
+  const byEmisor: Record<string, { calificaciones: number[]; ultimaFecha: Date }> = {};
+  for (const r of resenas) {
+    const id = String(r.idEmisor);
+    if (!byEmisor[id]) {
+      byEmisor[id] = { calificaciones: [], ultimaFecha: r.fechaCreacion };
+    }
+    byEmisor[id].calificaciones.push(r.calificacionGeneral);
+    // ultimaFecha ya es la más reciente porque se ordena desc
+  }
+
+  return Object.entries(byEmisor)
+    .filter(([, { calificaciones }]) => calificaciones.length >= minResenas)
+    .map(([id, { calificaciones, ultimaFecha }]) => ({
+      id_emisor:                   id,
+      cantidad_resenas:            calificaciones.length,
+      calificacion_promedio_emitida: Math.round(
+        (calificaciones.reduce((a, b) => a + b, 0) / calificaciones.length) * 100
+      ) / 100,
+      ultima_resena: ultimaFecha,
+    }))
+    .sort((a, b) => b.cantidad_resenas - a.cantidad_resenas)
+    .slice(0, limit);
+}
+
+// ── 4. Concentración de rechazos por emisor ──────────────
+// Detecta emisores cuya tasa de rechazo (última moderación
+// = Rechazada / total reseñas) supera un umbral.
+// Útil para detectar usuarios que envían contenido inapropiado.
+export async function getRechazosConcentrados(
+  minResenas:  number,  // mínimo de reseñas para ser significativo
+  umbralTasa:  number,  // tasa mínima de rechazo (0-1) para alertar
+  limit:       number
+) {
+  const resenas = await db.resena.findMany({
+    select: {
+      idEmisor:     true,
+      // Solo la moderación más reciente de cada reseña
+      moderaciones: {
+        select:    { estado: true },
+        orderBy:   { fechaCreacion: "desc" },
+        take:       1,
+      },
+    },
+  });
+
+  const byEmisor: Record<string, { total: number; rechazadas: number; pendientes: number }> = {};
+  for (const r of resenas) {
+    const id = String(r.idEmisor);
+    if (!byEmisor[id]) byEmisor[id] = { total: 0, rechazadas: 0, pendientes: 0 };
+    byEmisor[id].total++;
+    const estadoActual = r.moderaciones[0]?.estado;
+    if (estadoActual === EstadoModeracion.RECHAZADA) byEmisor[id].rechazadas++;
+    if (estadoActual === EstadoModeracion.PENDIENTE) byEmisor[id].pendientes++;
+  }
+
+  return Object.entries(byEmisor)
+    .filter(([, { total }]) => total >= minResenas)
+    .map(([id, { total, rechazadas, pendientes }]) => ({
+      id_emisor:          id,
+      total_resenas:      total,
+      resenas_rechazadas: rechazadas,
+      resenas_pendientes: pendientes,
+      tasa_rechazo:       Math.round((rechazadas / total) * 1000) / 10, // porcentaje
+    }))
+    .filter(e => e.tasa_rechazo / 100 >= umbralTasa)
+    .sort((a, b) => b.tasa_rechazo - a.tasa_rechazo)
+    .slice(0, limit);
 }
