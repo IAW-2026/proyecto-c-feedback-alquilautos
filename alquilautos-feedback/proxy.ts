@@ -8,9 +8,8 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 const isAdminRoute = createRouteMatcher([
-  "/moderacion(.*)",
-  "/resenas(.*)",
-  "/entidades(.*)",
+  "/api/moderacion(.*)",
+  "/api/proxy(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -34,7 +33,7 @@ export default clerkMiddleware(async (auth, req) => {
     const metadata = sessionClaims?.publicMetadata as { role? : string };
     const role = metadata?.role;
 
-    if (role !== "adminFeedback") {
+    if (role !== "adminFeedback" && role !== "adminGlobal") {
       return Response.redirect(new URL("/unauthorized", req.url));
     }
   }
