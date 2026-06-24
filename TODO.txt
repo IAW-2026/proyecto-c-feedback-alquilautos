@@ -114,9 +114,14 @@ EXTRA
 
 ETAPA-3
     DONE - Eliminar mocks, conectar apps
-    Endpoint - Mejores ENTIDAD de la semana / de todo el tiempo
-    Endpoint - Peores ENTIDAD de la semana / de todo el tiempo
-    Endpoint - Propietarios que mas/menos responden
+    DONE - Métricas mejores/peores vehiculos/alquiladores/propietarios calificados de la semana/mes/anio/total
+    DONE - Métricas resumen
+    DONE - Métricas tendencias semana/mes
+    DONE - Métricas distribucion de calificaciones
+    Métricas tiempo promedio de moderacion
+    Métricas entidades con caida brusca de calificaciones
+    Métricas emisores recurrentes
+    Métricas emisor spammer
     Reemplazar IDs por DNIs
     Lista desplegable de emisores y receptores
     Selector visual de estrellas
