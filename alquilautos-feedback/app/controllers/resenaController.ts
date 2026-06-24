@@ -40,6 +40,11 @@ export async function postResena(body: unknown) {
   try {
     const dto = body as CreateResenaDto;
 
+    console.log(dto);
+    console.log("----------");
+    console.log(body);
+    console.log("---------------------------------");
+
     // Validaciones
     if (!dto.idReserva || !dto.idEmisor || !dto.calificacionGeneral || !dto.descripcion) {
       return NextResponse.json(
