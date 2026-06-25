@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Stars, TipoBadge, EstadoBadge, Loading, PageHeader, Truncated, EntityTooltipLabel, ConfirmModal } from "@/app/components/ui";
+import { Stars, TipoBadge, EstadoBadge, Loading, PageHeader, Truncated, EntityTooltipLabel, ConfirmModal, Pagination } from "@/app/components/ui";
 import { Edit3, Eye, Link2, MessageCircle, RefreshCcw, Search, Shield, Star, Trash2, X } from "lucide-react";
 import ResenaModal from "@/app/components/modal/ResenaModal";
 import { HistorialModeraciones, HistorialRespuestas } from "@/app/components/modal/HistorialModal";
@@ -36,6 +36,13 @@ function ResenasContent() {
   const [filtroDesde, setFiltroDesde] = useState("");
   const [filtroHasta, setFiltroHasta] = useState("");
   const [filtroReceptorId, setFiltroReceptorId] = useState(searchParams.get("receptorId") ?? "");
+
+  // Paginación
+  const ITEMS_PER_PAGE = 20;
+  const [page, setPage] = useState(1);
+
+  // Resetear página al cambiar filtros
+  useEffect(() => { setPage(1); }, [busqueda, filtroTipo, filtroEstado, filtroDesde, filtroHasta, filtroReceptorId]);
 
   // Modales
   const [modal, setModal] = useState<ModalState>(MODAL_CLOSED);
@@ -94,6 +101,9 @@ function ResenasContent() {
   });
 
   const hayFiltros = filtroTipo !== "todos" || filtroEstado !== "todos" || busqueda || filtroDesde || filtroHasta  || filtroReceptorId;
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const safePage  = Math.min(page, totalPages || 1);
+  const paginated = filtered.slice((safePage - 1) * ITEMS_PER_PAGE, safePage * ITEMS_PER_PAGE);
 
   return (
     <div>
@@ -208,7 +218,7 @@ function ResenasContent() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(r => (
+                {paginated.map(r => (
                   <tr key={r.id}>
                     <td style={{ fontSize: 12, color: "var(--text-muted)" }}>#{r.id}</td>
                     <td><TipoBadge tipo={getTipo(r)} /></td>
@@ -266,6 +276,7 @@ function ResenasContent() {
               </tbody>
             </table>
           </div>
+          <Pagination page={safePage} totalPages={totalPages} onChange={setPage} />
         </div>
       )}
 

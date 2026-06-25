@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
-import { AlertTriangle, Car, Key, Star, User } from "lucide-react";
+import { AlertTriangle, Car, ChevronLeft, ChevronRight, Key, Star, User } from "lucide-react";
 
 // ── Stars ─────────────────────────────────────────────────
 export function Stars({ value, max = 5 }: { value: number; max?: number }) {
@@ -290,6 +290,52 @@ export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW =
         document.body
       )}
     </>
+  );
+}
+
+// ── Paginación ────────────────────────────────────────────
+export function Pagination({ page, totalPages, onChange }: {
+  page: number; totalPages: number; onChange: (p: number) => void;
+}) {
+  if (totalPages <= 1) return null;
+  const pages: (number | "...")[] = [];
+  const range = 2;
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= page - range && i <= page + range)) {
+      pages.push(i);
+    } else if (pages[pages.length - 1] !== "...") {
+      pages.push("...");
+    }
+  }
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "16px 0" }}>
+      <button className="btn btn-ghost btn-sm" disabled={page <= 1} onClick={() => onChange(page - 1)}>
+        <ChevronLeft size={16} />
+      </button>
+      {pages.map((p, i) =>
+        p === "..." ? (
+          <span key={`ellipsis-${i}`} style={{ color: "var(--text-muted)", fontSize: 13, padding: "0 4px" }}>...</span>
+        ) : (
+          <button
+            key={p}
+            className="btn btn-sm"
+            style={{
+              minWidth: 34,
+              fontWeight: p === page ? 700 : 400,
+              background: p === page ? "var(--primary)" : "transparent",
+              color: p === page ? "#fff" : "var(--text)",
+              border: p === page ? "none" : "1px solid var(--border)",
+            }}
+            onClick={() => onChange(p)}
+          >
+            {p}
+          </button>
+        )
+      )}
+      <button className="btn btn-ghost btn-sm" disabled={page >= totalPages} onClick={() => onChange(page + 1)}>
+        <ChevronRight size={16} />
+      </button>
+    </div>
   );
 }
 

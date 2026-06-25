@@ -124,7 +124,7 @@ ETAPA-3
     DONE - Métricas emisor spammer
     DONE - Resumen IA - ID Vehiculo
     DONE - Reemplazar IDs por nombres
-    Paginacion
+    DONE - Paginacion
     Lista desplegable de emisores y receptores
     Selector visual de estrellas
     DONE - Filtro automatico de reseñas con AI

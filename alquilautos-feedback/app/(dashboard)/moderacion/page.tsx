@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { Stars, EstadoBadge, TipoBadge, Alert, Loading, PageHeader, EntityTooltipLabel } from "@/app/components/ui";
+import { Stars, EstadoBadge, TipoBadge, Alert, Loading, PageHeader, EntityTooltipLabel, Pagination } from "@/app/components/ui";
 import { ArrowRight, Check, CheckCircle2, RefreshCcw, Shield, X } from "lucide-react";
 import { ResenaCompleta, ModeracionCompleta, getTipo, shortenId } from "@/lib/types";
 
@@ -415,6 +415,11 @@ export default function ModeracionPage() {
   const [selected, setSelected]         = useState<ModeracionCompleta | null>(null);
   const [alert, setAlert]               = useState<{ type: "success" | "error"; msg: string } | null>(null);
 
+  // Paginación
+  const ITEMS_PER_PAGE = 5;
+  const [page, setPage] = useState(1);
+  useEffect(() => { setPage(1); }, [soloP]);
+
   const filterLatestModeraciones = (items: ModeracionCompleta[]) => {
     const latestByResena = new Map<number, ModeracionCompleta>();
     for (const item of items) {
@@ -446,6 +451,9 @@ export default function ModeracionPage() {
   const pendientes = moderaciones.filter(m => m.estado === "PENDIENTE").length;
   const aprobadas  = moderaciones.filter(m => m.estado === "APROBADA").length;
   const rechazadas = moderaciones.filter(m => m.estado === "RECHAZADA").length;
+  const totalPages = Math.ceil(moderaciones.length / ITEMS_PER_PAGE);
+  const safePage   = Math.min(page, totalPages || 1);
+  const paginated  = moderaciones.slice((safePage - 1) * ITEMS_PER_PAGE, safePage * ITEMS_PER_PAGE);
 
   return (
     <div>
@@ -488,16 +496,19 @@ export default function ModeracionPage() {
           <div className="empty-state-text">No hay moderaciones {soloP ? "pendientes" : ""}</div>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: 16 }}>
-          {moderaciones.map(m => (
-            <ModeracionCard
-              key={m.id}
-              m={m}
-              onRefresh={handleRefresh}
-              onDetail={setSelected}
-            />
-          ))}
-        </div>
+        <>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: 16 }}>
+            {paginated.map(m => (
+              <ModeracionCard
+                key={m.id}
+                m={m}
+                onRefresh={handleRefresh}
+                onDetail={setSelected}
+              />
+            ))}
+          </div>
+          <Pagination page={safePage} totalPages={totalPages} onChange={setPage} />
+        </>
       )}
 
       {selected && (
