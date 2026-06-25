@@ -1,4 +1,6 @@
 import * as ResenaModel from "@/app/models/resenaModel";
+import { createModeracion } from "@/app/models/moderacionModel";
+import { evaluarResenaConGemini } from "@/lib/geminiModeration";
 import { CreateResenaDto, UpdateResenaDto } from "@/lib/types";
 import { NextResponse } from "next/server";
 
@@ -87,6 +89,20 @@ export async function postResena(body: unknown) {
     }
 
     const resena = await ResenaModel.createResena(dto);
+
+    // Moderación automática con Gemini
+    try {
+      const result = await evaluarResenaConGemini(dto.descripcion, dto.calificacionGeneral);
+      await createModeracion({
+        idResena: resena.id,
+        idModerador: "Gemini",
+        estado: result.decision,
+        motivo: result.motivo,
+      });
+    } catch (e) {
+      console.error("Error en moderación automática con Gemini:", e);
+    }
+
     return NextResponse.json({ resena }, { status: 201 });
   } catch (e) {
     console.error(e);
