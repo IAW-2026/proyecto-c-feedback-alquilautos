@@ -30,11 +30,6 @@ export async function postRespuesta(body: unknown) {
   try {
     const dto = body as CreateRespuestaDto;
 
-        console.log(dto);
-    console.log("----------");
-    console.log(body);
-    console.log("---------------------------------");
-
     if (!dto.idResena || !dto.idAutor || !dto.comentario) {
       return NextResponse.json(
         { error: "Campos requeridos: id_resena, id_autor, comentario" },

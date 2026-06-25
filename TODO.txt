@@ -122,7 +122,7 @@ ETAPA-3
     DONE - Métricas entidades con caida brusca de calificaciones
     DONE - Métricas emisores recurrentes
     DONE - Métricas emisor spammer
-    Resumen IA - ID Vehiculo
+    DONE - Resumen IA - ID Vehiculo
     Reemplazar IDs por DNIs
     Lista desplegable de emisores y receptores
     Selector visual de estrellas

@@ -1,12 +1,61 @@
 import * as ResenaController from "@/app/controllers/resenaController";
 import { NextResponse } from "next/server";
 import { TipoResena } from "@/lib/types";
+import { headers } from "next/headers";
+import { auth } from "@clerk/nextjs/server";
 
 const ID_KEY: Record<TipoResena, string> = {
   vehiculo:    "id_vehiculo",
   propietario: "id_propietario",
   alquilador:  "id_alquilador",
 };
+
+async function fetchDetallesEntidad(tipo: TipoResena, id: number | string) {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  
+  let endpoint = "";
+  if (tipo === "alquilador") endpoint = `/api/proxy/buyer/api/alquilador/${id}`;
+  if (tipo === "propietario") endpoint = `/api/proxy/seller/api/propietario/${id}`;
+  if (tipo === "vehiculo") endpoint = `/api/proxy/seller/api/vehiculo/${id}`;
+
+  try {
+    const clientHeaders = await headers(); 
+    const cookie = clientHeaders.get("cookie") || "";
+
+    const { getToken } = await auth();
+    const token = await getToken();
+
+    const headersToSend: Record<string, string> = {
+      "Content-Type": "application/json",
+      "Cookie": cookie,
+    };
+
+    if (token) {
+      headersToSend["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(`${baseUrl}${endpoint}`, {
+      method: "GET",
+      headers: headersToSend,
+    });
+    
+    if (!res.ok) {
+      console.error(`Error en fetchDetallesEntidad. Status: ${res.status} para la entidad ${tipo}`);
+      return `(ID: ${id})`; 
+    }
+    
+    const data = await res.json();
+    
+    if (tipo === "vehiculo") {
+      return data.marca && data.modelo ? `${data.marca} ${data.modelo}` : `(ID: ${id})`;
+    } else {
+      return data.nombre && data.apellido ? `${data.nombre} ${data.apellido}` : `(ID: ${id})`;
+    }
+  } catch (error) {
+    console.error(`Error de red o parseo fetcheando detalles de ${tipo}:`, error);
+    return `(ID: ${id})`; 
+  }
+}
 
 async function fetchResenas(tipo: TipoResena, id: number | string) {
   switch (tipo) {
@@ -33,7 +82,11 @@ export async function generarResumenResponse(tipo: TipoResena, id: number | stri
     );
   }
 
-  const resp = await fetchResenas(tipo, id);
+  const [resp, nombreEntidad] = await Promise.all([
+    fetchResenas(tipo, id),
+    fetchDetallesEntidad(tipo, id)
+  ]);
+
   const payload: any = await extractPayload(resp);
   const todasLasResenas: any[] = payload?.resenas ?? payload ?? [];
 
@@ -52,7 +105,7 @@ export async function generarResumenResponse(tipo: TipoResena, id: number | stri
 
   const prompt = `Sos un asistente que analiza reseñas de un sistema de alquiler de autos argentino llamado AlquilAutos.
 
-A continuación hay ${resenas.length} reseña${resenas.length !== 1 ? "s" : ""} sobre un ${tipo} (ID: ${id}):
+A continuación hay ${resenas.length} reseña${resenas.length !== 1 ? "s" : ""} sobre el ${tipo}: **${nombreEntidad}**:
 
 ${listaResenas}
 
@@ -94,7 +147,6 @@ Generá un resumen conciso en español (4-6 oraciones) que capture los puntos pr
       );
     }
 
-    // Sin saldo o API key erronea (403 / 401)
     if (status === 403 || status === 401) {
       return NextResponse.json(
         { error: "Servicio de IA temporalmente no disponible." },
