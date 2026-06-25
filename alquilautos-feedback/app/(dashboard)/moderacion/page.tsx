@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { Stars, EstadoBadge, TipoBadge, Alert, Loading, PageHeader, EntityTooltipLabel, Pagination } from "@/app/components/ui";
+import { Stars, EstadoBadge, TipoBadge, Alert, Loading, PageHeader, EntityTooltipLabel, Pagination, EntityMaps } from "@/app/components/ui";
 import { ArrowRight, Check, CheckCircle2, RefreshCcw, Shield, X } from "lucide-react";
 import { ResenaCompleta, ModeracionCompleta, getTipo, shortenId } from "@/lib/types";
 
@@ -36,10 +36,12 @@ function ModeracionCard({
   m,
   onRefresh,
   onDetail,
+  entityMaps,
 }: {
   m: ModeracionCompleta;
   onRefresh: () => void;
   onDetail: (m: ModeracionCompleta) => void;
+  entityMaps?: EntityMaps;
 }) {
   const [rejecting, setRejecting] = useState(false);
   const [motivo, setMotivo]       = useState("");
@@ -114,6 +116,7 @@ function ModeracionCard({
                 entityType={tipo === "alquilador" ? "propietario" : "alquilador"}
                 entityId={m.resena.idEmisor}
                 showName
+                entityMaps={entityMaps}
               />
             </div>
             <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
@@ -137,6 +140,7 @@ function ModeracionCard({
                 entityType={receptor.type}
                 entityId={receptor.id}
                 showName
+                entityMaps={entityMaps}
               />
             ) : getReceptorLabel(m.resena);
           })()
@@ -237,10 +241,12 @@ function DetalleModal({
   m,
   onClose,
   onRefresh,
+  entityMaps,
 }: {
   m: ModeracionCompleta;
   onClose: () => void;
   onRefresh: () => void;
+  entityMaps?: EntityMaps;
 }) {
   const [motivo, setMotivo] = useState("");
   const [acting, setActing] = useState(false);
@@ -295,6 +301,7 @@ function DetalleModal({
                     entityType={tipo === "alquilador" ? "propietario" : "alquilador"}
                     entityId={m.resena.idEmisor}
                     showName
+                    entityMaps={entityMaps}
                   />
                 </span>
               </div>
@@ -310,6 +317,7 @@ function DetalleModal({
                         entityType={receptor.type}
                         entityId={receptor.id}
                         showName
+                        entityMaps={entityMaps}
                       />
                     ) : getReceptorLabel(m.resena);
                   })()}
@@ -420,6 +428,31 @@ export default function ModeracionPage() {
   const [page, setPage] = useState(1);
   useEffect(() => { setPage(1); }, [soloP]);
 
+  // ── Mapas de entidades (para resolver nombres sin N+1) ──
+  const [entityMaps, setEntityMaps] = useState<EntityMaps>({});
+
+  const fetchEntityMaps = useCallback(async () => {
+    const [alqRes, propRes, vehRes] = await Promise.all([
+      fetch("/api/proxy/buyer/api/alquilador/"),
+      fetch("/api/proxy/seller/api/propietario/"),
+      fetch("/api/proxy/seller/api/vehiculo/disponible"),
+    ]);
+    const alqData = await alqRes.json();
+    const propData = await propRes.json();
+    const vehData = await vehRes.json();
+
+    const alquilador: Record<string, Record<string, unknown>> = {};
+    for (const a of alqData.alquiladores ?? []) alquilador[String(a.idAlquilador)] = a;
+
+    const propietario: Record<string, Record<string, unknown>> = {};
+    for (const p of (propData ?? [])) propietario[String(p.idPropietario)] = p;
+
+    const vehiculo: Record<string, Record<string, unknown>> = {};
+    for (const v of vehData.vehiculos ?? []) vehiculo[String(v.idVehiculo)] = v;
+
+    setEntityMaps({ alquilador, propietario, vehiculo });
+  }, []);
+
   const filterLatestModeraciones = (items: ModeracionCompleta[]) => {
     const latestByResena = new Map<number, ModeracionCompleta>();
     for (const item of items) {
@@ -440,7 +473,7 @@ export default function ModeracionPage() {
     setLoading(false);
   }, [soloP]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => { fetchData(); fetchEntityMaps(); }, [fetchData, fetchEntityMaps]);
 
   const handleRefresh = () => {
     fetchData();
@@ -504,6 +537,7 @@ export default function ModeracionPage() {
                 m={m}
                 onRefresh={handleRefresh}
                 onDetail={setSelected}
+                entityMaps={entityMaps}
               />
             ))}
           </div>
@@ -516,6 +550,7 @@ export default function ModeracionPage() {
           m={selected}
           onClose={() => setSelected(null)}
           onRefresh={handleRefresh}
+          entityMaps={entityMaps}
         />
       )}
     </div>

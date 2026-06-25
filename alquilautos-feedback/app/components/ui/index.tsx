@@ -101,6 +101,12 @@ export function PageHeader({ title, subtitle, action }: { title: ReactNode; subt
 
 type EntityType = "vehiculo" | "propietario" | "alquilador";
 
+export interface EntityMaps {
+  vehiculo?: Record<string, Record<string, unknown>>;
+  propietario?: Record<string, Record<string, unknown>>;
+  alquilador?: Record<string, Record<string, unknown>>;
+}
+
 const ENTITY_TOOLTIP_CACHE = new Map<string,Record<string, unknown>>();
 
 function getEntityFetchUrl(type: EntityType, id: number | string) {
@@ -178,8 +184,8 @@ function getEntityDisplayName(data: Record<string, unknown>, type: EntityType): 
   return "";
 }
 
-export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW = 260, showName }: {
-  text: string; tooltip?: string; entityType?: EntityType; entityId?: number | string; maxW?: number; showName?: boolean;
+export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW = 260, showName, entityMaps }: {
+  text: string; tooltip?: string; entityType?: EntityType; entityId?: number | string; maxW?: number; showName?: boolean; entityMaps?: EntityMaps;
 }) {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -188,8 +194,21 @@ export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW =
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [coords, setCoords] = useState<{ left: number; top: number }>({ left: 0, top: 0 });
 
-  const fetchUrl = entityType && entityId ? getEntityFetchUrl(entityType, entityId) : undefined;
+  const mapData = entityType && entityId && entityMaps?.[entityType]?.[String(entityId)];
+  // Si se provee entityMaps, solo se usan los mapas (no hay fetches individuales)
+  const fetchUrl = (entityMaps === undefined && entityType && entityId) ? getEntityFetchUrl(entityType, entityId) : undefined;
   const cacheKey = fetchUrl ?? "";
+
+  // ── Usar datos del mapa si están disponibles ──
+  useEffect(() => {
+    if (mapData) {
+      setEntityData(mapData);
+      setLoading(false);
+    } else if (entityMaps !== undefined && entityType && entityId) {
+      setEntityData({ error: `Información de ${entityType} #${entityId}` });
+      setLoading(false);
+    }
+  }, [mapData]);
 
   // ── Eager fetch cuando showName=true ────────────
   useEffect(() => {
@@ -237,7 +256,7 @@ export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW =
   const displayName = showName && entityType && entityData && !entityData.error
     ? getEntityDisplayName(entityData, entityType)
     : "";
-  const visibleText = displayName || (showName && !entityData ? "Cargando..." : text);
+  const visibleText = displayName || (showName && !entityData && entityMaps === undefined ? "Cargando..." : text);
   const hasContent = tooltip || entityData;
 
   const handleEnter = () => {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Stars, TipoBadge, EstadoBadge, Loading, PageHeader, Truncated, EntityTooltipLabel, ConfirmModal, Pagination } from "@/app/components/ui";
+import { Stars, TipoBadge, EstadoBadge, Loading, PageHeader, Truncated, EntityTooltipLabel, ConfirmModal, Pagination, EntityMaps } from "@/app/components/ui";
 import { Edit3, Eye, Link2, MessageCircle, RefreshCcw, Search, Shield, Star, Trash2, X } from "lucide-react";
 import ResenaModal from "@/app/components/modal/ResenaModal";
 import { HistorialModeraciones, HistorialRespuestas } from "@/app/components/modal/HistorialModal";
@@ -50,6 +50,31 @@ function ResenasContent() {
   const [historialResp, setHistorialResp] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<ResenaCompleta | null>(null);
 
+  // ── Mapas de entidades (para resolver nombres sin N+1) ──
+  const [entityMaps, setEntityMaps] = useState<EntityMaps>({});
+
+  const fetchEntityMaps = useCallback(async () => {
+    const [alqRes, propRes, vehRes] = await Promise.all([
+      fetch("/api/proxy/buyer/api/alquilador/"),
+      fetch("/api/proxy/seller/api/propietario/"),
+      fetch("/api/proxy/seller/api/vehiculo/disponible"),
+    ]);
+    const alqData = await alqRes.json();
+    const propData = await propRes.json();
+    const vehData = await vehRes.json();
+
+    const alquilador: Record<string, Record<string, unknown>> = {};
+    for (const a of alqData.alquiladores ?? []) alquilador[String(a.idAlquilador)] = a;
+
+    const propietario: Record<string, Record<string, unknown>> = {};
+    for (const p of (propData ?? [])) propietario[String(p.idPropietario)] = p;
+
+    const vehiculo: Record<string, Record<string, unknown>> = {};
+    for (const v of vehData.vehiculos ?? []) vehiculo[String(v.idVehiculo)] = v;
+
+    setEntityMaps({ alquilador, propietario, vehiculo });
+  }, []);
+
   // ── Fetch lista ─────────────────────────────────────────
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -59,7 +84,7 @@ function ResenasContent() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => { fetchData(); fetchEntityMaps(); }, [fetchData, fetchEntityMaps]);
 
   // ── Abrir reseña por ID (para historial) ────────────────
   const openResenaById = async (id: number, mode: ModalMode = ModalMode.VIEW) => {
@@ -228,6 +253,7 @@ function ResenasContent() {
                         entityType={getTipo(r) === "alquilador" ? "propietario" : "alquilador"}
                         entityId={r.idEmisor}
                         showName
+                        entityMaps={entityMaps}
                       />
                     </td>
                     <td style={{ fontSize: 12 }}>
@@ -236,6 +262,7 @@ function ResenasContent() {
                         entityType={r.resenaVehiculo ? "vehiculo" : r.resenaPropietario ? "propietario" : "alquilador"}
                         entityId={getReceptorId(r)}
                         showName
+                        entityMaps={entityMaps}
                       />
                     </td>
                     <td><Stars value={r.calificacionGeneral} /></td>
