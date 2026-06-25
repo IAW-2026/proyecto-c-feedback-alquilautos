@@ -1,5 +1,6 @@
 import { db } from "@/lib/prisma";
 import { EstadoModeracion } from "@prisma/client";
+import { getMockAlquilador, getMockPropietario, getMockVehiculo } from "@/lib/mocks";
 
 // ── Tipos compartidos ─────────────────────────────────────
 export type Periodo    = "semana" | "mes" | "anio" | "total";
@@ -44,6 +45,105 @@ function agruparYOrdenar(
     .slice(0, limit);
 }
 
+// ── Helper: obtener nombre para mostrar de una entidad ───
+async function fetchEntityName(tipo: TipoEntidad, id: string): Promise<string> {
+  try {
+    if (tipo === "alquilador") {
+      const base = process.env.BUYER_API_URL;
+      if (base) {
+        const res = await fetch(`${base}/api/alquilador/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.nombre && data.apellido) return `${data.nombre} ${data.apellido}`;
+        }
+      }
+      const mock = getMockAlquilador(id);
+      if (mock) return `${mock.nombre} ${mock.apellido}`;
+    }
+    if (tipo === "propietario") {
+      const base = process.env.SELLER_API_URL;
+      if (base) {
+        const res = await fetch(`${base}/api/propietario/${id}`);
+        if (res.ok) {
+          const json = await res.json();
+          const data = json.data ?? json;
+          if (data.nombre && data.apellido) return `${data.nombre} ${data.apellido}`;
+        }
+      }
+      const mock = getMockPropietario(id);
+      if (mock) return `${mock.nombre} ${mock.apellido}`;
+    }
+    if (tipo === "vehiculo") {
+      const base = process.env.SELLER_API_URL;
+      if (base) {
+        const res = await fetch(`${base}/api/vehiculo/${id}`);
+        if (res.ok) {
+          const json = await res.json();
+          const data = json.data ?? json;
+          if (data.marca && data.modelo) return `${data.marca} ${data.modelo}`;
+        }
+      }
+      const mock = getMockVehiculo(id);
+      if (mock) return `${mock.marca} ${mock.modelo}`;
+    }
+  } catch {
+    // fallback a mock o ID
+  }
+  // Fallback a mock si falló la llamada HTTP
+  if (tipo === "alquilador") {
+    const mock = getMockAlquilador(id);
+    if (mock) return `${mock.nombre} ${mock.apellido}`;
+  }
+  if (tipo === "propietario") {
+    const mock = getMockPropietario(id);
+    if (mock) return `${mock.nombre} ${mock.apellido}`;
+  }
+  if (tipo === "vehiculo") {
+    const mock = getMockVehiculo(id);
+    if (mock) return `${mock.marca} ${mock.modelo}`;
+  }
+  return `(ID: ${id})`;
+}
+
+// ── Helper: obtener nombre del emisor (quien escribe reseñas) ─
+async function fetchEmisorName(id: string): Promise<string> {
+  try {
+    const base = process.env.BUYER_API_URL;
+    if (base) {
+      const res = await fetch(`${base}/api/alquilador/${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.nombre && data.apellido) return `${data.nombre} ${data.apellido}`;
+      }
+    }
+    const mock = getMockAlquilador(id);
+    if (mock) return `${mock.nombre} ${mock.apellido}`;
+  } catch {
+    // fallback
+  }
+  const mock = getMockAlquilador(id);
+  if (mock) return `${mock.nombre} ${mock.apellido}`;
+  return `(ID: ${id})`;
+}
+
+async function enrichEntities<T extends Record<string, any>>(
+  tipo: TipoEntidad,
+  items: T[],
+  idKey: string
+): Promise<T[]> {
+  const uniqueIds = [...new Set(items.map(item => String(item[idKey])))];
+  const names = new Map<string, string>();
+  await Promise.all(
+    uniqueIds.map(async (id) => {
+      names.set(id, await fetchEntityName(tipo, id));
+    })
+  );
+  return items.map(item => ({
+    ...item,
+    nombre_entidad: names.get(String(item[idKey])) ?? `(ID: ${item[idKey]})`,
+  }));
+}
+
 // ── Ranking ───────────────────────────────────────────────
 export async function getRanking(
   tipo:    TipoEntidad,
@@ -57,34 +157,37 @@ export async function getRanking(
     ...(fechaDesde ? { fechaCreacion: { gte: fechaDesde } } : {}),
   };
 
+  let ranking: any[];
   if (tipo === "alquilador") {
     const rows = await db.resena.findMany({
       where: { ...whereBase, resenaAlquilador: { isNot: null } },
       select: { calificacionGeneral: true, resenaAlquilador: { select: { idAlquilador: true } } },
     });
-    return agruparYOrdenar(
+    ranking = agruparYOrdenar(
       rows.map(r => ({ id: r.resenaAlquilador!.idAlquilador, calificacion: r.calificacionGeneral })),
       "id_alquilador", orden, limit
     );
-  }
-  if (tipo === "propietario") {
+  } else if (tipo === "propietario") {
     const rows = await db.resena.findMany({
       where: { ...whereBase, resenaPropietario: { isNot: null } },
       select: { calificacionGeneral: true, resenaPropietario: { select: { idPropietario: true } } },
     });
-    return agruparYOrdenar(
+    ranking = agruparYOrdenar(
       rows.map(r => ({ id: r.resenaPropietario!.idPropietario, calificacion: r.calificacionGeneral })),
       "id_propietario", orden, limit
     );
+  } else {
+    const rows = await db.resena.findMany({
+      where: { ...whereBase, resenaVehiculo: { isNot: null } },
+      select: { calificacionGeneral: true, resenaVehiculo: { select: { idVehiculo: true } } },
+    });
+    ranking = agruparYOrdenar(
+      rows.map(r => ({ id: r.resenaVehiculo!.idVehiculo, calificacion: r.calificacionGeneral })),
+      "id_vehiculo", orden, limit
+    );
   }
-  const rows = await db.resena.findMany({
-    where: { ...whereBase, resenaVehiculo: { isNot: null } },
-    select: { calificacionGeneral: true, resenaVehiculo: { select: { idVehiculo: true } } },
-  });
-  return agruparYOrdenar(
-    rows.map(r => ({ id: r.resenaVehiculo!.idVehiculo, calificacion: r.calificacionGeneral })),
-    "id_vehiculo", orden, limit
-  );
+  const idKey = tipo === "alquilador" ? "id_alquilador" : tipo === "propietario" ? "id_propietario" : "id_vehiculo";
+  return enrichEntities(tipo, ranking, idKey);
 }
 
 // ── Resumen global ────────────────────────────────────────
@@ -292,7 +395,7 @@ export async function getCaidaCalificacion(
   const idKey = tipo === "alquilador" ? "id_alquilador" : tipo === "propietario" ? "id_propietario" : "id_vehiculo";
   const avg   = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / arr.length;
 
-  return Object.entries(byEntity)
+  let results = Object.entries(byEntity)
     .filter(([, { historico, reciente }]) =>
       reciente.length >= minResenasRecientes && historico.length >= 1
     )
@@ -311,6 +414,8 @@ export async function getCaidaCalificacion(
     })
     .filter(e => e.caida >= umbralCaida)
     .sort((a, b) => b.caida - a.caida);
+
+  return enrichEntities(tipo, results, idKey);
 }
 
 // ── 3. Emisores recurrentes ───────────────────────────────
@@ -332,7 +437,7 @@ export async function getEmisoresRecurrentes(minResenas: number, limit: number) 
     // ultimaFecha ya es la más reciente porque se ordena desc
   }
 
-  return Object.entries(byEmisor)
+  let resultados = Object.entries(byEmisor)
     .filter(([, { calificaciones }]) => calificaciones.length >= minResenas)
     .map(([id, { calificaciones, ultimaFecha }]) => ({
       id_emisor:                   id,
@@ -344,6 +449,12 @@ export async function getEmisoresRecurrentes(minResenas: number, limit: number) 
     }))
     .sort((a, b) => b.cantidad_resenas - a.cantidad_resenas)
     .slice(0, limit);
+
+  // Enriquecer con nombre del emisor
+  const names = new Map<string, string>();
+  const uniqueIds = [...new Set(resultados.map(r => r.id_emisor))];
+  await Promise.all(uniqueIds.map(async id => names.set(id, await fetchEmisorName(id))));
+  return resultados.map(r => ({ ...r, nombre_entidad: names.get(r.id_emisor) ?? `(ID: ${r.id_emisor})` }));
 }
 
 // ── 4. Concentración de rechazos por emisor ──────────────
@@ -377,7 +488,7 @@ export async function getRechazosConcentrados(
     if (estadoActual === EstadoModeracion.PENDIENTE) byEmisor[id].pendientes++;
   }
 
-  return Object.entries(byEmisor)
+  let resultados = Object.entries(byEmisor)
     .filter(([, { total }]) => total >= minResenas)
     .map(([id, { total, rechazadas, pendientes }]) => ({
       id_emisor:          id,
@@ -389,4 +500,10 @@ export async function getRechazosConcentrados(
     .filter(e => e.tasa_rechazo / 100 >= umbralTasa)
     .sort((a, b) => b.tasa_rechazo - a.tasa_rechazo)
     .slice(0, limit);
+
+  // Enriquecer con nombre del emisor
+  const names = new Map<string, string>();
+  const uniqueIds = [...new Set(resultados.map(r => r.id_emisor))];
+  await Promise.all(uniqueIds.map(async id => names.set(id, await fetchEmisorName(id))));
+  return resultados.map(r => ({ ...r, nombre_entidad: names.get(r.id_emisor) ?? `(ID: ${r.id_emisor})` }));
 }
