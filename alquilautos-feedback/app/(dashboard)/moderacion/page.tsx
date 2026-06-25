@@ -18,9 +18,9 @@ function avatarColor(id: number | string) {
 }
 
 function getReceptorLabel(r: ResenaCompleta) {
-  if (r.resenaVehiculo)    return `Vehículo #${shortenId(r.resenaVehiculo.idVehiculo)}`;
-  if (r.resenaPropietario) return `Propietario #${shortenId(r.resenaPropietario.idPropietario)}`;
-  if (r.resenaAlquilador)  return `Alquilador #${shortenId(r.resenaAlquilador.idAlquilador)}`;
+  if (r.resenaVehiculo)    return `#${shortenId(r.resenaVehiculo.idVehiculo)}`;
+  if (r.resenaPropietario) return `#${shortenId(r.resenaPropietario.idPropietario)}`;
+  if (r.resenaAlquilador)  return `#${shortenId(r.resenaAlquilador.idAlquilador)}`;
   return "—";
 }
 
@@ -110,9 +110,10 @@ function ModeracionCard({
           <div>
             <div style={{ fontWeight: 600, fontSize: 14 }}>
               <EntityTooltipLabel
-                text={`Usuario #${shortenId(m.resena.idEmisor)}`}
+                text={`#${shortenId(m.resena.idEmisor)}`}
                 entityType={tipo === "alquilador" ? "propietario" : "alquilador"}
                 entityId={m.resena.idEmisor}
+                showName
               />
             </div>
             <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
@@ -135,6 +136,7 @@ function ModeracionCard({
                 text={getReceptorLabel(m.resena)}
                 entityType={receptor.type}
                 entityId={receptor.id}
+                showName
               />
             ) : getReceptorLabel(m.resena);
           })()
@@ -289,9 +291,10 @@ function DetalleModal({
                 <span className="detail-label">Emisor</span>
                 <span className="detail-value">
                   <EntityTooltipLabel
-                    text={`Usuario #${shortenId(m.resena.idEmisor)}`}
+                    text={`#${shortenId(m.resena.idEmisor)}`}
                     entityType={tipo === "alquilador" ? "propietario" : "alquilador"}
                     entityId={m.resena.idEmisor}
+                    showName
                   />
                 </span>
               </div>
@@ -306,6 +309,7 @@ function DetalleModal({
                         text={getReceptorLabel(m.resena)}
                         entityType={receptor.type}
                         entityId={receptor.id}
+                        showName
                       />
                     ) : getReceptorLabel(m.resena);
                   })()}

@@ -123,13 +123,11 @@ ETAPA-3
     DONE - Métricas emisores recurrentes
     DONE - Métricas emisor spammer
     DONE - Resumen IA - ID Vehiculo
-    Reemplazar IDs por DNIs
+    DONE - Reemplazar IDs por nombres
+    Paginacion
     Lista desplegable de emisores y receptores
     Selector visual de estrellas
-
-    Skeleton
-    Paginacion
-    Filtro automatico de reseñas con AI (quizas no rechazar, solo recomendar)
+    DONE - Filtro automatico de reseñas con AI
 
 
 ENTREGA

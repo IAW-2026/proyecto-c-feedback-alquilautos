@@ -172,8 +172,14 @@ function TooltipContent({ data, type }: {
   );
 }
 
-export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW = 260 }: {
-  text: string; tooltip?: string; entityType?: EntityType; entityId?: number | string; maxW?: number;
+function getEntityDisplayName(data: Record<string, unknown>, type: EntityType): string {
+  if (type === "vehiculo" && data.marca && data.modelo) return `${data.marca} ${data.modelo}`;
+  if (type !== "vehiculo" && data.nombre && data.apellido) return `${data.nombre} ${data.apellido}`;
+  return "";
+}
+
+export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW = 260, showName }: {
+  text: string; tooltip?: string; entityType?: EntityType; entityId?: number | string; maxW?: number; showName?: boolean;
 }) {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -184,6 +190,21 @@ export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW =
 
   const fetchUrl = entityType && entityId ? getEntityFetchUrl(entityType, entityId) : undefined;
   const cacheKey = fetchUrl ?? "";
+
+  // ── Eager fetch cuando showName=true ────────────
+  useEffect(() => {
+    if (!showName || !fetchUrl || entityData) return;
+    if (ENTITY_TOOLTIP_CACHE.has(cacheKey)) {
+      setEntityData(ENTITY_TOOLTIP_CACHE.get(cacheKey) ?? null);
+      return;
+    }
+    setLoading(true);
+    fetch(fetchUrl)
+      .then(async res => { if (!res.ok) throw new Error(); return res.json(); })
+      .then(data => { ENTITY_TOOLTIP_CACHE.set(cacheKey, data); setEntityData(data); })
+      .catch(() => setEntityData({ error: `Información de ${entityType} #${entityId}` }))
+      .finally(() => setLoading(false));
+  }, [showName, fetchUrl, cacheKey, entityData, entityType, entityId]);
 
   useEffect(() => {
   if (!show || entityData || !fetchUrl) return;
@@ -213,6 +234,10 @@ export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW =
     return () => { active = false; };
   }, [show, fetchUrl, cacheKey, entityData, entityType, entityId]);
 
+  const displayName = showName && entityType && entityData && !entityData.error
+    ? getEntityDisplayName(entityData, entityType)
+    : "";
+  const visibleText = displayName || (showName && !entityData ? "Cargando..." : text);
   const hasContent = tooltip || entityData;
 
   const handleEnter = () => {
@@ -232,7 +257,7 @@ export function EntityTooltipLabel({ text, tooltip, entityType, entityId, maxW =
         onMouseEnter={handleEnter}
         onMouseLeave={handleLeave}
       >
-        <span style={{ color: "inherit" }}>{text}</span>
+        <span style={{ color: "inherit" }}>{visibleText}</span>
       </span>
 
       {typeof document !== "undefined" && show && hasContent && createPortal(

@@ -217,6 +217,7 @@ function ResenasContent() {
                         text={`#${shortenId(r.idEmisor)}`}
                         entityType={getTipo(r) === "alquilador" ? "propietario" : "alquilador"}
                         entityId={r.idEmisor}
+                        showName
                       />
                     </td>
                     <td style={{ fontSize: 12 }}>
@@ -224,6 +225,7 @@ function ResenasContent() {
                         text={`#${shortenId(getReceptorId(r))}`}
                         entityType={r.resenaVehiculo ? "vehiculo" : r.resenaPropietario ? "propietario" : "alquilador"}
                         entityId={getReceptorId(r)}
+                        showName
                       />
                     </td>
                     <td><Stars value={r.calificacionGeneral} /></td>

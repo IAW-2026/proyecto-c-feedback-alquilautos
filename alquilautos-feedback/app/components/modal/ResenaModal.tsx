@@ -532,9 +532,10 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
                   <span className="detail-label">Emisor</span>
                   <span className="detail-value">
                     <EntityTooltipLabel
-                      text={`Usuario #${resena.idEmisor}`}
+                      text={`#${resena.idEmisor}`}
                       entityType={tipo === "alquilador" ? "propietario" : "alquilador"}
                       entityId={resena.idEmisor}
+                      showName
                     />
                   </span>
                 </div>
@@ -544,21 +545,24 @@ export default function ResenaModal({ resena: initialResena, initialMode, onClos
                   <span className="detail-value">
                     {resena.resenaVehiculo ? (
                       <EntityTooltipLabel
-                        text={`Vehículo #${resena.resenaVehiculo.idVehiculo}`}
+                        text={`#${resena.resenaVehiculo.idVehiculo}`}
                         entityType="vehiculo"
                         entityId={resena.resenaVehiculo.idVehiculo}
+                        showName
                       />
                     ) : resena.resenaPropietario ? (
                       <EntityTooltipLabel
-                        text={`Propietario #${resena.resenaPropietario.idPropietario}`}
+                        text={`#${resena.resenaPropietario.idPropietario}`}
                         entityType="propietario"
                         entityId={resena.resenaPropietario.idPropietario}
+                        showName
                       />
                     ) : (
                       <EntityTooltipLabel
-                        text={`Alquilador #${resena.resenaAlquilador?.idAlquilador}`}
+                        text={`#${resena.resenaAlquilador?.idAlquilador}`}
                         entityType="alquilador"
                         entityId={resena.resenaAlquilador?.idAlquilador}
+                        showName
                       />
                     )}
                   </span>
