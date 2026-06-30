@@ -33,7 +33,15 @@ function agruparYOrdenar(
     map[k].suma     += item.calificacion;
     map[k].cantidad += 1;
   }
+  const top10 = new Set(
+    Object.entries(map)
+      .sort(([, a], [, b]) => b.cantidad - a.cantidad)
+      .slice(0, Math.max(Math.ceil(Object.keys(map).length * 0.1), 1))
+      .map(([id]) => id)
+  );
+
   return Object.entries(map)
+    .filter(([id]) => top10.has(id))
     .map(([id, { suma, cantidad }]) => ({
       [idKey]: id,
       calificacion_promedio: Math.round((suma / cantidad) * 100) / 100,
