@@ -424,7 +424,7 @@ export default function ModeracionPage() {
   const [alert, setAlert]               = useState<{ type: "success" | "error"; msg: string } | null>(null);
 
   // Paginación
-  const ITEMS_PER_PAGE = 5;
+  const ITEMS_PER_PAGE = 12;
   const [page, setPage] = useState(1);
   useEffect(() => { setPage(1); }, [soloP]);
 
