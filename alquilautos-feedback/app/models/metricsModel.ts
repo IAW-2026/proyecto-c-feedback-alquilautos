@@ -1,6 +1,8 @@
 import { db } from "@/lib/prisma";
 import { EstadoModeracion } from "@prisma/client";
 import { getMockAlquilador, getMockPropietario, getMockVehiculo } from "@/lib/mocks";
+import { headers } from "next/headers";
+import { auth } from "@clerk/nextjs/server";
 
 // ── Tipos compartidos ─────────────────────────────────────
 export type Periodo    = "semana" | "mes" | "anio" | "total";
@@ -48,48 +50,33 @@ function agruparYOrdenar(
 // ── Helper: obtener nombre para mostrar de una entidad ───
 async function fetchEntityName(tipo: TipoEntidad, id: string): Promise<string> {
   try {
-    if (tipo === "alquilador") {
-      const base = process.env.BUYER_API_URL;
-      if (base) {
-        const res = await fetch(`${base}/api/alquilador/${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.nombre && data.apellido) return `${data.nombre} ${data.apellido}`;
-        }
-      }
-      const mock = getMockAlquilador(id);
-      if (mock) return `${mock.nombre} ${mock.apellido}`;
-    }
-    if (tipo === "propietario") {
-      const base = process.env.SELLER_API_URL;
-      if (base) {
-        const res = await fetch(`${base}/api/propietario/${id}`);
-        if (res.ok) {
-          const json = await res.json();
-          const data = json.data ?? json;
-          if (data.nombre && data.apellido) return `${data.nombre} ${data.apellido}`;
-        }
-      }
-      const mock = getMockPropietario(id);
-      if (mock) return `${mock.nombre} ${mock.apellido}`;
-    }
-    if (tipo === "vehiculo") {
-      const base = process.env.SELLER_API_URL;
-      if (base) {
-        const res = await fetch(`${base}/api/vehiculo/${id}`);
-        if (res.ok) {
-          const json = await res.json();
-          const data = json.data ?? json;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const clientHeaders = await headers();
+    const cookie = clientHeaders.get("cookie") || "";
+    const { getToken } = await auth();
+    const token = await getToken();
+    const hdrs: Record<string, string> = { "Content-Type": "application/json", Cookie: cookie };
+    if (token) hdrs["Authorization"] = `Bearer ${token}`;
+
+    let endpoint = "";
+    if (tipo === "alquilador") endpoint = `/api/proxy/buyer/api/alquilador/${id}`;
+    else if (tipo === "propietario") endpoint = `/api/proxy/seller/api/propietario/${id}`;
+    else if (tipo === "vehiculo") endpoint = `/api/proxy/seller/api/vehiculo/${id}`;
+
+    if (endpoint) {
+      const res = await fetch(`${baseUrl}${endpoint}`, { headers: hdrs });
+      if (res.ok) {
+        const data = await res.json();
+        if (tipo === "vehiculo") {
           if (data.marca && data.modelo) return `${data.marca} ${data.modelo}`;
+        } else {
+          if (data.nombre && data.apellido) return `${data.nombre} ${data.apellido}`;
         }
       }
-      const mock = getMockVehiculo(id);
-      if (mock) return `${mock.marca} ${mock.modelo}`;
     }
   } catch {
     // fallback a mock o ID
   }
-  // Fallback a mock si falló la llamada HTTP
   if (tipo === "alquilador") {
     const mock = getMockAlquilador(id);
     if (mock) return `${mock.nombre} ${mock.apellido}`;
@@ -108,16 +95,19 @@ async function fetchEntityName(tipo: TipoEntidad, id: string): Promise<string> {
 // ── Helper: obtener nombre del emisor (quien escribe reseñas) ─
 async function fetchEmisorName(id: string): Promise<string> {
   try {
-    const base = process.env.BUYER_API_URL;
-    if (base) {
-      const res = await fetch(`${base}/api/alquilador/${id}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data.nombre && data.apellido) return `${data.nombre} ${data.apellido}`;
-      }
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const clientHeaders = await headers();
+    const cookie = clientHeaders.get("cookie") || "";
+    const { getToken } = await auth();
+    const token = await getToken();
+    const hdrs: Record<string, string> = { "Content-Type": "application/json", Cookie: cookie };
+    if (token) hdrs["Authorization"] = `Bearer ${token}`;
+
+    const res = await fetch(`${baseUrl}/api/proxy/buyer/api/alquilador/${id}`, { headers: hdrs });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.nombre && data.apellido) return `${data.nombre} ${data.apellido}`;
     }
-    const mock = getMockAlquilador(id);
-    if (mock) return `${mock.nombre} ${mock.apellido}`;
   } catch {
     // fallback
   }
